@@ -1,0 +1,182 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+}
+
+/* =====================
+   MOBILE HEADER
+===================== */
+.mobile-header {
+  height: 56px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* =====================
+   SIDEBAR
+===================== */
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+/* Sidebar Logo */
+.sidebar-logo {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 700;
+  border-bottom: 1px solid #ddd;
+  flex-shrink: 0;
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.menu {
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.menu li a {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  color: #333;
+  text-decoration: none;
+}
+
+.menu li a:hover {
+  background: #f1f1f1;
+}
+
+.menu li a i {
+  font-size: 18px;
+}
+
+/* Submenu */
+.submenu {
+  list-style: none;
+  padding-left: 40px;
+  display: none;
+}
+
+.has-submenu.open .submenu {
+  display: block;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  border-top: 1px solid #ddd;
+  padding: 12px 20px;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.sidebar-footer .footer-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  text-decoration: none;
+}
+/* Scrollbar */
+.sidebar-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+/* =====================
+   PAGE LAYOUT (IMPORTANT)
+===================== */
+.page-wrapper {
+  min-height: 100vh;
+  margin-left: 260px;     /* sidebar space */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main Content */
+.content {
+  flex: 1;               /* PUSHES FOOTER DOWN */
+  padding: 30px;
+}
+
+/* =====================
+   FOOTER (MAIN PAGE)
+===================== */
+.main-footer {
+  background: #fff;
+  border-top: 1px solid #ddd;
+  padding: 12px 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Footer Links */
+.footer-links a {
+  margin-left: 15px;
+  text-decoration: none;
+  color: #666;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* =====================
+   OVERLAY
+===================== */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  z-index: 900;
+}
+
+/* =====================
+   MOBILE
+===================== */
+@media (max-width: 768px) {
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  body.sidebar-open .sidebar {
+    transform: translateX(0);
+  }
+
+  body.sidebar-open #overlay {
+    display: block;
+  }
+
+  .page-wrapper {
+    margin-left: 0;
+  }
+}
