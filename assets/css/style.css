@@ -1,21 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 body {
-  font-family: 'Inter', sans-serif;
-  background: #f8f9fa;
+  background: #f2f5f8;
   margin: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* =====================
    MOBILE HEADER
 ===================== */
-.mobile-header {
+/* =====================
+   TOP NAVBAR
+===================== */
+.top-navbar {
   height: 56px;
   background: #fff;
+  border-bottom: 1px solid #ddd;
   display: flex;
   align-items: center;
-  gap: 15px;
   padding: 0 15px;
-  border-bottom: 1px solid #ddd;
+  position: static;
+  top: 0;
+  z-index: 900;
 }
+
+/* Left side (mobile only) */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-left .btn {
+  font-size: 22px;
+}
+
+/* Brand */
+.brand {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Right side */
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Profile dropdown */
+.profile-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #333;
+}
+
+.profile-toggle img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-toggle i {
+  font-size: 12px;
+}
+
 
 /* =====================
    SIDEBAR
@@ -85,21 +136,7 @@ body {
   display: block;
 }
 
-/* Sidebar Footer */
-.sidebar-footer {
-  border-top: 1px solid #ddd;
-  padding: 12px 20px;
-  background: #fff;
-  flex-shrink: 0;
-}
 
-.sidebar-footer .footer-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #333;
-  text-decoration: none;
-}
 /* Scrollbar */
 .sidebar-menu::-webkit-scrollbar {
   width: 6px;
@@ -115,14 +152,16 @@ body {
 ===================== */
 .page-wrapper {
   min-height: 100vh;
-  margin-left: 260px;     /* sidebar space */
+  margin-left: 260px;
+  /* sidebar space */
   display: flex;
   flex-direction: column;
 }
 
 /* Main Content */
 .content {
-  flex: 1;               /* PUSHES FOOTER DOWN */
+  flex: 1;
+  /* PUSHES FOOTER DOWN */
   padding: 30px;
 }
 
@@ -179,4 +218,15 @@ body {
   .page-wrapper {
     margin-left: 0;
   }
+}
+
+
+/* Dashboard Kit Style  */
+.card-box:hover{
+  transform: translateY(-10px);
+  transition: all .5s;
+}
+
+.icon-box {
+  border-radius: 50%;
 }
