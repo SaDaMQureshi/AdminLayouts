@@ -9,11 +9,11 @@
   color: var(--primary-color);
 }
 
-.text-color {
+.primary-text-color {
   color: var(--text-color);
 }
 
-.background-color {
+.primary-background-color {
   background-color: var(--primary-color);
 }
 
@@ -88,6 +88,10 @@ body {
 
 .profile-toggle i {
   font-size: 12px;
+}
+.dropdown-item:active{
+  background-color: transparent;
+  color: var(--primary-color);
 }
 
 

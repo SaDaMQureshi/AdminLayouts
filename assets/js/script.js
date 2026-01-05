@@ -37,3 +37,24 @@ document.addEventListener('DOMContentLoaded', () => {
         animateCount(el);
     });
 });
+
+
+// Datatable script
+$(document).ready(function () {
+    $('#example').DataTable({
+        pageLength: 10,
+        lengthChange: false,
+        ordering: true,
+        
+        searching: true,
+        info: true,
+        responsive: true,
+        language: {
+            search: "Search",
+            paginate: {
+                previous: "Previous",
+                next: "Next"
+            }
+        }
+    });
+});
