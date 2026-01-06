@@ -4,7 +4,11 @@ $secondBreadcrumb = "Tables";
 ob_start();
 ?>
 <div class="container">
-    <div class="card shodow-sm">
+    <div class="card table-card">
+        <div class="card-header">
+            <h5 class="mb-0">Employee List</h5>
+            <a href="#" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Add Employee</a>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table id="example" class="table table-hover align-middle">

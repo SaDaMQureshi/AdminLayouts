@@ -58,3 +58,14 @@ $(document).ready(function () {
         }
     });
 });
+
+
+
+// Initialize Select2
+$(document).ready(function() {
+    $('#select').select2({
+        placeholder: "search",
+        allowClear: true,
+        width: '100%'  // make it fit Bootstrap container
+    });
+});

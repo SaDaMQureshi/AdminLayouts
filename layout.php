@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'Layout' ?></title>
+    <title><?= $title ?? 'Layout' ?>- Routefy</title>
     <link rel="icon" href="assets/images/logo/logo.png" type="image/x-icon">
     <!-- JQuery CDN  -->
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Family  -->
@@ -18,6 +18,9 @@
     <!-- Datatables css Style  -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.bootstrap5.css">
+    <!-- Search Select  -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <!-- Custom CSS  -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -84,6 +87,9 @@
                         <li><a href="OTPVerification.php">OTP Verification</a></li>
                         <li><a href="ChangePassword.php">Change Password</a></li>
                         <li><a href="Tables.php">Tables</a></li>
+                        <li><a href="Inputs.php">Inputs</a></li>
+                        <li><a href="badges.php">Badges</a></li>
+                        <li><a href="Accordion.php">Accordion</a></li>
                     </ul>
                 </li>
 
@@ -144,6 +150,10 @@
 
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
     <!-- Custom JS -->
     <script src="assets/js/script.js"></script>
