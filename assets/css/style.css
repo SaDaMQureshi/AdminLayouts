@@ -2,14 +2,25 @@
 
 :root {
   --primary-color: #1373bb;
-  --text-color: #fff
+  /* Original primary color */
+  --secondary-color: #0b5e94;
+  /* Darker shade for hover/active */
+  --text-color: #fff;
+  --body-bg: #f5f7fa;
+  /* Brighter, cleaner background */
+  --card-bg: #ffffff;
+  --border-color: #e0e6ed;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.08);
+  --transition: all 0.2s ease;
 }
 
+/* --- Utility Classes --- */
 .primary-color {
   color: var(--primary-color);
 }
 
-.primary-text-color {
+.text-color {
   color: var(--text-color);
 }
 
@@ -17,58 +28,78 @@
   background-color: var(--primary-color);
 }
 
+.primary-background-color:hover {
+  background-color: var(--primary-color);
+}
+
+/* --- Base Styles --- */
 body {
-  background: #f2f5f8;
+  background: var(--body-bg);
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+  color: #333;
+  /* Default text color for body */
 }
 
-
-/* Card CSS  */
+/* Card CSS - Modernized */
 .card {
-  border: none;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  /* Smoother corners */
+  box-shadow: var(--shadow-sm);
+  /* Subtle lift */
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 
 /* =====================
-   MOBILE HEADER
-===================== */
-/* =====================
-   TOP NAVBAR
+   TOP NAVBAR (Header)
 ===================== */
 .top-navbar {
-  height: 56px;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+  height: 60px;
+  /* Slightly taller */
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  padding: 0 15px;
-  position: static;
+  padding: 0 25px;
+  /* More padding */
+  position: sticky;
+  /* Stickier top */
   top: 0;
   z-index: 900;
+  box-shadow: var(--shadow-sm);
 }
 
 /* Left side (mobile only) */
 .navbar-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
 .navbar-left .btn {
-  font-size: 22px;
+  font-size: 24px;
+  /* Larger icon */
   color: var(--primary-color);
   outline: none;
   border: none;
+  background: transparent;
 }
 
 /* Brand */
 .brand {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 20px;
+  /* Larger brand */
   color: var(--primary-color);
+  letter-spacing: -0.5px;
 }
 
 /* Right side */
@@ -81,55 +112,82 @@ body {
 .profile-toggle {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   text-decoration: none;
-  color: #333;
+  color: #555;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+
+.profile-toggle:hover {
+  background: #f1f1f1;
 }
 
 .profile-toggle img {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid var(--primary-color);
+  /* Highlight profile image */
 }
 
 .profile-toggle i {
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.dropdown-menu {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+  font-size: 15px;
+  padding: 8px 16px;
+  transition: var(--transition);
 }
 
 .dropdown-item:active {
-  background-color: transparent;
-  color: var(--primary-color);
+  background-color: var(--primary-color);
+  color: var(--text-color);
 }
 
 
 /* =====================
-   SIDEBAR
+   SIDEBAR - Unique Modern Look
 ===================== */
 .sidebar {
-  width: 260px;
+  width: 280px;
+  /* Slightly wider */
   height: 100vh;
-  background: var(--primary-color);
+  background: var(--card-bg);
+  /* Use white for a lighter feel */
   position: fixed;
   top: 0;
   left: 0;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   z-index: 1000;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Smoother transition */
+  box-shadow: var(--shadow-lg);
+  /* Add shadow for depth */
 }
 
 /* Sidebar Logo */
 .sidebar-logo {
-  height: 56px;
+  height: 60px;
   display: flex;
   align-items: center;
-  padding: 0 20px;
-  font-weight: 700;
-  border-bottom: 1px solid #ddd;
+  padding: 0 25px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
-  color: var(--text-color);
+  color: var(--primary-color);
+  font-size: 22px;
 }
 
 /* Sidebar Menu */
@@ -140,39 +198,76 @@ body {
 
 .menu {
   list-style: none;
-  padding: 10px 0;
+  padding: 15px 0;
+  /* More vertical padding */
   margin: 0;
 }
 
 .menu li a {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 12px 20px;
-  color: var(--text-color);
+  gap: 12px;
+  padding: 10px 25px;
+  color: #555;
+  /* Darker text for white background */
   text-decoration: none;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  /* Menu border indicator */
+  transition: var(--transition);
 }
 
 .menu li a:hover {
-  background: #f1f1f1;
+  background: var(--body-bg);
   color: var(--primary-color);
+  border-left-color: var(--primary-color);
 }
 
 .menu li a i {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 /* Submenu */
 .submenu {
   list-style: none;
-  padding-left: 40px;
+  padding-left: 50px;
+  /* Adjusted padding */
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #fcfcfc;
+  /* Slight contrast for submenu */
   display: none;
+}
+
+.submenu li a {
+  padding: 8px 0;
+  border-left: none;
+  font-size: 14px;
+}
+
+.submenu li a:hover {
+  border-left: none;
+  color: var(--secondary-color);
 }
 
 .has-submenu.open .submenu {
   display: block;
 }
 
+.has-submenu.open>a {
+  background: var(--body-bg);
+  color: var(--primary-color);
+  border-left-color: var(--primary-color);
+}
+
+.has-submenu.open>a .bi-chevron-down {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.has-submenu>a .bi-chevron-down {
+  transition: transform 0.3s ease;
+}
 
 /* Scrollbar */
 .sidebar-menu::-webkit-scrollbar {
@@ -180,7 +275,7 @@ body {
 }
 
 .sidebar-menu::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }
 
@@ -189,26 +284,62 @@ body {
 ===================== */
 .page-wrapper {
   min-height: 100vh;
-  margin-left: 260px;
+  margin-left: 280px;
   /* sidebar space */
   display: flex;
   flex-direction: column;
 }
 
+/* Breadcrumb Card - Modernized */
+.card-breadcrumb {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 30px 0;
+  /* Align with content padding */
+}
+
+.breadcrumb {
+  padding: 10px 15px;
+  background: var(--card-bg);
+  border-radius: 8px !important;
+  border: 1px solid var(--border-color);
+}
+
+.breadcrumb-item {
+  font-size: 14px;
+}
+
+.breadcrumb-item a {
+  color: #6c757d;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-item a:hover {
+  color: var(--primary-color);
+}
+
+.breadcrumb-item.active {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+
 /* Main Content */
 .content {
   flex: 1;
-  /* PUSHES FOOTER DOWN */
   padding: 30px;
+  padding-top: 0;
+  /* Remove top padding since breadcrumb is outside */
 }
 
 /* =====================
    FOOTER (MAIN PAGE)
 ===================== */
 .main-footer {
-  background: #fff;
-  border-top: 1px solid #ddd;
-  padding: 12px 20px;
+  background: var(--card-bg);
+  border-top: 1px solid var(--border-color);
+  padding: 15px 30px;
   font-size: 14px;
   color: #666;
 }
@@ -221,6 +352,7 @@ body {
 }
 
 .footer-links a:hover {
+  color: var(--primary-color);
   text-decoration: underline;
 }
 
@@ -230,22 +362,27 @@ body {
 #overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
+  /* Slightly darker for better contrast */
   display: none;
   z-index: 900;
 }
 
 /* =====================
-   MOBILE
+   MOBILE (<= 768px)
 ===================== */
 @media (max-width: 768px) {
 
   .sidebar {
     transform: translateX(-100%);
+    box-shadow: none;
+    /* No shadow when hidden */
   }
 
   body.sidebar-open .sidebar {
     transform: translateX(0);
+    box-shadow: var(--shadow-lg);
+    /* Shadow when open */
   }
 
   body.sidebar-open #overlay {
@@ -255,8 +392,24 @@ body {
   .page-wrapper {
     margin-left: 0;
   }
-}
 
+  .top-navbar {
+    padding: 0 15px;
+  }
+
+  .content {
+    padding: 20px;
+    padding-top: 0;
+  }
+
+  .card-breadcrumb {
+    padding: 0 20px 0;
+  }
+
+  .main-footer {
+    padding: 12px 20px;
+  }
+}
 
 /* Dashboard Kit Style  */
 .card-box:hover {
@@ -406,4 +559,154 @@ body {
 
 
 
-/* Input CSS  */
+/* Admin Dashboard Card CSS  */
+/* Custom styles for the modern cards */
+.modern-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(220, 220, 220, 0.4);
+  border-radius: 12px;
+  background-color: #fff;
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.card-title-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: #777;
+}
+
+.card-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.card-header {
+  background-color: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.formSubmitButtonRow {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+
+.custom-select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+
+
+/* Profile Page CSS */
+.profile-card {
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 900px;
+  margin: 50px auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 25px;
+  /* Adding a subtle border for emphasis */
+  border: 4px solid var(--primary-color);
+  border-radius: 50%;
+  padding: 5px;
+  /* Space between border and image */
+}
+
+.profile-img {
+  width: 130px;
+  /* Slightly larger image */
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  /* Important for alignment */
+}
+
+.edit-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  /* Use primary color */
+  color: #fff;
+  position: absolute;
+  bottom: 0px;
+  /* Aligned to bottom edge */
+  right: 0px;
+  /* Aligned to right edge */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  /* Modern icon style */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease;
+}
+
+.edit-avatar:hover {
+  background: var(--secondary-color);
+}
+
+/* Modern Form Controls */
+.form-control,
+.form-select {
+  border-radius: 10px;
+  /* Slightly smaller radius for controls */
+  padding: 14px 18px;
+  /* More vertical padding */
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.25);
+  /* Primary color focus ring */
+}
+
+.form-label {
+  font-weight: 600;
+  /* Bolder labels */
+  margin-bottom: 8px;
+  color: #555;
+}
+
+
+.edit-avatar input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
