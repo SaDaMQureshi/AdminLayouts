@@ -3,45 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layouts Navigation</title>
+    <title>Framework Gallery | Sadam Hussain Qureshi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --border: #f1f5f9;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* NEW: Top Navigation Bar with your name */
+        nav {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .name-brand {
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .name-brand span {
+            color: var(--primary);
         }
 
         .container {
-            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 24px;
         }
 
-        a.button {
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 16px;
+        }
+
+        header p {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary);
+        }
+
+        .preview-box {
+            width: 100%;
+            height: 240px;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 100px;
             display: inline-block;
-            margin: 10px;
-            padding: 12px 25px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .content h3 {
+            font-size: 1.5rem;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            text-align: center;
             text-decoration: none;
-            background-color: #007BFF;
-            color: white;
-            border-radius: 6px;
-            font-size: 16px;
+            background: var(--text-main);
+            color: #fff;
+            border-radius: 14px;
+            font-weight: 600;
             transition: 0.3s;
         }
 
-        a.button:hover {
-            background-color: #0056b3;
+        .button:hover {
+            background: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 2.2rem; }
+            nav { padding: 15px 20px; }
         }
     </style>
 </head>
 <body>
 
+    <nav>
+        <div class="name-brand">
+            SADAM HUSSAIN QURESHI
+        </div>
+        <div style="font-size: 0.85rem; font-weight: 500; color: var(--text-sub);">
+            Project Explorer
+        </div>
+    </nav>
+
     <div class="container">
-        <a href="layout_1.html" class="button">Layout 1</a>
-        <a href="layout_2.html" class="button">Layout 2</a>
-        <a href="layout_3.html" class="button">Layout 3</a>
+        <header>
+            <h1>Design Systems</h1>
+            <p>Explore the architectural frameworks developed for modern web scalability.</p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <div class="preview-box"><img src="/layout_1.png" alt="Layout 1"></div>
+                <div class="content">
+                    <span class="tag">Classic</span>
+                    <h3>Sidebar Interface</h3>
+                    <a href="layout_1.html" class="button">Explore Design</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="preview-box"><img src="/layout_2.png" alt="Layout 2"></div>
+                <div class="content">
+                    <span class="tag">Modern</span>
+                    <h3>Top Navigation</h3>
+                    <a href="layout_2.html" class="button">Explore Design</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="preview-box"><img src="/layout_3.PNG" alt="Layout 3"></div>
+                <div class="content">
+                    <span class="tag">Minimal</span>
+                    <h3>Compact Grid</h3>
+                    <a href="layout_3.html" class="button">Explore Design</a>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <footer>
+        &copy; 2026 Sadam Hussain Qureshi | Professional Portfolio Design
+    </footer>
 
 </body>
 </html>

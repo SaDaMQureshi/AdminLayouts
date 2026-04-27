@@ -5,11 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHROMEXA</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         :root {
             --primary-bg: #0f172a;
@@ -17,6 +20,9 @@
             --sidebar-width: 240px;
             --transition-speed: 0.3s;
             --breadcrumb-bg: #f1f5f9;
+            --ck-border-radius: 8px;
+            --ck-color-focus-border: var(--accent-color);
+            --ck-color-shadow-inner: rgba(99, 102, 241, 0.1);
         }
 
         body {
@@ -195,13 +201,6 @@
             background: white;
         }
 
-        .table-card {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-        }
-
         .user-avatar {
             width: 38px;
             height: 38px;
@@ -220,6 +219,667 @@
         .overlay.active {
             display: block;
         }
+
+
+        /* table css */
+        /* --- CHROMEXA Premium DataTables Override --- */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            color: white !important;
+            border-radius: 8px;
+        }
+
+        .dataTables_wrapper .form-control-sm,
+        .dataTables_wrapper .form-select-sm {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .dataTable-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .table.dataTable {
+            border-collapse: separate !important;
+            border-spacing: 0 8px !important;
+            /* Creates the "Floating Row" look */
+            margin-top: 20px !important;
+        }
+
+        .table.dataTable thead th {
+            border: none;
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 12px 20px;
+        }
+
+        .table.dataTable tbody tr {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .table.dataTable tbody td {
+            background: white;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 12px 20px;
+            vertical-align: middle;
+        }
+
+        /* Round-Square (Squircle) Image */
+        .table-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #f8fafc;
+        }
+
+        /* Action Dots */
+        .btn-table-action {
+            color: #94a3b8;
+            background: #f8fafc;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .btn-table-action:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* --- DATA TABLES UI ENHANCEMENTS --- */
+
+        /* Search Box Design */
+        .dataTables_filter {
+            float: left !important;
+            /* Move search to the left for a modern feel */
+        }
+
+        .dataTables_filter input {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            padding: 0.6rem 1rem !important;
+            background-color: #ffffff !important;
+            font-size: 0.85rem !important;
+            width: 300px !important;
+            transition: all 0.3s ease;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .dataTables_filter input:focus {
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+        }
+
+        /* Length Menu (Show X entries) */
+        .dataTables_length select {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            padding: 0.4rem 2rem 0.4rem 0.8rem !important;
+            font-size: 0.85rem !important;
+            color: var(--primary-bg) !important;
+            outline: none !important;
+        }
+
+        /* Info Text (Showing 1 to 10 of X) */
+        .dataTables_info {
+            font-size: 0.8rem !important;
+            color: #64748b !important;
+            font-weight: 500 !important;
+            padding-top: 1.5rem !important;
+        }
+
+        /* Pagination Styling */
+        .dataTables_paginate {
+            padding-top: 1.5rem !important;
+        }
+
+        .pagination .page-item .page-link {
+            border: 1px solid #e2e8f0;
+            margin: 0 3px;
+            border-radius: 8px !important;
+            color: #64748b;
+            font-size: 0.85rem;
+            padding: 0.5rem 0.85rem;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .pagination .page-item:not(.active):hover .page-link {
+            background-color: #f1f5f9;
+            color: var(--primary-bg);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: #f8fafc;
+            border-color: #f1f5f9;
+        }
+
+
+        /* Form Styles */
+        /* --- CHROMEXA Premium Form Design --- */
+        .form-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Input with Icon Styles */
+        .input-group-icon {
+            position: relative;
+        }
+
+        .input-group-icon .form-control {
+            padding-left: 40px;
+        }
+
+        .input-group-icon .icon-front {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            z-index: 10;
+        }
+
+        .input-group-icon .icon-back {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .input-group-icon .icon-back:hover {
+            color: var(--accent-color);
+        }
+
+        .input-group-icon-right .form-control {
+            padding-right: 40px;
+        }
+
+        /* Regular Select Dropdown Options */
+        .form-select option {
+            padding: 8px 12px;
+        }
+
+        .form-select option:hover,
+        .form-select option:checked {
+            background-color: var(--accent-color) !important;
+            color: white !important;
+        }
+
+        /* --- Select2 Overrides --- */
+        .select2-container--default .select2-selection--single {
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            height: 42px !important;
+            padding-top: 6px;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+        }
+
+        /* Select2 Dropdown Search Box */
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 1rem !important;
+            outline: none !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+        }
+
+        /* Select2 Option Background */
+        .select2-container--default .select2-results__option--highlighted {
+            background-color: var(--accent-color) !important;
+        }
+
+        .select2-container--default .select2-results__option--selected {
+            background-color: var(--accent-color) !important;
+        }
+
+        .select2-container--default .select2-results__option {
+            padding: 8px 12px !important;
+        }
+
+        /* --- Custom File Upload --- */
+        .custom-file-input::-webkit-file-upload-button {
+            background: var(--primary-bg);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 12px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        /* --- Checkbox & Radio --- */
+        .form-check-input:checked {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .ck-editor__editable {
+            min-height: 250px !important;
+            /* Set height */
+            border-bottom-left-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+        }
+
+        .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+            border-color: #e2e8f0 !important;
+        }
+
+        .ck.ck-toolbar {
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+            background-color: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+        }
+
+
+        /* Image Layouts */
+        /* --- Image Layouts & Uploads --- */
+        .img-container-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        /* Base Shapes */
+        .img-square {
+            width: 100px;
+            height: 100px;
+            border-radius: 0px;
+            object-fit: cover;
+            border: 2px solid #f1f5f9;
+        }
+
+        .img-round {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f1f5f9;
+        }
+
+        .img-squircle {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 2px solid #f1f5f9;
+        }
+
+        /* Profile Upload with Icon Overlay */
+        .profile-upload-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            cursor: pointer;
+        }
+
+        .profile-upload-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: 0.3s;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            /* --primary-bg with opacity */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .profile-upload-wrapper:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .profile-upload-wrapper:hover img {
+            filter: blur(1px);
+        }
+
+        /* Drag and Drop Zone */
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            background: #f8fafc;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--accent-color);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Profile Section Styles */
+        /* --- CHROMEXA Profile Header Section --- */
+        .profile-header-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        /* The Banner Background */
+        .profile-cover-photo {
+            height: 240px;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--accent-color) 100%);
+            background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000&auto=format&fit=crop');
+            /* Placeholder cover */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .cover-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        /* User Identity Section (The Overlap) */
+        .profile-identity-wrapper {
+            padding: 0 2rem 2rem 2rem;
+            margin-top: -60px;
+            /* Pulls the avatar up onto the banner */
+            position: relative;
+            z-index: 5;
+        }
+
+        .profile-main-img {
+            width: 140px;
+            height: 140px;
+            border-radius: 20px;
+            /* Squircle */
+            border: 5px solid white;
+            object-fit: cover;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+
+        .user-meta-info {
+            margin-top: 1.5rem;
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-bg);
+            margin-bottom: 0.2rem;
+        }
+
+        .user-role {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Glass Stats Card */
+        .profile-data-grid {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .data-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .data-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary-bg);
+        }
+
+
+        /* Dashboard Widgets */
+        /* --- Dashboard Widgets --- */
+        .widget-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 100%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .widget-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- Analog Clock --- */
+        .clock-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .analog-clock {
+            width: 120px;
+            height: 120px;
+            border: 6px solid #f1f5f9;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .analog-clock .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            background: var(--primary-bg);
+            border-radius: 10px;
+        }
+
+        .hour-hand {
+            width: 4px;
+            height: 30%;
+            z-index: 3;
+        }
+
+        .min-hand {
+            width: 3px;
+            height: 40%;
+            z-index: 2;
+        }
+
+        .sec-hand {
+            width: 2px;
+            height: 45%;
+            background: var(--accent-color) !important;
+            z-index: 1;
+        }
+
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            z-index: 4;
+        }
+
+        /* --- Modern Mini Calendar --- */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+
+        .cal-day-head {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .cal-date {
+            font-size: 0.8rem;
+            padding: 6px 0;
+            border-radius: 8px;
+            color: #475569;
+            transition: 0.2s;
+        }
+
+        .cal-date.current {
+            background: var(--accent-color);
+            color: white;
+            font-weight: 700;
+        }
+
+        /* --- Notepad --- */
+        .notepad-area {
+            width: 100%;
+            border: none;
+            background: #fffbeb;
+            /* Light post-it note yellow */
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.9rem;
+            color: #92400e;
+            resize: none;
+            min-height: 150px;
+            outline: none;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
@@ -227,6 +887,7 @@
 
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
+    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="d-flex align-items-center">
@@ -237,26 +898,6 @@
 
         <div class="nav flex-column mt-2">
             <a href="#" class="nav-link"><i class="bi bi-grid-1x2 me-3"></i> Dashboard</a>
-
-            <a href="#master" class="nav-link" data-bs-toggle="collapse">
-                <i class="bi bi-hammer me-3"></i> Master <i class="bi bi-chevron-right arrow"></i>
-            </a>
-            <div class="collapse" id="master">
-                <ul class="submenu">
-                    <li><a href="#">Charts of Accounts</a></li>
-                    <li><a href="#">Area Feeding</a></li>
-                    <li><a href="#">Salesman Feeding</a></li>
-                    <li><a href="#">Transport Feeding</a></li>
-                    <li><a href="#">Company Feeding</a></li>
-                    <li><a href="#">Item Category</a></li>
-                    <li><a href="#">Item Feeding</a></li>
-                    <li><a href="#">Clients Feeding</a></li>
-                    <li><a href="#">Credit Voucher</a></li>
-                    <li><a href="#">Debit Voucher</a></li>
-                    <li><a href="#">Journal Voucher</a></li>
-                </ul>
-            </div>
-
             <a href="#transactions" class="nav-link" data-bs-toggle="collapse">
                 <i class="bi bi-cart3 me-3"></i> Transactions <i class="bi bi-chevron-right arrow"></i>
             </a>
@@ -270,48 +911,6 @@
                 </ul>
             </div>
 
-            <a href="#reports" class="nav-link" data-bs-toggle="collapse">
-                <i class="bi bi-flag me-3"></i>Reports <i class="bi bi-chevron-right arrow"></i>
-            </a>
-            <div class="collapse" id="reports">
-                <ul class="submenu">
-                    <li><a href="#">Account List</a></li>
-                    <li><a href="#">Cash Book</a></li>
-                    <li><a href="#">Ledger</a></li>
-                    <li><a href="#">Journal General</a></li>
-                    <li><a href="#">Purchase Report</a></li>
-                    <li><a href="#">Sales Report</a></li>
-                    <li><a href="#">Client Balance</a></li>
-                    <li><a href="#">Trial Balance</a></li>
-                    <li><a href="#">Tax Report</a></li>
-                    <li><a href="#">Citywise Report</a></li>
-                    <li><a href="#">Citywise Summary</a></li>
-                    <li><a href="#">Sales Summary</a></li>
-                    <li><a href="#">Category wise Summary</a></li>
-                    <li><a href="#">Aging Report</a></li>
-
-                </ul>
-            </div>
-
-            <a href="#stock" class="nav-link" data-bs-toggle="collapse">
-                <i class="bi bi-file-bar-graph me-3"></i> Stock <i class="bi bi-chevron-right arrow"></i>
-            </a>
-            <div class="collapse" id="stock">
-                <ul class="submenu">
-                    <li><a href="#">Daily Stock</a></li>
-                    <li><a href="#">Stock Summary</a></li>
-                </ul>
-            </div>
-
-            <a href="#Security" class="nav-link" data-bs-toggle="collapse">
-                <i class="bi bi-lock me-3"></i> Security <i class="bi bi-chevron-right arrow"></i>
-            </a>
-            <div class="collapse" id="Security">
-                <ul class="submenu">
-                    <li><a href="#">New User</a></li>
-                    <li><a href="#">User Permssion</a></li>
-                </ul>
-            </div>
 
             <!-- <a href="#" class="nav-link"><i class="bi bi-people me-3"></i> Customers</a> -->
             <a href="#" class="nav-link mt-auto"><i class="bi bi-gear me-3"></i> Settings</a>
@@ -319,6 +918,8 @@
     </div>
 
     <div class="main-content">
+
+        <!-- Header -->
         <header class="header d-flex justify-content-between align-items-center">
             <button class="btn btn-light d-lg-none" onclick="toggleSidebar()">
                 <i class="bi bi-list"></i>
@@ -328,10 +929,10 @@
                 <div class="dropdown">
                     <div class="d-flex align-items-center dropdown-toggle" data-bs-toggle="dropdown" role="button">
                         <div class="text-end me-2 d-none d-sm-block">
-                            <p class="mb-0 small fw-bold">John Doe</p>
-                            <p class="mb-0 text-muted" style="font-size: 0.7rem;">Admin Manager</p>
+                            <p class="mb-0 small fw-bold">Sadam Hussain Qureshi</p>
+                            <p class="mb-0 text-muted" style="font-size: 0.7rem;">Admin</p>
                         </div>
-                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff"
+                        <img src="https://ui-avatars.com/api/?name=Sadam+Hussain+Qureshi&background=6366f1&color=fff"
                             class="user-avatar" alt="User">
                     </div>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 p-2">
@@ -347,6 +948,7 @@
             </div>
         </header>
 
+        <!-- Breadcrumb -->
         <div class="breadcrumb-bar">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -357,7 +959,9 @@
             </nav>
         </div>
 
+        <!-- Main Content -->
         <main class="container-fluid p-4">
+            <!-- Stats Row -->
             <div class="row g-4 mb-4">
                 <div class="col-md-4">
                     <div class="stat-card">
@@ -382,48 +986,531 @@
                 </div>
             </div>
 
-            <div class="table-card p-4">
-                <h6 class="fw-bold mb-4">Recent Transactions</h6>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr style="font-size: 0.85rem;">
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Product</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody style="font-size: 0.9rem;">
-                            <tr>
-                                <td><span class="fw-bold">#POS-8842</span></td>
-                                <td>Jane Cooper</td>
-                                <td>Royal Satin - Sky Blue</td>
-                                <td>$142.00</td>
-                                <td><span class="badge bg-success-subtle text-success rounded-pill">Completed</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><span class="fw-bold">#POS-8841</span></td>
-                                <td>Guy Hawkins</td>
-                                <td>Weather Shield White</td>
-                                <td>$89.50</td>
-                                <td><span class="badge bg-warning-subtle text-warning rounded-pill">Pending</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- Table Container -->
+            <div class="dataTable-container mb-4">
+                <table id="chromexaTable" class="table dataTable w-100">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" style="width: 15px; height: 15px;" id="checkAll"></th>
+                            <th>S.No</th>
+                            <th>Name / Details</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" style="width: 15px; height: 15px;" class="row-select"></td>
+                            <td class="fw-bold">01</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="https://ui-avatars.com/api/?name=Sadam+Hussain&background=6366f1&color=fff"
+                                        class="table-img me-3">
+                                    <div>
+                                        <div class="fw-bold text-dark">Sadam Hussain Qureshi</div>
+                                        <div class="text-muted small">sadam@chromexa.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span
+                                    class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3">Active</span>
+                            </td>
+                            <td class="text-end">
+                                <div class="dropdown">
+                                    <button class="btn-table-action" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 rounded-3">
+                                        <li><a class="dropdown-item rounded-2" href="#"><i
+                                                    class="bi bi-eye me-2 text-primary"></i> View</a></li>
+                                        <li><a class="dropdown-item rounded-2" href="#"><i
+                                                    class="bi bi-pencil me-2 text-info"></i> Edit</a></li>
+                                        <li><a class="dropdown-item rounded-2" href="#"><i
+                                                    class="bi bi-printer me-2 text-secondary"></i> Print</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item rounded-2 text-danger" href="#"><i
+                                                    class="bi bi-trash me-2"></i> Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-card mb-4">
+                <h5 class="fw-bold mb-4 text-dark">Management Form</h5>
+                <form id="managementForm">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <label class="form-label">Full Name</label>
+                            <div class="input-group-icon">
+                                <span class="icon-front"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" placeholder="Enter name">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Contact Number</label>
+                            <div class="input-group-icon">
+                                <span class="icon-front"><i class="bi bi-telephone"></i></span>
+                                <input type="number" class="form-control" placeholder="03001234567">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Birth</label>
+                            <div class="input-group-icon">
+                                <span class="icon-front"><i class="bi bi-calendar"></i></span>
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">User Role</label>
+                            <select class="form-select">
+                                <option selected>Choose...</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Editor</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Tags (Select2)</label>
+                            <select class="form-select select2-init">
+                                <option value="HTML">HTML</option>
+                                <option value="CSS">CSS</option>
+                                <option value="JS">JavaScript</option>
+                                <option value="PHP">PHP</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Profile Image</label>
+                            <input type="file" class="form-control custom-file-input">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Email</label>
+                            <div class="input-group-icon">
+                                <i class="bi bi-envelope icon-front"></i>
+                                <input type="email" class="form-control" placeholder="Enter email">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Password</label>
+                            <div class="input-group-icon input-group-icon-right">
+                                <input type="password" class="form-control" id="passwordField"
+                                    placeholder="Enter password">
+                                <i class="bi bi-eye icon-back" id="togglePassword"></i>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="d-flex gap-4">
+                                <div>
+                                    <label class="form-label d-block">Notifications</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="chk1">
+                                        <label class="form-check-label small" for="chk1">Email Alerts</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="form-label d-block">Gender</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="gender" id="r1">
+                                            <label class="form-check-label small" for="r1">Male</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="gender" id="r2">
+                                            <label class="form-check-label small" for="r2">Female</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Brief Summary</label>
+                            <textarea class="form-control" rows="3" placeholder="Write something..."></textarea>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Detailed Content (CKEditor 5)</label>
+                            <div id="editor">
+                                <p>Start typing professional content here...</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <button type="submit" class="btn btn-primary px-4 py-2"
+                                style="background-color: var(--accent-color); border:none;">
+                                <i class="bi bi-check-circle me-2"></i>Save Record
+                            </button>
+                            <button type="reset" class="btn btn-light px-4 py-2 ms-2">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Image Upload Section -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="img-container-card">
+                        <h6 class="form-label mb-3">Image Variations</h6>
+                        <div class="d-flex gap-4 align-items-center">
+                            <div class="text-center">
+                                <img src="https://ui-avatars.com/api/?name=S+Q&background=0f172a&color=fff"
+                                    class="img-square mb-2">
+                                <div class="small text-muted">Square</div>
+                            </div>
+                            <div class="text-center">
+                                <img src="https://ui-avatars.com/api/?name=S+Q&background=6366f1&color=fff"
+                                    class="img-squircle mb-2">
+                                <div class="small text-muted">Squircle</div>
+                            </div>
+                            <div class="text-center">
+                                <img src="https://ui-avatars.com/api/?name=S+Q&background=f1f5f9&color=6366f1"
+                                    class="img-round mb-2">
+                                <div class="small text-muted">Circle</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="img-container-card h-100">
+                        <h6 class="form-label mb-3">Profile Picture (Hover to Change)</h6>
+                        <div class="profile-upload-wrapper mx-auto"
+                            onclick="document.getElementById('profileInput').click()">
+                            <img id="profilePreview"
+                                src="https://ui-avatars.com/api/?name=Sadam+Hussain&background=0f172a&color=fff">
+                            <div class="upload-overlay">
+                                <i class="bi bi-camera fs-4"></i>
+                            </div>
+                            <input type="file" id="profileInput" hidden accept="image/*"
+                                onchange="previewProfile(this)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="img-container-card">
+                        <h6 class="form-label mb-3">Gallery Upload (Drag & Drop)</h6>
+                        <div class="drop-zone" id="dropZone" onclick="document.getElementById('galleryInput').click()">
+                            <i class="bi bi-cloud-arrow-up fs-1 text-muted mb-2"></i>
+                            <p class="mb-0 fw-bold">Drag and drop images here or click to upload</p>
+                            <p class="text-muted small">Supports JPG, PNG (Max 5MB)</p>
+                            <input type="file" id="galleryInput" hidden multiple accept="image/*"
+                                onchange="handleFiles(this.files)">
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div id="previewContainer" class="preview-container"></div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="clearGallery()" id="clearBtn"
+                                style="display:none;">
+                                <i class="bi bi-trash me-1"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Profile section  -->
+            <div class="profile-header-container mb-4">
+                <div class="profile-cover-photo">
+                    <div class="cover-overlay"></div>
+                </div>
+
+                <div class="profile-identity-wrapper">
+                    <div class="d-md-flex align-items-end justify-content-between">
+                        <div class="d-md-flex align-items-end gap-4">
+                            <div class="position-relative">
+                                <img src="https://ui-avatars.com/api/?name=Sadam+Hussain&background=6366f1&color=fff"
+                                    class="profile-main-img" alt="User Avatar">
+                            </div>
+                            <div class="user-meta-info">
+                                <h2 class="user-name">Sadam Hussain Qureshi</h2>
+                                <span class="user-role"><i class="bi bi-patch-check-fill text-primary me-2"></i>Senior
+                                    Web Developer & Admin</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 mt-md-0">
+                            <button class="btn btn-primary px-4 py-2"
+                                style="background-color: var(--accent-color); border:none;">
+                                <i class="bi bi-pencil me-2"></i>Edit Profile
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-data-grid">
+                        <div class="data-item">
+                            <span class="data-label">Total Projects</span>
+                            <span class="data-value">48 Completed</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Account Type</span>
+                            <span class="data-value">Super Admin</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Location</span>
+                            <span class="data-value">Hyderabad, PK</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Member Since</span>
+                            <span class="data-value">April 2024</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Status</span>
+                            <span class="data-value text-success">● Verified</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Dashboard Widgets -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="widget-card text-center">
+                        <div class="widget-title"><span>Time & Status</span><i class="bi bi-clock"></i></div>
+                        <div class="clock-wrapper">
+                            <div class="analog-clock">
+                                <div class="clock-center"></div>
+                                <div class="hand hour-hand" id="hourHand"></div>
+                                <div class="hand min-hand" id="minHand"></div>
+                                <div class="hand sec-hand" id="secHand"></div>
+                            </div>
+                        </div>
+                        <h5 class="mt-3 mb-0 fw-bold" id="digitalTime">00:00:00</h5>
+                        <p class="text-muted small" id="todayDate">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="widget-card">
+                        <div class="widget-title"><span>Calendar</span><i class="bi bi-calendar3"></i></div>
+                        <div class="calendar-grid" id="calendarGrid">
+                            <div class="cal-day-head">MO</div>
+                            <div class="cal-day-head">TU</div>
+                            <div class="cal-day-head">WE</div>
+                            <div class="cal-day-head">TH</div>
+                            <div class="cal-day-head">FR</div>
+                            <div class="cal-day-head">SA</div>
+                            <div class="cal-day-head">SU</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="widget-card">
+                        <div class="widget-title">
+                            <span>Quick Notepad</span>
+                            <span class="badge bg-warning-subtle text-warning">Auto-saving</span>
+                        </div>
+                        <textarea id="adminNote" class="notepad-area"
+                            placeholder="Type your quick reminders here..."></textarea>
+                        <div class="text-end mt-2">
+                            <small class="text-muted" style="font-size: 0.7rem;">Stored locally in browser</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         function toggleSidebar() {
             document.getElementById("sidebar").classList.toggle("active");
             document.getElementById("overlay").classList.toggle("active");
         }
+
+        // DataTable Initialization
+        $(document).ready(function () {
+            $('#chromexaTable').DataTable({
+                // dom: defines where the Search(f), Length(l), Table(t), Info(i), and Pagination(p) go
+                dom: '<"d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4"fl>rt<"d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4"ip>',
+                language: {
+                    // Customizing text to be cleaner
+                    search: "",
+                    searchPlaceholder: "Search records...",
+                    lengthMenu: "Show _MENU_",
+                    paginate: {
+                        previous: '<i class="bi bi-chevron-left"></i>',
+                        next: '<i class="bi bi-chevron-right"></i>'
+                    }
+                },
+                // Apply Bootstrap 5 classes to the table elements
+                renderer: "bootstrap"
+            });
+
+            // Handle Select All
+            $('#checkAll').on('click', function () {
+                $('.row-select').prop('checked', this.checked);
+            });
+        });
+
+        // Form submission
+        $(document).ready(function () {
+            // Initialize Select2
+            $('.select2-init').select2({
+                width: '100%',
+                placeholder: "Select an option"
+            });
+
+            // Initialize CKEditor 5
+            if (typeof ClassicEditor !== 'undefined') {
+                ClassicEditor
+                    .create(document.querySelector('#editor'), {
+                        licenseKey: 'GPL'
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
+            // Toggle Password Visibility
+            $('#togglePassword').on('click', function () {
+                const passwordField = $('#passwordField');
+                const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+                passwordField.attr('type', type);
+                $(this).toggleClass('bi-eye bi-eye-slash');
+            });
+        });
+
+
+        // Profile Image Preview
+        function previewProfile(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = e => document.getElementById('profilePreview').src = e.target.result;
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Drag and Drop Gallery Logic
+        const dropZone = document.getElementById('dropZone');
+        const previewContainer = document.getElementById('previewContainer');
+        const clearBtn = document.getElementById('clearBtn');
+
+        // Prevent defaults for drag/drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+        });
+
+        dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over'));
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            dropZone.classList.remove('drag-over');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        function handleFiles(files) {
+            const fileList = Array.from(files);
+            if (fileList.length > 0) clearBtn.style.display = 'block';
+
+            fileList.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.className = 'preview-item';
+                    div.innerHTML = `
+                <img src="${e.target.result}">
+                <button class="remove-btn" onclick="this.parentElement.remove(); checkEmpty();">×</button>
+            `;
+                    previewContainer.appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function clearGallery() {
+            previewContainer.innerHTML = '';
+            clearBtn.style.display = 'none';
+        }
+
+        function checkEmpty() {
+            if (previewContainer.children.length === 0) clearBtn.style.display = 'none';
+        }
+
+
+
+        // Dashboard Widgets
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- 1. Analog Clock Logic ---
+            function updateClock() {
+                const now = new Date();
+                const seconds = now.getSeconds();
+                const minutes = now.getMinutes();
+                const hours = now.getHours();
+
+                const secDeg = (seconds / 60) * 360;
+                const minDeg = (minutes / 60) * 360 + (seconds / 60) * 6;
+                const hourDeg = (hours / 12) * 360 + (minutes / 60) * 30;
+
+                document.getElementById('secHand').style.transform = `translateX(-50%) rotate(${secDeg}deg)`;
+                document.getElementById('minHand').style.transform = `translateX(-50%) rotate(${minDeg}deg)`;
+                document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+
+                document.getElementById('digitalTime').innerText = now.toLocaleTimeString([], { hour12: true });
+                document.getElementById('todayDate').innerText = now.toDateString();
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // --- 2. Mini Calendar Generation ---
+            function generateCalendar() {
+                const grid = document.getElementById('calendarGrid');
+                const now = new Date();
+                const currentDay = now.getDate();
+                const month = now.getMonth();
+                const year = now.getFullYear();
+
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                // Adjust for Monday start (standard in many regions)
+                let startPos = firstDay === 0 ? 6 : firstDay - 1;
+
+                // Blank spaces for previous month
+                for (let i = 0; i < startPos; i++) {
+                    const empty = document.createElement('div');
+                    grid.appendChild(empty);
+                }
+
+                // Current Month Days
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateDiv = document.createElement('div');
+                    dateDiv.className = d === currentDay ? 'cal-date current' : 'cal-date';
+                    dateDiv.innerText = d;
+                    grid.appendChild(dateDiv);
+                }
+            }
+            generateCalendar();
+
+            // --- 3. Notepad Persistent Logic ---
+            const noteArea = document.getElementById('adminNote');
+            // Load existing note
+            noteArea.value = localStorage.getItem('chromexa_note') || "";
+
+            // Save on every keystroke
+            noteArea.addEventListener('input', function () {
+                localStorage.setItem('chromexa_note', this.value);
+            });
+        });
     </script>
 </body>
 
