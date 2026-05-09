@@ -1,961 +1,1725 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ClientWise</title>
-    <link rel="icon" href="assets/images/logo/logo.png" type="image/x-icon">
+    <link rel="icon" href="https://i.pravatar.cc/32" type="image/x-icon" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.bootstrap5.css">
-
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <!-- Sweet Alert -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.17/dist/sweetalert2.min.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.quilljs.com/1.3.7/quill.snow.css"
+      rel="stylesheet"
+    />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-        :root {
-            --primary-color: #1373bb;
-            /* Original primary color */
-            --secondary-color: #0b5e94;
-            /* Darker shade for hover/active */
-            --text-color: #fff;
-            --body-bg: #f5f7fa;
-            /* Brighter, cleaner background */
-            --card-bg: #ffffff;
-            --border-color: #e0e6ed;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.08);
-            --transition: all 0.2s ease;
-        }
+      :root {
+        --primary-color: #1373bb;
+        --secondary-color: #0b5e94;
+        --body-bg: #f5f7fa;
+        --card-bg: #ffffff;
+        --border-color: #e0e6ed;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+        --shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.08);
+        --transition: all 0.2s ease;
+      }
+      /* Custom Overrides for Bootstrap Classes */
+      .btn-primary {
+        background-color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+      }
 
-        /* --- Utility Classes --- */
-        .primary-color {
-            color: var(--primary-color);
-        }
+      .btn-primary:hover {
+        background-color: var(--secondary-color) !important;
+      }
 
-        .text-color {
-            color: var(--text-color);
-        }
+      .text-primary {
+        color: var(--primary-color) !important;
+      }
+      body {
+        background: var(--body-bg);
+        font-family: "Poppins", sans-serif;
+        color: #333;
+        overflow-x: hidden;
+      }
 
-        .primary-background-color {
-            background-color: var(--primary-color);
-        }
+      /* --- Sidebar --- */
+      .sidebar {
+        width: 280px;
+        height: 100vh;
+        background: var(--card-bg);
+        position: fixed;
+        top: 0;
+        left: 0;
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+      }
 
-        .primary-background-color:hover {
-            background-color: var(--primary-color);
-        }
+      .sidebar-logo {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 25px;
+        font-weight: 800;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--primary-color);
+        font-size: 22px;
+      }
 
-        /* --- Base Styles --- */
-        body {
-            background: var(--body-bg);
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            color: #333;
-            /* Default text color for body */
-        }
+      .menu {
+        list-style: none;
+        padding: 15px 0;
+        margin: 0;
+      }
+      .menu li a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 25px;
+        color: #555;
+        text-decoration: none;
+        font-weight: 500;
+        border-left: 3px solid transparent;
+        transition: var(--transition);
+      }
 
-        /* Card CSS - Modernized */
-        .card {
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            /* Smoother corners */
-            box-shadow: var(--shadow-sm);
-            /* Subtle lift */
-            transition: var(--transition);
-        }
+      .menu li a:hover,
+      .has-submenu.open > a {
+        background: var(--body-bg);
+        color: var(--primary-color);
+        border-left-color: var(--primary-color);
+      }
 
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-        }
+      .submenu {
+        list-style: none;
+        padding-left: 55px;
+        background: #fcfcfc;
+        display: none;
+      }
 
+      .has-submenu.open .submenu {
+        display: block;
+      }
+      .has-submenu.open > a .bi-chevron-down {
+        transform: rotate(180deg);
+      }
 
-        /* =====================
-   TOP NAVBAR (Header)
-===================== */
-        .top-navbar {
-            height: 60px;
-            /* Slightly taller */
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            padding: 0 25px;
-            /* More padding */
-            position: sticky;
-            /* Stickier top */
-            top: 0;
-            z-index: 900;
-            box-shadow: var(--shadow-sm);
-        }
+      /* --- Layout --- */
+      .page-wrapper {
+        min-height: 100vh;
+        margin-left: 280px;
+        display: flex;
+        flex-direction: column;
+      }
 
-        /* Left side (mobile only) */
-        .navbar-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+      .top-navbar {
+        height: 60px;
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        padding: 0 25px;
+        position: sticky;
+        top: 0;
+        z-index: 900;
+      }
 
-        .navbar-left .btn {
-            font-size: 24px;
-            /* Larger icon */
-            color: var(--primary-color);
-            outline: none;
-            border: none;
-            background: transparent;
-        }
+      .profile-toggle img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid var(--primary-color);
+      }
 
-        /* Brand */
-        .brand {
-            font-weight: 700;
-            font-size: 20px;
-            /* Larger brand */
-            color: var(--primary-color);
-            letter-spacing: -0.5px;
-        }
+      .content {
+        padding: 30px;
+        flex: 1;
+      }
 
-        /* Right side */
-        .navbar-right {
-            display: flex;
-            align-items: center;
-        }
+      .main-footer {
+        background: var(--card-bg);
+        border-top: 1px solid var(--border-color);
+        padding: 15px 30px;
+        font-size: 14px;
+      }
 
-        /* Profile dropdown */
-        .profile-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: #555;
-            padding: 5px 10px;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-
-        .profile-toggle:hover {
-            background: #f1f1f1;
-        }
-
-        .profile-toggle img {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);
-            /* Highlight profile image */
-        }
-
-        .profile-toggle i {
-            font-size: 14px;
-        }
-
-        .dropdown-menu {
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .dropdown-item {
-            font-size: 15px;
-            padding: 8px 16px;
-            transition: var(--transition);
-        }
-
-        .dropdown-item:active {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-        }
-
-
-        /* =====================
-   SIDEBAR - Unique Modern Look
-===================== */
+      /* --- Mobile --- */
+      @media (max-width: 768px) {
         .sidebar {
-            width: 280px;
-            /* Slightly wider */
-            height: 100vh;
-            background: var(--card-bg);
-            /* Use white for a lighter feel */
-            position: fixed;
-            top: 0;
-            left: 0;
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            /* Smoother transition */
-            box-shadow: var(--shadow-lg);
-            /* Add shadow for depth */
+          transform: translateX(-100%);
         }
-
-        /* Sidebar Logo */
-        .sidebar-logo {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            padding: 0 25px;
-            font-weight: 800;
-            border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0;
-            color: var(--primary-color);
-            font-size: 22px;
+        body.sidebar-open .sidebar {
+          transform: translateX(0);
+          box-shadow: var(--shadow-lg);
         }
-
-        /* Sidebar Menu */
-        .sidebar-menu {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .menu {
-            list-style: none;
-            padding: 15px 0;
-            /* More vertical padding */
-            margin: 0;
-        }
-
-        .menu li a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 25px;
-            color: #555;
-            /* Darker text for white background */
-            text-decoration: none;
-            font-weight: 500;
-            border-left: 3px solid transparent;
-            /* Menu border indicator */
-            transition: var(--transition);
-        }
-
-        .menu li a:hover {
-            background: var(--body-bg);
-            color: var(--primary-color);
-            border-left-color: var(--primary-color);
-        }
-
-        .menu li a i {
-            font-size: 20px;
-        }
-
-        /* Submenu */
-        .submenu {
-            list-style: none;
-            padding-left: 50px;
-            /* Adjusted padding */
-            padding-top: 5px;
-            padding-bottom: 5px;
-            background: #fcfcfc;
-            /* Slight contrast for submenu */
-            display: none;
-        }
-
-        .submenu li a {
-            padding: 8px 0;
-            border-left: none;
-            font-size: 14px;
-        }
-
-        .submenu li a:hover {
-            border-left: none;
-            color: var(--secondary-color);
-        }
-
-        .has-submenu.open .submenu {
-            display: block;
-        }
-
-        .has-submenu.open>a {
-            background: var(--body-bg);
-            color: var(--primary-color);
-            border-left-color: var(--primary-color);
-        }
-
-        .has-submenu.open>a .bi-chevron-down {
-            transform: rotate(180deg);
-            transition: transform 0.3s ease;
-        }
-
-        .has-submenu>a .bi-chevron-down {
-            transition: transform 0.3s ease;
-        }
-
-        /* Scrollbar */
-        .sidebar-menu::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar-menu::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 3px;
-        }
-
-        /* =====================
-   PAGE LAYOUT (IMPORTANT)
-===================== */
         .page-wrapper {
-            min-height: 100vh;
-            margin-left: 280px;
-            /* sidebar space */
-            display: flex;
-            flex-direction: column;
+          margin-left: 0;
         }
-
-        /* Breadcrumb Card - Modernized */
-        .card-breadcrumb {
-            background: transparent;
-            border: none;
-            border-radius: 0;
-            padding: 0 30px 0;
-            /* Align with content padding */
-        }
-
-        .breadcrumb {
-            padding: 10px 15px;
-            background: var(--card-bg);
-            border-radius: 8px !important;
-            border: 1px solid var(--border-color);
-        }
-
-        .breadcrumb-item {
-            font-size: 14px;
-        }
-
-        .breadcrumb-item a {
-            color: #6c757d;
-            transition: color 0.2s ease;
-        }
-
-        .breadcrumb-item a:hover {
-            color: var(--primary-color);
-        }
-
-        .breadcrumb-item.active {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-
-        /* Main Content */
-        .content {
-            flex: 1;
-            padding: 30px;
-            padding-top: 0;
-            /* Remove top padding since breadcrumb is outside */
-        }
-
-        /* =====================
-   FOOTER (MAIN PAGE)
-===================== */
-        .main-footer {
-            background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            padding: 15px 30px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* Footer Links */
-        .footer-links a {
-            margin-left: 15px;
-            text-decoration: none;
-            color: #666;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary-color);
-            text-decoration: underline;
-        }
-
-        /* =====================
-   OVERLAY
-===================== */
         #overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            /* Slightly darker for better contrast */
-            display: none;
-            z-index: 900;
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: none;
+          z-index: 950;
         }
-
-        /* =====================
-   MOBILE (<= 768px)
-===================== */
-        @media (max-width: 768px) {
-
-            .sidebar {
-                transform: translateX(-100%);
-                box-shadow: none;
-                /* No shadow when hidden */
-            }
-
-            body.sidebar-open .sidebar {
-                transform: translateX(0);
-                box-shadow: var(--shadow-lg);
-                /* Shadow when open */
-            }
-
-            body.sidebar-open #overlay {
-                display: block;
-            }
-
-            .page-wrapper {
-                margin-left: 0;
-            }
-
-            .top-navbar {
-                padding: 0 15px;
-            }
-
-            .content {
-                padding: 20px;
-                padding-top: 0;
-            }
-
-            .card-breadcrumb {
-                padding: 0 20px 0;
-            }
-
-            .main-footer {
-                padding: 12px 20px;
-            }
+        body.sidebar-open #overlay {
+          display: block;
         }
+      }
 
-        /* Dashboard Kit Style  */
-        .card-box:hover {
-            transform: translateY(-10px);
-            transition: all .5s;
+      /* DASHBOARD CARD CSS START */
+      .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+      }
+
+      .counter-value {
+        letter-spacing: -1px;
+        color: #2d3436;
+      }
+
+      .icon-circle {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+      }
+
+      .card:hover .icon-circle {
+        transform: scale(1.1);
+      }
+
+      /* DASHBOARD CARD CSS END */
+
+      /* DATATABLE CSS START */
+      /* Table Header Styling */
+      #customerTable thead th {
+        background-color: #f8f9fa;
+        color: #555;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        border-top: none;
+      }
+
+      /* Action Dropdown Styling */
+      .dropdown-item {
+        font-size: 14px;
+        padding: 8px 16px;
+        transition: var(--transition);
+      }
+
+      .dropdown-item i {
+        width: 20px;
+      }
+
+      .dropdown-item:hover {
+        background-color: var(--body-bg);
+      }
+
+      /* Image styling */
+      .rounded-circle {
+        object-fit: cover;
+      }
+
+      /* Style the 'Show [10] entries' dropdown */
+      .dataTables_length select {
+        border: 1px solid #dee2e6 !important;
+        border-radius: 4px !important;
+        padding: 2px 5px !important;
+        color: #1373bb !important; /* Brand Blue for the number */
+        font-weight: 600;
+      }
+
+      .dataTables_length select:focus {
+        outline: none;
+        border-color: #1373bb !important;
+      }
+
+      /* Style the 'Showing 1 to 10 of 50 entries' text */
+      .dataTables_info {
+        color: #6c757d !important;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      /* Style the Pagination Buttons */
+      .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: #1373bb !important; /* Your Brand Blue */
+        color: white !important;
+        border: 1px solid #1373bb !important;
+        border-radius: 4px;
+      }
+
+      .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: #f8f9fa !important;
+        color: #1373bb !important;
+        border: 1px solid #dee2e6 !important;
+      }
+
+      /* DATATABLE CSS END */
+
+      /* FORM INPUT CSS START */
+
+      /* Form Control Overrides */
+      .form-control,
+      .form-select,
+      .input-group-text {
+        border-color: #e0e6ed;
+        padding: 0.6rem 0.9rem;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(19, 115, 187, 0.15);
+      }
+
+      .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      /* Select2 Custom Styling */
+      .select2-container--default .select2-selection--single {
+        height: 42px;
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
+        padding-top: 5px;
+      }
+
+      .select2-container--default
+        .select2-results__option--highlighted[aria-selected] {
+        background-color: var(--primary-color) !important;
+      }
+
+      /* Label Styling */
+      .form-label {
+        color: #4b5563;
+        font-size: 0.9rem;
+      }
+
+      /* Quill Editor Styling */
+      .ql-toolbar.ql-snow {
+        border: 1px solid #e0e6ed !important;
+        border-radius: 8px 8px 0 0 !important;
+        background: #f8f9fa !important;
+      }
+
+      .ql-container.ql-snow {
+        border: 1px solid #e0e6ed !important;
+        border-top: none !important;
+        border-radius: 0 0 8px 8px !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 14px !important;
+        min-height: 300px;
+      }
+
+      .ql-editor {
+        min-height: 300px;
+      }
+
+      .ql-toolbar.ql-snow .ql-stroke {
+        stroke: #6b7280 !important;
+      }
+
+      .ql-toolbar.ql-snow .ql-fill {
+        fill: #6b7280 !important;
+      }
+
+      .ql-toolbar.ql-snow button:hover .ql-stroke {
+        stroke: #1373bb !important;
+      }
+
+      .ql-toolbar.ql-snow button:hover .ql-fill {
+        fill: #1373bb !important;
+      }
+
+      .ql-toolbar.ql-snow .ql-active .ql-stroke {
+        stroke: #1373bb !important;
+      }
+
+      .ql-toolbar.ql-snow .ql-active .ql-fill {
+        fill: #1373bb !important;
+      }
+
+      .ql-snow .ql-picker.ql-expanded .ql-picker-label {
+        color: #1373bb !important;
+      }
+
+      .ql-snow .ql-picker.ql-expanded .ql-picker-options {
+        background: #fff;
+        border: 1px solid #e0e6ed;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .ql-snow .ql-picker-options .ql-picker-item:hover {
+        color: #1373bb !important;
+      }
+
+      .ql-editor.ql-blank::before {
+        color: #9ca3af !important;
+        font-style: normal !important;
+      }
+
+      .ql-container.ql-snow:focus-within {
+        border-color: #1373bb !important;
+        box-shadow: 0 0 0 0.2rem rgba(19, 115, 187, 0.1);
+      }
+
+      /* Black outline on the search field inside the dropdown */
+      .select2-container--default
+        .select2-search--dropdown
+        .select2-search__field:focus {
+        outline: none;
+        border: 1px solid var(--primary-color) !important; /* High contrast black */
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Ensure the main selection box also has a clean look */
+      .select2-container--default .select2-selection--single:focus {
+        outline: none;
+        border-color: #1373bb !important;
+      }
+      /* FORM INPUT CSS END */
+
+      /* IMAGE LAYOUT CSS START */
+      /* Banner Styling */
+      .banner-container {
+        position: relative;
+        height: 250px;
+        background: #eee;
+      }
+      .banner-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .banner-overlay {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+
+      /* Skeleton Animation */
+      .skeleton {
+        background: #e1e9ee;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+      }
+      .skeleton-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+      }
+      .skeleton-text {
+        height: 15px;
+        margin-bottom: 10px;
+      }
+      @keyframes skeleton-loading {
+        0% {
+          background-position: 200% 0;
         }
-
-        .icon-box {
-            border-radius: 50%;
+        100% {
+          background-position: -200% 0;
         }
+      }
 
-        .table-card .card-header {
-            background-color: transparent;
-            display: flex;
+      /* File Upload Zone */
+      .upload-area {
+        border: 2px dashed #dee2e6;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      .upload-area:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(19, 115, 187, 0.02);
+      }
+      .border-dashed {
+        border-style: dashed !important;
+      }
+
+      /* Image Thumbnails */
+      .img-thumbnail {
+        padding: 0.25rem;
+        border: 1px solid #dee2e6;
+      }
+
+      /* IMAGE LAYOUT CSS END */
+
+      /* PROFILE SECTION CSS START */
+      /* Banner Heights */
+      .profile-banner {
+        height: 220px;
+        position: relative;
+      }
+
+      .banner-edit-btn {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+      }
+
+      /* Avatar "Pop" Effect */
+      .profile-avatar-wrapper {
+        position: relative;
+        margin-top: -75px; /* Pulls image up over banner */
+        z-index: 5;
+      }
+
+      .profile-img {
+        width: 150px;
+        height: 150px;
+        border: 5px solid #fff;
+        border-radius: 20px; /* Modern "Squircle" shape */
+        object-fit: cover;
+        background: #fff;
+      }
+
+      /* Fancy Stats Background */
+      .fancy-stats-card {
+        background: rgba(19, 115, 187, 0.05); /* 5% of your Brand Blue */
+        border: 1px solid rgba(19, 115, 187, 0.1);
+      }
+
+      .font-xs {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .profile-header-stack {
+          flex-direction: column;
+          align-items: center !important;
+          text-align: center;
         }
-
-        /* Tables Pagination  */
-        /* Card */
-        .table-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        .profile-avatar-wrapper {
+          margin-top: -60px;
         }
-
-        .table-card .card-header {
-            background: #fff;
-            border-bottom: 1px solid #eee;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .ms-auto {
+          margin-left: 0 !important;
+          margin-top: 15px;
         }
+      }
+      /* PROFILE SECTION CSS END */
 
-        /* Table */
-        #example.dataTable thead th {
-            background: #f8f9fa;
-            font-weight: 600;
-            white-space: nowrap;
-        }
+      /* DASHBOARD CALANDER, CLOCK AND TODO CSS START */
+      /* ANALOG CLOCK STYLING */
+      .analog-clock {
+        width: 120px;
+        height: 120px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        position: relative;
+        background: rgba(255, 255, 255, 0.1);
+      }
 
-        #example.dataTable tbody tr:hover {
-            background-color: #f9fbff;
-        }
+      .hour-hand,
+      .min-hand,
+      .second-hand {
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        transform-origin: bottom;
+        border-radius: 10px;
+        background: white;
+      }
 
-        /* DataTables controls */
-        #example_wrapper .dataTables_filter input,
-        #example_wrapper .dataTables_length select {
-            border-radius: 8px;
-        }
+      .hour-hand {
+        width: 4px;
+        height: 30%;
+        z-index: 3;
+      }
+      .min-hand {
+        width: 3px;
+        height: 40%;
+        z-index: 2;
+      }
+      .second-hand {
+        width: 1px;
+        height: 45%;
+        background: #ff4757;
+        z-index: 1;
+      }
 
-        #example_wrapper .paginate_button.current {
-            background: #0d6efd !important;
-            color: #fff !important;
-            border-color: #0d6efd !important;
-        }
+      .center-dot {
+        width: 8px;
+        height: 8px;
+        background: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        z-index: 4;
+      }
 
-        /* Dropdown */
-        .dropdown-menu {
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-        }
+      /* TODO LIST HOVER DELETE */
+      .todo-item .delete-task {
+        display: none;
+        cursor: pointer;
+      }
+      .todo-item:hover .delete-task {
+        display: block;
+      }
+      .todo-item {
+        border-bottom: 1px solid #f8f9fa !important;
+      }
 
-        /* =============================
-   DataTables Info (Entries Text)
-============================= */
-        .dt-info {
-            font-size: 0.9rem;
-            color: #495057;
-            padding: 4px 8px;
-        }
-
-        /* Make the info responsive */
-        @media (max-width: 768px) {
-            .dt-info {
-                text-align: center;
-                margin-bottom: 8px;
-            }
-        }
-
-        /* =============================
-   Pagination Container
-============================= */
-        .dt-paging nav[aria-label="pagination"] {
-            display: flex;
-            justify-content: center;
-        }
-
-        /* Pagination buttons (pill style) */
-        .dt-paging .pagination .page-link {
-            border: 1px solid #ddd;
-            border-radius: 50px;
-            padding: 6px 14px;
-            margin: 0 3px;
-            background-color: #fff;
-            color: #495057;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        /* Hover effect */
-        .dt-paging .pagination .page-link:hover {
-            background-color: #f1f3f5;
-            border-color: #bbb;
-            color: #212529;
-        }
-
-        /* Active page */
-        .dt-paging .pagination .page-item.active .page-link {
-            background: #0d6efd;
-            color: #fff;
-            border-color: #0d6efd;
-            font-weight: 600;
-        }
-
-        /* Disabled buttons */
-        .dt-paging .pagination .page-item.disabled .page-link {
-            background-color: #f8f9fa;
-            color: #adb5bd;
-            cursor: not-allowed;
-        }
-
-        /* First / Last / Previous / Next special buttons */
-        .dt-paging .page-link.first,
-        .dt-paging .page-link.last,
-        .dt-paging .page-link.previous,
-        .dt-paging .page-link.next {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-
-        /* Optional subtle shadow */
-        .dt-paging .pagination .page-link {
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Responsive stacking for small screens */
-        @media (max-width: 768px) {
-            .row.justify-content-between {
-                flex-direction: column;
-                gap: 8px;
-                align-items: center;
-            }
-        }
-
-
-
-
-        /* Admin Dashboard Card CSS  */
-        /* Custom styles for the modern cards */
-        .modern-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(220, 220, 220, 0.4);
-            border-radius: 12px;
-            background-color: #fff;
-        }
-
-        .modern-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .icon-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-
-        .card-title-text {
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 0.05em;
-            color: #777;
-        }
-
-        .card-value {
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: #333;
-        }
-
-        .card-header {
-            background-color: transparent;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .formSubmitButtonRow {
-            display: flex;
-            justify-content: end;
-            align-items: center;
-        }
-
-
-        .custom-select-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-
-
-        /* Profile Page CSS */
-        .profile-card {
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 900px;
-            margin: 50px auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        }
-
-        .avatar-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 25px;
-            /* Adding a subtle border for emphasis */
-            border: 4px solid var(--primary-color);
-            border-radius: 50%;
-            padding: 5px;
-            /* Space between border and image */
-        }
-
-        .profile-img {
-            width: 130px;
-            /* Slightly larger image */
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            /* Important for alignment */
-        }
-
-        .edit-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            /* Use primary color */
-            color: #fff;
-            position: absolute;
-            bottom: 0px;
-            /* Aligned to bottom edge */
-            right: 0px;
-            /* Aligned to right edge */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            cursor: pointer;
-            /* Modern icon style */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: background 0.3s ease;
-        }
-
-        .edit-avatar:hover {
-            background: var(--secondary-color);
-        }
-
-        /* Modern Form Controls */
-        .form-control,
-        .form-select {
-            border-radius: 10px;
-            /* Slightly smaller radius for controls */
-            padding: 14px 18px;
-            /* More vertical padding */
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.25);
-            /* Primary color focus ring */
-        }
-
-        .form-label {
-            font-weight: 600;
-            /* Bolder labels */
-            margin-bottom: 8px;
-            color: #555;
-        }
-
-
-        .edit-avatar input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
+      /* ADMIN CALANDER , TODO, CLOCK CSS END */
     </style>
-</head>
+  </head>
 
-<body>
-
-    <nav class="top-navbar">
-        <div class="navbar-left d-md-none">
-            <button class="btn" onclick="toggleSidebar()">
-                <i class="bi bi-list"></i>
-            </button>
-            <span class="brand">ClientWise</span>
-        </div>
-
-        <div class="navbar-right ms-auto">
-            <div class="dropdown">
-                <a href="#" class="profile-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://i.pravatar.cc/40" alt="Profile">
-                    <span class="d-none d-md-inline fw-semibold">Sadam Qureshi</span>
-                    <i class="bi bi-chevron-down"></i>
-                </a>
-
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="profile.php">Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item text-danger" href="">
-                            <i class="bi bi-box-arrow-right me-2"></i>Logout
-                        </a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-
-    <aside class="sidebar">
-        <div class="sidebar-logo">ClientWise</div>
-
-        <div class="sidebar-menu">
-            <ul class="menu">
-                <li>
-                    <a href="DashboardKit.php">
-                        <i class="bi bi-house-door-fill"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="has-submenu">
-                    <a href="javascript:void(0)" onclick="toggleSubmenu(this)">
-                        <i class="bi bi-people-fill"></i>
-                        <span>Customers</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="">Add Customers</a></li>
-                        <li><a href="">Manage Customers</a></li>
-                    </ul>
-                </li>
-
-                <li class="has-submenu">
-                    <a href="javascript:void(0)" onclick="toggleSubmenu(this)">
-                        <i class="bi bi-gear-fill"></i>
-                        <span>Settings</span>
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="#">General Settings</a></li>
-                        <li><a href="#">Security</a></li>
-                    </ul>
-                </li>
-
-            </ul>
-        </div>
-
-    </aside>
-
-
+  <body>
     <div id="overlay" onclick="toggleSidebar()"></div>
 
+    <aside class="sidebar">
+      <div class="sidebar-logo">ClientWise</div>
+      <div class="sidebar-menu">
+        <ul class="menu">
+          <li>
+            <a href="#"
+              ><i class="bi bi-house-door-fill"></i><span>Dashboard</span></a
+            >
+          </li>
+          <li class="has-submenu">
+            <a href="javascript:void(0)" onclick="toggleSubmenu(this)">
+              <i class="bi bi-people-fill"></i>
+              <span>Customers</span>
+              <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul class="submenu">
+              <li><a href="#">Add Customers</a></li>
+              <li><a href="#">Manage Customers</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
     <div class="page-wrapper">
+      <nav class="top-navbar">
+        <button class="btn d-md-none primary-color" onclick="toggleSidebar()">
+          <i class="bi bi-list fs-3"></i>
+        </button>
+        <div class="navbar-right ms-auto">
+          <div class="dropdown">
+            <a
+              href="#"
+              class="profile-toggle d-flex align-items-center gap-2 text-decoration-none text-dark"
+              data-bs-toggle="dropdown"
+            >
+              <img src="https://i.pravatar.cc/40" alt="Profile" />
+              <span class="d-none d-md-inline fw-semibold">Sadam Qureshi</span>
+              <i class="bi bi-chevron-down small"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
 
-        <div class="card-breadcrumb">
-            <div class="card-body d-flex justify-content-end p-0">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('admin.dashboard') }}">
-                                <i class="bi bi-house-door-fill me-1"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            Customer
-                        </li>
-                        <!-- @hasSection('breadcrumbs-2')
-                        <li class="breadcrumb-item active" aria-current="page">
-                            Add Customer                            
-                        </li>
-                        @endif -->
-
-                    </ol>
-                </nav>
+      <main class="content container-fluid">
+        <!-- DASHBOARD CARDS -->
+        <div class="row g-4 mb-4">
+          <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm p-3 h-100">
+              <div class="d-flex align-items-center">
+                <div
+                  class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 me-3"
+                >
+                  <i class="bi bi-people-fill fs-4"></i>
+                </div>
+                <div>
+                  <h6 class="text-muted mb-1 small text-uppercase fw-bold">
+                    Total Customers
+                  </h6>
+                  <h2 class="counter-value mb-0 fw-bold" data-target="1284">
+                    0
+                  </h2>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm p-3 h-100">
+              <div class="d-flex align-items-center">
+                <div
+                  class="bg-success bg-opacity-10 text-success rounded-circle p-3 me-3"
+                >
+                  <i class="bi bi-calendar-check-fill fs-4"></i>
+                </div>
+                <div>
+                  <h6 class="text-muted mb-1 small text-uppercase fw-bold">
+                    Daily Appointments
+                  </h6>
+                  <h2 class="counter-value mb-0 fw-bold" data-target="45">0</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm p-3 h-100">
+              <div class="d-flex align-items-center">
+                <div
+                  class="bg-warning bg-opacity-10 text-warning rounded-circle p-3 me-3"
+                >
+                  <i class="bi bi-currency-dollar fs-4"></i>
+                </div>
+                <div>
+                  <h6 class="text-muted mb-1 small text-uppercase fw-bold">
+                    Total Revenue
+                  </h6>
+                  <h2 class="counter-value mb-0 fw-bold" data-target="8540">
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm p-3 h-100">
+              <div class="d-flex align-items-center">
+                <div
+                  class="bg-danger bg-opacity-10 text-danger rounded-circle p-3 me-3"
+                >
+                  <i class="bi bi-exclamation-octagon-fill fs-4"></i>
+                </div>
+                <div>
+                  <h6 class="text-muted mb-1 small text-uppercase fw-bold">
+                    Pending Tasks
+                  </h6>
+                  <h2 class="counter-value mb-0 fw-bold" data-target="12">0</h2>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
+        <!-- DATATABLE -->
+        <div class="card table-card shadow-sm mb-4 border-0">
+          <div
+            class="card-header bg-white py-3 d-flex justify-content-between align-items-center"
+          >
+            <h5 class="mb-0 fw-bold">Customer Management</h5>
+            <button class="btn btn-primary btn-sm px-3">
+              <i class="bi bi-plus-lg me-1"></i> Add New
+            </button>
+          </div>
+          <div class="card-body">
+            <table
+              id="customerTable"
+              class="table table-hover align-middle"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th style="width: 40px">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="checkAll"
+                    />
+                  </th>
+                  <th style="width: 60px">S.No</th>
+                  <th>Customer</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th class="text-center" style="width: 100px">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" class="form-check-input" /></td>
+                  <td>1</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img
+                        src="https://ui-avatars.com/api/?name=John+Doe&background=1373bb&color=fff"
+                        class="rounded-circle me-2"
+                        width="35"
+                        height="35"
+                        alt="user"
+                      />
+                      <span class="fw-medium">John Doe</span>
+                    </div>
+                  </td>
+                  <td>john@example.com</td>
+                  <td>
+                    <span class="badge bg-success-subtle text-success"
+                      >Active</span
+                    >
+                  </td>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <button
+                        class="btn btn-link text-dark p-0"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i class="bi bi-three-dots fs-5"></i>
+                      </button>
+                      <ul
+                        class="dropdown-menu dropdown-menu-end shadow border-0"
+                      >
+                        <li>
+                          <a class="dropdown-item" href="#"
+                            ><i class="bi bi-eye me-2 text-info"></i> View</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#"
+                            ><i
+                              class="bi bi-pencil-square me-2 text-primary"
+                            ></i>
+                            Edit</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#"
+                            ><i class="bi bi-printer me-2 text-secondary"></i>
+                            Print</a
+                          >
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                          <a class="dropdown-item text-danger" href="#"
+                            ><i class="bi bi-trash me-2"></i> Delete</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-        <main class="content container-fluid mt-2">
-
-        </main>
-
-        <footer class="main-footer">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
-                <span>&copy; <time datetime="2026">2026</time> <span
-                        class="primary-color fw-semibold">ClientWise</span>. All rights
-                    reserved.</span>
-                <div class="footer-links d-none d-sm-block">
-                    <a href="#">Support</a>
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
+        <!-- FORM INPUT FIELDS -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">
+              <i class="bi bi-file-earmark-plus me-2 text-primary"></i> Data
+              Entry Form
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <form action="#" method="POST" enctype="multipart/form-data">
+              <div class="row g-4">
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Full Name</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light"
+                      ><i class="bi bi-person"></i
+                    ></span>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter text"
+                    />
+                  </div>
                 </div>
-            </div>
-        </footer>
 
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Age / Quantity</label>
+                  <input type="number" class="form-control" placeholder="00" />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Select Date</label>
+                  <input type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold"
+                    >Category (Select2)</label
+                  >
+                  <select
+                    class="form-select select2-custom"
+                    id="select2Example"
+                  >
+                    <option value="">Choose...</option>
+                    <option value="1">Information Technology</option>
+                    <option value="2">Healthcare</option>
+                    <option value="3">Finance</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Billing Month</label>
+                  <input type="month" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Upload Document</label>
+                  <input type="file" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label d-block fw-semibold"
+                    >Preferences</label
+                  >
+                  <div class="form-check form-check-inline mt-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="check1"
+                      checked
+                    />
+                    <label class="form-check-label" for="check1">Email</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="check2"
+                    />
+                    <label class="form-check-label" for="check2">SMS</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label d-block fw-semibold">Gender</label>
+                  <div class="form-check form-check-inline mt-2">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="gender"
+                      id="r1"
+                      checked
+                    />
+                    <label class="form-check-label" for="r1">Male</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="gender"
+                      id="r2"
+                    />
+                    <label class="form-check-label" for="r2">Female</label>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label fw-semibold">Brief Summary</label>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    placeholder="Enter details..."
+                  ></textarea>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label fw-semibold"
+                    >Detailed Description (Quill)</label
+                  >
+                  <div id="editor"></div>
+                </div>
+                <div class="col-12 text-end mt-4">
+                  <br>
+                  <br>
+                  <br>
+                  <button type="reset" class="btn btn-light px-4 me-2">
+                    Reset
+                  </button>
+                  <button type="submit" class="btn btn-primary px-4">
+                    Save Information
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- IMAGE LAYOUT -->
+        <div class="row mb-4 g-4">
+          <div class="col-12">
+            <div class="card border-0 shadow-sm overflow-hidden">
+              <div class="card-header bg-white py-3">
+                <h6 class="mb-0 fw-bold">System Banner</h6>
+              </div>
+              <div class="banner-container">
+                <img
+                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80"
+                  alt="Office Banner"
+                  class="img-fluid banner-img"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4 h-100">
+              <h6 class="fw-bold mb-4">Profile Picture Upload</h6>
+              <div class="text-center">
+                <div
+                  id="profileImageWrapper"
+                  style="
+                    position: relative;
+                    width: 150px;
+                    height: 150px;
+                    margin: 0 auto;
+                    cursor: pointer;
+                  "
+                  onclick="document.getElementById('profileImageInput').click()"
+                >
+                  <img
+                    id="profileImage"
+                    src=""
+                    class="img-thumbnail rounded-circle shadow-sm"
+                    style="
+                      width: 150px;
+                      height: 150px;
+                      object-fit: cover;
+                      border: 3px solid #dee2e6;
+                    "
+                    alt="Profile"
+                  />
+                  <div
+                    style="
+                      position: absolute;
+                      bottom: 0;
+                      right: 0;
+                      background-color: var(--primary-color);
+                      border-radius: 50%;
+                      width: 45px;
+                      height: 45px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      cursor: pointer;
+                      border: 3px solid white;
+                      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+                    "
+                  >
+                    <i
+                      class="bi bi-cloud-arrow-up"
+                      style="color: white; font-size: 20px"
+                    ></i>
+                  </div>
+                </div>
+                <input
+                  type="file"
+                  id="profileImageInput"
+                  hidden
+                  accept="image/*"
+                />
+                <p class="text-muted mt-4 mb-0" style="font-size: 12px">
+                  Click to upload profile picture
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4 h-100">
+              <h6 class="fw-bold mb-4">Loading State (Skeleton)</h6>
+              <div class="skeleton-wrapper">
+                <div class="skeleton skeleton-circle mb-3"></div>
+                <div class="skeleton skeleton-text w-75"></div>
+                <div class="skeleton skeleton-text w-50"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="card border-0 shadow-sm p-4 h-100">
+              <h6 class="fw-bold mb-4">Profile & Identity</h6>
+              <div class="d-flex align-items-center">
+                <div class="text-center">
+                  <img
+                    src="https://ui-avatars.com/api/?name=Admin&background=1373bb&color=fff"
+                    class="img-thumbnail rounded-circle shadow-sm mb-2"
+                    width="100"
+                    height="100"
+                  />
+                  <p class="small text-muted mb-0">Round Avatar</p>
+                </div>
+                <div class="text-center">
+                  <img
+                    src="https://ui-avatars.com/api/?name=Office&background=1373bb&color=fff"
+                    class="img-thumbnail rounded shadow-sm mb-2"
+                    width="100"
+                    height="100"
+                  />
+                  <p class="small text-muted mb-0">Square Thumbnail</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div
+              class="upload-area card border-2 border-dashed p-5 text-center"
+              id="uploadZone"
+            >
+              <input
+                type="file"
+                id="fileInput"
+                hidden
+                multiple
+                accept="image/*"
+              />
+              <div class="upload-content">
+                <div class="upload-icon mb-3">
+                  <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
+                </div>
+                <h5 class="fw-bold">Click or Drag & Drop to Upload</h5>
+                <p class="text-muted">Support for JPG, PNG, or PDF (Max 5MB)</p>
+                <button
+                  type="button"
+                  class="btn btn-primary px-4"
+                  onclick="document.getElementById('fileInput').click()"
+                >
+                  Browse Files
+                </button>
+              </div>
+              <div id="fileList" class="mt-4" style="display: none">
+                <h6 class="fw-bold mb-3 text-start">Uploaded Files:</h6>
+                <div id="uploadedFiles" class="list-group"></div>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm mt-3"
+                  onclick="clearFiles()"
+                >
+                  Clear Files
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div
+              class="card border-0 shadow-sm p-4 h-100"
+              id="imagePreviewSection"
+              style="display: none"
+            >
+              <h6 class="fw-bold mb-4">Uploaded Images</h6>
+              <div
+                id="imagePreviewContainer"
+                class="d-flex flex-wrap gap-4 justify-content-center"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE SECTION -->
+        <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+          <div class="profile-banner">
+            <img
+              src="https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1200&q=80"
+              alt="Banner"
+              class="w-100 h-100 object-fit-cover"
+            />
+          </div>
+
+          <div class="profile-content px-4">
+            <div class="d-flex align-items-end mb-4 profile-header-stack">
+              <div class="profile-avatar-wrapper">
+                <img
+                  src="https://ui-avatars.com/api/?name=Sadam+Qureshi&background=1373bb&color=fff&size=256"
+                  alt="User"
+                  class="profile-img shadow"
+                />
+              </div>
+              <div class="ms-3 mb-2 user-meta">
+                <h3 class="fw-bold mb-0 text-dark">Sadam Qureshi</h3>
+                <p class="text-muted mb-0">
+                  <i class="bi bi-geo-alt-fill me-1 text-primary"></i> Senior
+                  Web Developer | Hyderabad, PK
+                </p>
+              </div>
+              <div class="ms-auto mb-2 header-actions">
+                <button class="btn btn-primary">
+                  <i class="bi bi-pencil"></i> Edit Profile
+                </button>
+              </div>
+            </div>
+
+            <hr class="text-muted opacity-25" />
+
+            <div class="row pb-4">
+              <div class="col-lg-8">
+                <h6 class="fw-bold text-uppercase small text-primary mb-3">
+                  About Me
+                </h6>
+                <p class="text-secondary lead fs-6">
+                  Passionate developer specializing in .NET MVC and modern
+                  UI/UX. Managing digital operations for "Hyderabad Tonight" and
+                  architecting OPD systems.
+                </p>
+              </div>
+              <div class="col-lg-4">
+                <div
+                  class="fancy-stats-card p-3 rounded-3 d-flex justify-content-around text-center"
+                >
+                  <div>
+                    <span class="d-block fw-bold fs-5 text-primary">84</span>
+                    <small class="text-muted uppercase font-xs">Projects</small>
+                  </div>
+                  <div class="border-start border-end px-4">
+                    <span class="d-block fw-bold fs-5 text-primary">1.2k</span>
+                    <small class="text-muted uppercase font-xs"
+                      >Followers</small
+                    >
+                  </div>
+                  <div>
+                    <span class="d-block fw-bold fs-5 text-primary">92%</span>
+                    <small class="text-muted uppercase font-xs">Success</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DASHBOARD CLOCK, CLANDER AND TODO -->
+        <div class="row mb-4 g-4">
+          <div class="col-md-4">
+            <div
+              class="card border-0 shadow-sm text-white h-100"
+              style="background: linear-gradient(45deg, #1373bb, #0b5e94)"
+            >
+              <div
+                class="card-body d-flex flex-column align-items-center justify-content-center py-4"
+              >
+                <div class="analog-clock mb-3">
+                  <div class="hour-hand"></div>
+                  <div class="min-hand"></div>
+                  <div class="second-hand"></div>
+                  <div class="center-dot"></div>
+                </div>
+                <h5 id="digitalTime" class="fw-bold mb-0">00:00 AM</h5>
+                <p id="digitalDate" class="small opacity-75 mb-0">
+                  Loading Date...
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 text-center">
+              <div class="card-body d-flex flex-column justify-content-center">
+                <h6
+                  class="text-uppercase text-muted small fw-bold mb-1"
+                  id="calMonth"
+                >
+                  Month
+                </h6>
+                <h1 class="display-1 fw-bold text-primary mb-0" id="calDay">
+                  00
+                </h1>
+                <p class="fw-medium text-dark mb-0" id="calYear">2026</p>
+                <div class="mt-2 text-primary small">
+                  <i class="bi bi-calendar3"></i> Today
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-5">
+            <div class="card border-0 shadow-sm h-100">
+              <div
+                class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0"
+              >
+                <h6 class="mb-0 fw-bold">
+                  <i class="bi bi-list-check me-2 text-primary"></i> Office
+                  Tasks
+                </h6>
+              </div>
+              <div class="px-3 pb-2">
+                <div class="input-group input-group-sm">
+                  <input
+                    type="text"
+                    id="todoInput"
+                    class="form-control border-light bg-light"
+                    placeholder="Add new task..."
+                  />
+                  <button class="btn btn-primary" id="addBtn">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="card-body p-0"
+                style="max-height: 250px; overflow-y: auto"
+              >
+                <div class="list-group list-group-flush" id="todoList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="main-footer">
+        <div
+          class="container-fluid d-flex justify-content-between align-items-center"
+        >
+          <span
+            >&copy; 2026 <b class="text-primary">ClientWise</b>. All rights
+            reserved.</span
+          >
+        </div>
+      </footer>
     </div>
 
-
-    <script>
-        function toggleSidebar() {
-            document.body.classList.toggle('sidebar-open');
-        }
-
-        function toggleSubmenu(element) {
-            const parentLi = element.closest('li');
-            parentLi.classList.toggle('open');
-            // Optional: Close other submenus
-            document.querySelectorAll('.has-submenu.open').forEach(item => {
-                if (item !== parentLi) {
-                    item.classList.remove('open');
-                }
-            });
-        }
-    </script>
-
-    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.bootstrap5.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.0/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
     <script>
-        function toggleSubmenu(el) {
-            el.parentElement.classList.toggle("open");
-        }
+      // SIDEBAR JS START
+      function toggleSidebar() {
+        document.body.classList.toggle("sidebar-open");
+      }
 
-        function toggleSidebar() {
-            document.body.classList.toggle("sidebar-open");
-        }
-        // Dashboard Card Counter
-        function animateCount(el) {
-            if (!el) return;
+      function toggleSubmenu(el) {
+        const parent = el.parentElement;
+        parent.classList.toggle("open");
+        // Close other open submenus
+        document.querySelectorAll(".has-submenu").forEach((li) => {
+          if (li !== parent) li.classList.remove("open");
+        });
+      }
 
-            const target = parseInt(el.getAttribute('data-target'), 10);
-            if (isNaN(target)) return;
+      //   SIDEBAR JS END
 
-            const duration = 1500;
+      //   DASHBOARD COUNTER JS START
+      document.addEventListener("DOMContentLoaded", () => {
+        const counters = document.querySelectorAll(".counter-value");
+        const speed = 2000; // Total duration of animation in milliseconds
+
+        counters.forEach((counter) => {
+          const animate = () => {
+            const target = +counter.getAttribute("data-target");
             const startTime = performance.now();
 
-            function update(now) {
-                const progress = Math.min((now - startTime) / duration, 1);
-                const value = Math.floor(progress * target);
+            const updateCount = (currentTime) => {
+              const elapsedTime = currentTime - startTime;
+              const progress = Math.min(elapsedTime / speed, 1); // Ensure it doesn't go past 1
 
-                el.textContent = `${value.toLocaleString()}`;
+              // Easing function (easeOutExpo) for a professional feel
+              const easeOutValue =
+                progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
 
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                } else {
-                    el.textContent = `${target.toLocaleString()}`;
-                }
-            }
+              const currentValue = Math.floor(easeOutValue * target);
 
-            requestAnimationFrame(update);
+              // Format with commas for large numbers
+              counter.innerText = currentValue.toLocaleString();
+
+              if (progress < 1) {
+                requestAnimationFrame(updateCount);
+              } else {
+                counter.innerText = target.toLocaleString();
+              }
+            };
+
+            requestAnimationFrame(updateCount);
+          };
+
+          animate();
+        });
+      });
+
+      // DASHBOARD COUNTER JS END
+
+      //   DATATABLE JS START
+      $(document).ready(function () {
+        const table = $("#customerTable").DataTable({
+          responsive: true,
+          language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search...",
+            paginate: {
+              previous: '<i class="bi bi-chevron-left"></i>',
+              next: '<i class="bi bi-chevron-right"></i>',
+            },
+
+          },
+          dom: '<"d-flex justify-content-between align-items-center mb-3"fl>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
+        });
+
+        // Check All Checkboxes
+        $("#checkAll").on("click", function () {
+          const rows = table.rows({ search: "applied" }).nodes();
+          $('input[type="checkbox"]', rows).prop("checked", this.checked);
+        });
+      });
+      // DATTABLE JS END
+
+      //   FORM INPUT JS START
+      $(document).ready(function () {
+        // Initialize Select2
+        $("#select2Example").select2({
+          placeholder: "Search or select category",
+          allowClear: true,
+        });
+
+        // Initialize Quill Editor
+        if (document.querySelector("#editor")) {
+          const quill = new Quill("#editor", {
+            theme: "snow",
+            placeholder: "Write something amazing...",
+            modules: {
+              toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ["bold", "italic", "underline", "strike"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ color: [] }, { background: [] }],
+                ["link"],
+                ["blockquote", "code-block"],
+                [{ align: [] }]
+              ],
+            },
+          });
+        }
+      });
+      // FORM INPUT JS END
+
+      // PROFILE IMAGE UPLOAD JS START
+      const profileImage = document.getElementById("profileImage");
+      const profileImageInput = document.getElementById("profileImageInput");
+
+      // Set random default image on page load
+      function setRandomDefaultImage() {
+        const randomNames = [
+          "Admin",
+          "User",
+          "Profile",
+          "Client",
+          "Member",
+          "Avatar",
+        ];
+        const randomName =
+          randomNames[Math.floor(Math.random() * randomNames.length)];
+        const randomBg = Math.floor(Math.random() * 16777215).toString(16);
+        profileImage.src = `https://ui-avatars.com/api/?name=${randomName}&background=${randomBg}&color=fff&size=150`;
+      }
+
+      // Set default image on page load
+      window.addEventListener("DOMContentLoaded", () => {
+        setRandomDefaultImage();
+      });
+
+      // Handle profile image selection
+      profileImageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            profileImage.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // PROFILE IMAGE UPLOAD JS END
+
+      //   IMAGE LAYOUT JS SATRT
+      const uploadZone = document.getElementById("uploadZone");
+      const fileInput = document.getElementById("fileInput");
+      const fileList = document.getElementById("fileList");
+      const uploadedFiles = document.getElementById("uploadedFiles");
+      const uploadContent = document.querySelector(".upload-content");
+      const imagePreviewSection = document.getElementById(
+        "imagePreviewSection",
+      );
+      const imagePreviewContainer = document.getElementById(
+        "imagePreviewContainer",
+      );
+
+      function displayFiles(files) {
+        uploadedFiles.innerHTML = "";
+        imagePreviewContainer.innerHTML = "";
+
+        if (files.length === 0) {
+          fileList.style.display = "none";
+          imagePreviewSection.style.display = "none";
+          uploadContent.style.display = "block";
+          return;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('[data-target]').forEach(el => {
-                animateCount(el);
-            });
+        uploadContent.style.display = "none";
+        fileList.style.display = "block";
+
+        Array.from(files).forEach((file, index) => {
+          // List display
+          const fileItem = document.createElement("div");
+          fileItem.className =
+            "list-group-item d-flex justify-content-between align-items-center";
+
+          const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+          const isImage = file.type.startsWith("image/");
+
+          let icon = "bi-file";
+          if (isImage) icon = "bi-image";
+          else if (file.type.includes("pdf")) icon = "bi-file-pdf";
+          else if (file.type.includes("word")) icon = "bi-file-word";
+
+          const fileInfo = document.createElement("div");
+          fileInfo.className = "d-flex align-items-center gap-2";
+          fileInfo.innerHTML = `
+            <i class="bi ${icon} fs-5 text-primary"></i>
+            <div>
+              <div class="fw-bold">${file.name}</div>
+              <small class="text-muted">${fileSizeInMB} MB</small>
+            </div>
+          `;
+
+          const removeBtn = document.createElement("button");
+          removeBtn.type = "button";
+          removeBtn.className = "btn btn-sm btn-outline-danger";
+          removeBtn.innerHTML = '<i class="bi bi-trash"></i>';
+          removeBtn.onclick = () => removeFile(file.name);
+
+          fileItem.appendChild(fileInfo);
+          fileItem.appendChild(removeBtn);
+          uploadedFiles.appendChild(fileItem);
+
+          // Image preview display
+          if (isImage) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const imageWrapper = document.createElement("div");
+              imageWrapper.className = "text-center position-relative";
+              imageWrapper.style.width = "120px";
+
+              const img = document.createElement("img");
+              img.src = e.target.result;
+              img.className = "img-thumbnail rounded-circle shadow-sm";
+              img.style.width = "120px";
+              img.style.height = "120px";
+              img.style.objectFit = "cover";
+
+              const removeImageBtn = document.createElement("button");
+              removeImageBtn.type = "button";
+              removeImageBtn.className =
+                "btn btn-sm btn-danger position-absolute";
+              removeImageBtn.style.top = "0";
+              removeImageBtn.style.right = "0";
+              removeImageBtn.style.borderRadius = "50%";
+              removeImageBtn.style.width = "32px";
+              removeImageBtn.style.height = "32px";
+              removeImageBtn.style.padding = "0";
+              removeImageBtn.innerHTML =
+                '<i class="bi bi-x" style="font-size: 16px;"></i>';
+              removeImageBtn.onclick = () => removeFile(file.name);
+
+              const fileName = document.createElement("p");
+              fileName.className = "small text-muted mt-2 mb-0";
+              fileName.style.maxWidth = "120px";
+              fileName.style.overflow = "hidden";
+              fileName.style.textOverflow = "ellipsis";
+              fileName.style.whiteSpace = "nowrap";
+              fileName.textContent = file.name;
+
+              imageWrapper.appendChild(img);
+              imageWrapper.appendChild(removeImageBtn);
+              imageWrapper.appendChild(fileName);
+              imagePreviewContainer.appendChild(imageWrapper);
+
+              imagePreviewSection.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      function removeFile(fileName) {
+        const dataTransfer = new DataTransfer();
+        const files = fileInput.files;
+
+        Array.from(files).forEach((file) => {
+          if (file.name !== fileName) {
+            dataTransfer.items.add(file);
+          }
         });
 
+        fileInput.files = dataTransfer.files;
+        displayFiles(fileInput.files);
+      }
 
-        // Datatable script
-        $(document).ready(function() {
-            $('#example').DataTable({
-                pageLength: 10,
-                lengthChange: false,
-                ordering: true,
+      function clearFiles() {
+        fileInput.value = "";
+        displayFiles([]);
+      }
 
-                searching: true,
-                info: true,
-                responsive: true,
-                language: {
-                    search: "Search",
-                    paginate: {
-                        previous: "Previous",
-                        next: "Next"
-                    }
-                }
+      uploadZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadZone.classList.add("border-primary", "bg-light");
+      });
+
+      uploadZone.addEventListener("dragleave", () => {
+        uploadZone.classList.remove("border-primary", "bg-light");
+      });
+
+      uploadZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove("border-primary", "bg-light");
+        const files = e.dataTransfer.files;
+
+        // Transfer dropped files to fileInput
+        const dataTransfer = new DataTransfer();
+        Array.from(files).forEach((file) => {
+          dataTransfer.items.add(file);
+        });
+        fileInput.files = dataTransfer.files;
+
+        displayFiles(fileInput.files);
+      });
+
+      // Handle file selection via browse button
+      fileInput.addEventListener("change", (e) => {
+        displayFiles(e.target.files);
+      });
+
+      // IMAGE LAYOUT JS END
+
+      //   DAHBOARD CALANDER, CLOCK AND TODO JS START
+      document.addEventListener("DOMContentLoaded", function () {
+        // 1. ANALOG & DIGITAL CLOCK
+        function updateClock() {
+          const now = new Date();
+          const seconds = now.getSeconds();
+          const minutes = now.getMinutes();
+          const hours = now.getHours();
+
+          // Rotate Hands
+          const secDeg = (seconds / 60) * 360;
+          const minDeg = (minutes / 60) * 360 + (seconds / 60) * 6;
+          const hrDeg = (hours / 12) * 360 + (minutes / 60) * 30;
+
+          document.querySelector(".second-hand").style.transform =
+            `translateX(-50%) rotate(${secDeg}deg)`;
+          document.querySelector(".min-hand").style.transform =
+            `translateX(-50%) rotate(${minDeg}deg)`;
+          document.querySelector(".hour-hand").style.transform =
+            `translateX(-50%) rotate(${hrDeg}deg)`;
+
+          // Update Text
+          document.getElementById("digitalTime").textContent =
+            now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          document.getElementById("digitalDate").textContent =
+            now.toLocaleDateString([], {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
             });
+
+          // 2. SIMPLE CALENDAR
+          document.getElementById("calMonth").textContent =
+            now.toLocaleDateString([], { month: "long" });
+          document.getElementById("calDay").textContent = now.getDate();
+          document.getElementById("calYear").textContent = now.getFullYear();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 3. TODO LIST WITH COOKIES
+        const todoInput = document.getElementById("todoInput");
+        const addBtn = document.getElementById("addBtn");
+        const todoList = document.getElementById("todoList");
+
+        function setCookie(name, value) {
+          document.cookie =
+            name +
+            "=" +
+            JSON.stringify(value) +
+            ";path=/;max-age=" +
+            30 * 24 * 60 * 60;
+        }
+
+        function getCookie(name) {
+          const value = "; " + document.cookie;
+          const parts = value.split("; " + name + "=");
+          if (parts.length === 2)
+            return JSON.parse(parts.pop().split(";").shift());
+          return [];
+        }
+
+        function renderTasks() {
+          const tasks = getCookie("office_tasks");
+          todoList.innerHTML = "";
+          tasks.forEach((task, index) => {
+            const item = document.createElement("div");
+            item.className =
+              "list-group-item d-flex align-items-center todo-item py-2 px-3 border-0";
+            item.innerHTML = `
+                <span class="flex-grow-1 small fw-medium">${task}</span>
+                <i class="bi bi-trash text-danger delete-task" onclick="deleteTask(${index})"></i>
+            `;
+            todoList.appendChild(item);
+          });
+        }
+
+        addBtn.addEventListener("click", () => {
+          if (todoInput.value.trim() !== "") {
+            const tasks = getCookie("office_tasks");
+            tasks.push(todoInput.value.trim());
+            setCookie("office_tasks", tasks);
+            todoInput.value = "";
+            renderTasks();
+          }
         });
 
+        window.deleteTask = function (index) {
+          const tasks = getCookie("office_tasks");
+          tasks.splice(index, 1);
+          setCookie("office_tasks", tasks);
+          renderTasks();
+        };
 
-
-        // Initialize Select2
-        $(document).ready(function() {
-            $('#select').select2({
-                placeholder: "search",
-                allowClear: true,
-                width: '100%' // make it fit Bootstrap container
-            });
-        });
+        renderTasks();
+      });
+      // ADMIN CALANDER, TODO AND CLOCK JS END
     </script>
-</body>
-
+  </body>
 </html>
