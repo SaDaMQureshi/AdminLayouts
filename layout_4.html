@@ -19,7 +19,7 @@
         :root {
             --sidebar-bg: #ffffff;
             --sidebar-hover: #f8fafc;
-            --primary: #2563eb;
+            --primary: #00406bd3;
             --primary-light: #eff6ff;
             --text-main: #1e293b;
             --text-muted: #64748b;
@@ -40,6 +40,33 @@
             background: var(--bg-body);
             color: var(--text-main);
             overflow-x: hidden;
+        }
+
+        .dropdown-menu li:active a,
+        .dropdown-menu .dropdown-item:active {
+            background-color: var(--primary) !important;
+        }
+
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+
+        .btn-primary {
+            background: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+
+        .border-primary {
+            border-color: var(--primary) !important;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
         }
 
         /* Sidebar Styling */
@@ -245,6 +272,135 @@
             border-radius: 4px;
         }
 
+        /* Custom Blue Tint for labels/accents */
+        .bg-primary-light {
+            background-color: #eff6ff !important;
+        }
+
+        /* Modern typography and focus */
+        .card-body h4 {
+            letter-spacing: -0.5px;
+        }
+
+        /* Soft transition for the avatar */
+        #profile-preview {
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        /* Custom button styling for an enterprise feel */
+        .btn-primary {
+            background-color: #2563eb;
+            border: none;
+            padding: 0.6rem 1.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* Remove the default gray background on active accordion buttons */
+        .accordion-button:not(.collapsed) {
+            background-color: #fff !important;
+            color: #2563eb !important;
+            box-shadow: none;
+        }
+
+        /* Add a clean blue indicator on the left when open */
+        .accordion-item:has(.accordion-button:not(.collapsed)) {
+            border-left: 4px solid #2563eb !important;
+        }
+
+        /* Ensure the icon rotates or changes color */
+        .accordion-button::after {
+            background-size: 1rem;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Soften the inner body text */
+        .accordion-body {
+            line-height: 1.6;
+            color: #64748b;
+        }
+
+        /* Modern gradient background for card headers */
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        }
+
+        /* Modern feature card styling */
+        .modern-feature-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        .modern-feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+            border-color: #2563eb !important;
+        }
+
+        .feature-icon {
+            transition: all 0.3s ease;
+        }
+
+        .modern-feature-card:hover .feature-icon {
+            transform: scale(1.1);
+        }
+
+        /* Light blue tint for small buttons inside */
+        .btn-primary-light {
+            background-color: #eff6ff;
+            border: none;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .carousel-item img {
+            transition: transform 0.6s ease-in-out;
+        }
+
+        /* Customizing the Indicators to be thin pills instead of squares */
+        .carousel-indicators [button] {
+            width: 30px;
+            height: 4px;
+            border-radius: 2px;
+            opacity: 0.5;
+            border: none;
+        }
+
+        .carousel-indicators .active {
+            opacity: 1;
+            width: 45px;
+            /* Longer active pill */
+        }
+
+        /* Modern Control Buttons */
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-size: 50% 50%;
+            filter: brightness(0) invert(1);
+            /* Makes the arrow white against the primary bg */
+        }
+
+        .carousel-caption {
+            right: 20%;
+            /* Keep text away from the right edge for better readability */
+            bottom: 10%;
+        }
+
         /* Responsive */
         @media (max-width: 991px) {
             .sidebar {
@@ -264,12 +420,65 @@
                 display: none;
             }
         }
+        /* Page Loader */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .loader-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <div class="loader-text">Loading Office Hub...</div>
+        </div>
+    </div>
 
     <div class="main-wrapper">
+
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <!-- Sidebar -->
         <nav class="sidebar" id="sidebar">
@@ -344,7 +553,7 @@
 
                     <!-- Notifications -->
                     <a class="position-relative cursor-pointer">
-                        <i class="bi bi-bell fs-5"></i>
+                        <i class="bi bi-bell fs-5" style="color: var(--primary);"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                             style="font-size: 10px;">
                             3
@@ -389,7 +598,7 @@
                                 <li class="breadcrumb-item fw-medium text-muted" aria-current="page">
                                     Users
                                 </li>
-                                <li class="breadcrumb-item active fw-semibold text-primary" aria-current="page">
+                                <li class="breadcrumb-item active text-primary fw-semibold" aria-current="page">
                                     Add User
                                 </li>
                             </ol>
@@ -455,7 +664,6 @@
                                 </div>
                                 <h5 class="card-title mb-0 fw-bold text-dark">Administrative Entry Portal</h5>
                             </div>
-                            <div class="text-muted small fw-medium">ID: #OFFICE-2026</div>
                         </div>
                     </div>
 
@@ -637,9 +845,389 @@
 
                         <!-- Editor Area -->
                         <div id="editor" style="height: 300px; border: none;">
-                          
+
                         </div>
                     </div>
+                </div>
+
+                <!-- Modern Profile Card -->
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+                    <!-- Professional Gradient Banner -->
+                    <div class="position-relative bg-primary" style="height: 150px;">
+                        <div
+                            style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22><circle cx=%2210%22 cy=%2210%22 r=%221%22 fill=%22rgba(255,255,255,0.1)%22/></svg>') repeat;background-size:20px 20px;">
+                        </div>
+                    </div>
+
+                    <div class="card-body px-4 pb-4" style="margin-top: -55px; position: relative; z-index: 1;">
+                        <div class="d-flex align-items-end mb-3">
+                            <!-- Avatar with Status & Upload -->
+                            <div class="position-relative flex-shrink-0">
+                                <div class="p-1 bg-white rounded-circle shadow">
+                                    <img src="https://i.pravatar.cc/150?u=admin" id="profile-preview"
+                                        class="rounded-circle border border-3 border-white"
+                                        style="width: 110px; height: 110px; object-fit: cover;">
+                                </div>
+                                <!-- Online Status Indicator -->
+                                <span
+                                    class="position-absolute bottom-0 start-0 translate-middle badge rounded-circle bg-success border border-2 border-white p-1"
+                                    style="width:14px;height:14px;"></span>
+                                <!-- Upload Trigger -->
+                                <label for="profile-upload"
+                                    class="position-absolute bottom-0 end-0 bg-white text-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                                    style="width: 32px; height: 32px; border: 3px solid #fff; cursor: pointer; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#2563eb';this.style.color='#fff'"
+                                    onmouseout="this.style.background='#fff';this.style.color='#2563eb'">
+                                    <i class="bi bi-camera fs-7" style="font-size:0.8rem;"></i>
+                                    <input type="file" id="profile-upload" class="d-none" accept="image/*">
+                                </label>
+                            </div>
+
+                            <!-- Identity Info -->
+                            <div class="ms-3 mb-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <h5 class="fw-bold text-dark mb-0">Alex Carter</h5>
+                                    <i class="bi bi-patch-check-fill text-primary" style="font-size:0.95rem;"></i>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 mt-1">
+                                    <span class="badge fw-semibold px-2 py-1 rounded-pill"
+                                        style="background:#eff6ff;color:#2563eb;font-size:0.72rem;">Senior Admin</span>
+                                    <span class="text-muted" style="font-size:0.78rem;"><i
+                                            class="bi bi-geo-alt-fill me-1"></i>New York Office</span>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="ms-auto mb-1 d-flex gap-2">
+                                <button class="btn btn-sm px-3 rounded-3 fw-medium bg-primary text-white">
+                                    <i class="bi bi-pencil me-1"></i>Edit
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Professional Data Grid -->
+                        <div class="row g-2 mt-1">
+                            <div class="col-md-8">
+                                <div class="p-3 border rounded-3" style="background:#f8fafc;">
+                                    <label class="form-label fw-semibold small text-uppercase mb-2"
+                                        style="letter-spacing:0.8px;color:#94a3b8;font-size:0.68rem;">Contact
+                                        Information</label>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center justify-content-center rounded-circle"
+                                            style="width:28px;height:28px;background:#eff6ff;">
+                                            <i class="bi bi-envelope-fill text-primary" style="font-size:0.75rem;"></i>
+                                        </div>
+                                        <span class="small fw-medium text-dark">alex.carter@enterprise.com</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center justify-content-center rounded-circle"
+                                            style="width:28px;height:28px;background:#eff6ff;">
+                                            <i class="bi bi-telephone-fill text-primary" style="font-size:0.75rem;"></i>
+                                        </div>
+                                        <span class="small fw-medium text-dark">+1 555-0123</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="d-flex align-items-center justify-content-center rounded-circle"
+                                            style="width:28px;height:28px;background:#eff6ff;">
+                                            <i class="bi bi-globe2 text-primary" style="font-size:0.75rem;"></i>
+                                        </div>
+                                        <span class="small fw-medium text-dark">enterprise.com/alex.carter</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded-3" style="background:#f8fafc;">
+                                    <label class="form-label fw-semibold small text-uppercase mb-2"
+                                        style="letter-spacing:0.8px;color:#94a3b8;font-size:0.68rem;">Details</label>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center justify-content-center rounded-circle"
+                                            style="width:28px;height:28px;background:#f0fdf4;">
+                                            <i class="bi bi-building text-success" style="font-size:0.75rem;"></i>
+                                        </div>
+                                        <span class="small fw-medium text-dark">Operations</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="d-flex align-items-center justify-content-center rounded-circle"
+                                            style="width:28px;height:28px;background:#fefce8;">
+                                            <i class="bi bi-calendar-check text-warning" style="font-size:0.75rem;"></i>
+                                        </div>
+                                        <span class="small fw-medium text-dark">Joined Mar 2021</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modern Office Management Card -->
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                    <!-- Card Body -->
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <!-- Security Card -->
+                            <div class="col-lg-4 col-md-6">
+                                <div class="card border-0 shadow-sm rounded-3 h-100 modern-feature-card">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex align-items-start mb-3">
+                                            <div class="feature-icon bg-primary-light text-primary p-3 rounded-3 me-3">
+                                                <i class="bi bi-shield-check fs-4"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title fw-bold text-dark mb-1">Security Configurations
+                                                </h6>
+                                                <span
+                                                    class="badge bg-success bg-opacity-10 text-success fw-medium">Active</span>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-muted small mb-3">
+                                            Manage your two-factor authentication, session timeouts, and IP
+                                            whitelisting. Ensure your administrative credentials meet the quarterly
+                                            rotation policy.
+                                        </p>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-primary btn-sm fw-bold px-3">
+                                                <i class="bi bi-gear me-1"></i> Update Settings
+                                            </button>
+                                            <button class="btn btn-outline-secondary btn-sm fw-bold">
+                                                <i class="bi bi-eye me-1"></i> View Logs
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Analytics Card -->
+                            <div class="col-lg-4 col-md-6">
+                                <div class="card border-0 shadow-sm rounded-3 h-100 modern-feature-card">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex align-items-start mb-3">
+                                            <div
+                                                class="feature-icon bg-success bg-opacity-10 text-success p-3 rounded-3 me-3">
+                                                <i class="bi bi-graph-up-arrow fs-4"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title fw-bold text-dark mb-1">Analytics Reporting</h6>
+                                                <span
+                                                    class="badge bg-warning bg-opacity-10 text-warning fw-medium">Scheduled</span>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-muted small mb-3">
+                                            Configure automated PDF reports for the executive board. You can schedule
+                                            weekly, monthly, or quarterly delivery to specified email groups.
+                                        </p>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-success btn-sm fw-bold px-3">
+                                                <i class="bi bi-calendar-check me-1"></i> Schedule
+                                            </button>
+                                            <button class="btn btn-outline-secondary btn-sm fw-bold">
+                                                <i class="bi bi-download me-1"></i> Export
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Infrastructure Card -->
+                            <div class="col-lg-4 col-md-12">
+                                <div class="card border-0 shadow-sm rounded-3 h-100 modern-feature-card">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex align-items-start mb-3">
+                                            <div
+                                                class="feature-icon bg-info bg-opacity-10 text-info p-3 rounded-3 me-3">
+                                                <i class="bi bi-hdd-network fs-4"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title fw-bold text-dark mb-1">Server Infrastructure</h6>
+                                                <span
+                                                    class="badge bg-info bg-opacity-10 text-info fw-medium">Connected</span>
+                                            </div>
+                                        </div>
+                                        <p class="card-text text-muted small mb-3">
+                                            Monitor real-time server health and API latency. Connect your Laravel Forge
+                                            or Vapor instances to pull direct analytics into this dashboard.
+                                        </p>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-info btn-sm fw-bold px-3">
+                                                <i class="bi bi-activity me-1"></i> Monitor
+                                            </button>
+                                            <button class="btn btn-outline-secondary btn-sm fw-bold">
+                                                <i class="bi bi-link-45deg me-1"></i> Connect
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card Body with Accordion -->
+                <div class="card-body p-4">
+                    <div class="accordion accordion-flush modern-accordion" id="officeAccordion">
+
+                        <!-- Security Item -->
+                        <div class="accordion-item rounded-3 mb-3 overflow-hidden modern-accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button fw-bold text-dark bg-white shadow-none" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                    <div class="d-flex align-items-center w-100">
+                                        <div class="feature-icon bg-primary-light text-primary p-2 rounded-3 me-3">
+                                            <i class="bi bi-shield-check fs-5"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <span class="me-2">Security Configurations</span>
+                                            <span
+                                                class="badge bg-success bg-opacity-10 text-success fw-medium">Active</span>
+                                        </div>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#officeAccordion">
+                                <div class="accordion-body text-muted small bg-white pt-0">
+                                    <p class="mb-3">
+                                        Manage your two-factor authentication, session timeouts, and IP whitelisting.
+                                        Ensure your administrative credentials meet the quarterly rotation policy.
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-primary btn-sm fw-bold px-3">
+                                            <i class="bi bi-gear me-1"></i> Update Settings
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm fw-bold">
+                                            <i class="bi bi-eye me-1"></i> View Logs
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics Item -->
+                        <div class="accordion-item border rounded-3 mb-3 overflow-hidden modern-accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-bold text-dark bg-white shadow-none"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                    <div class="d-flex align-items-center w-100">
+                                        <div
+                                            class="feature-icon bg-success bg-opacity-10 text-success p-2 rounded-3 me-3">
+                                            <i class="bi bi-graph-up-arrow fs-5"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <span class="me-2">Analytics Reporting</span>
+                                            <span
+                                                class="badge bg-warning bg-opacity-10 text-warning fw-medium">Scheduled</span>
+                                        </div>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#officeAccordion">
+                                <div class="accordion-body text-muted small bg-white pt-0">
+                                    <p class="mb-3">
+                                        Configure automated PDF reports for the executive board. You can schedule
+                                        weekly, monthly, or quarterly delivery to specified email groups.
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-success btn-sm fw-bold px-3">
+                                            <i class="bi bi-calendar-check me-1"></i> Schedule
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm fw-bold">
+                                            <i class="bi bi-download me-1"></i> Export
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Infrastructure Item -->
+                        <div class="accordion-item border rounded-3 mb-3 overflow-hidden modern-accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-bold text-dark bg-white shadow-none"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                    <div class="d-flex align-items-center w-100">
+                                        <div class="feature-icon bg-info bg-opacity-10 text-info p-2 rounded-3 me-3">
+                                            <i class="bi bi-hdd-network fs-5"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <span class="me-2">Server Infrastructure</span>
+                                            <span
+                                                class="badge bg-info bg-opacity-10 text-info fw-medium">Connected</span>
+                                        </div>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse"
+                                data-bs-parent="#officeAccordion">
+                                <div class="accordion-body text-muted small bg-white pt-0">
+                                    <p class="mb-3">
+                                        Monitor real-time server health and API latency. Connect your Laravel
+                                        Forge or Vapor instances to pull direct analytics into this dashboard.
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-info btn-sm fw-bold px-3">
+                                            <i class="bi bi-activity me-1"></i> Monitor
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm fw-bold">
+                                            <i class="bi bi-link-45deg me-1"></i> Connect
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Modern Office Carousel -->
+                <div id="officeHeroCarousel" class="carousel slide rounded-4 overflow-hidden shadow-sm"
+                    data-bs-ride="carousel">
+                    <!-- Indicators -->
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#officeHeroCarousel" data-bs-slide-to="0" class="active"
+                            aria-current="true" style="background-color: var(--primary);"></button>
+                        <button type="button" data-bs-target="#officeHeroCarousel" data-bs-slide-to="1"
+                            style="background-color: var(--primary);"></button>
+                        <button type="button" data-bs-target="#officeHeroCarousel" data-bs-slide-to="2"
+                            style="background-color: var(--primary);"></button>
+                    </div>
+
+                    <!-- Slides -->
+                    <div class="carousel-inner">
+                        <!-- Slide 1 -->
+                        <div class="carousel-item active" style="height: 350px;">
+                            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200"
+                                class="d-block w-100 h-100" style="object-fit: cover; filter: brightness(0.6);">
+                            <div class="carousel-caption d-none d-md-block text-start start-0 ps-5 pb-5">
+                                <span class="badge mb-2 px-3 py-2 rounded-pill"
+                                    style="background-color: var(--primary);">New Feature</span>
+                                <h2 class="fw-bold text-white">Advanced Server Analytics</h2>
+                                <p class="text-white-50">Real-time monitoring for your Laravel infrastructure is now
+                                    live.</p>
+                                <!-- <button class="btn btn-light fw-bold px-4 rounded-3 mt-2">Get Started</button> -->
+                            </div>
+                        </div>
+
+                        <!-- Slide 2 -->
+                        <div class="carousel-item" style="height: 350px;">
+                            <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&q=80&w=1200"
+                                class="d-block w-100 h-100" style="object-fit: cover; filter: brightness(0.6);">
+                            <div class="carousel-caption d-none d-md-block text-start start-0 ps-5 pb-5">
+                                <span class="badge mb-2 px-3 py-2 rounded-pill"
+                                    style="background-color: var(--primary);">System Update</span>
+                                <h2 class="fw-bold text-white">Q3 Security Audit</h2>
+                                <p class="text-white-50">Your monthly security report is ready for download.</p>
+                                <!-- <button class="btn btn-light fw-bold px-4 rounded-3 mt-2">Download PDF</button> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#officeHeroCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon p-3 rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#officeHeroCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon p-3 rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
 
@@ -669,12 +1257,37 @@
         const content = document.getElementById("content");
         const toggleBtn = document.getElementById("toggleSidebar");
 
+        const overlay = document.getElementById("sidebarOverlay");
+
+        function openSidebar() {
+            sidebar.classList.add("show");
+            overlay.classList.add("active");
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove("show");
+            overlay.classList.remove("active");
+        }
+
         toggleBtn.addEventListener("click", () => {
             if (window.innerWidth <= 991) {
-                sidebar.classList.toggle("show");
+                if (sidebar.classList.contains("show")) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
             } else {
                 sidebar.classList.toggle("closed");
                 content.classList.toggle("full");
+            }
+        });
+
+        overlay.addEventListener("click", closeSidebar);
+
+        // Close sidebar when resizing to desktop
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 991) {
+                closeSidebar();
             }
         });
 
@@ -689,6 +1302,11 @@
 
 
         document.addEventListener("DOMContentLoaded", () => {
+            // Hide page loader
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 500);
+
             const counters = document.querySelectorAll('.counter-value');
             const speed = 50; // Adjust this to change the animation duration
 
@@ -741,12 +1359,30 @@
         });
 
         var quill = new Quill('#editor', {
-        modules: {
-            toolbar: '#toolbar'
-        },
-        theme: 'snow',
-        placeholder: 'Compose an epic...'
-    });
+            modules: {
+                toolbar: '#toolbar'
+            },
+            theme: 'snow',
+            placeholder: 'Compose an epic...'
+        });
+
+        document.getElementById('profile-upload').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('profile-preview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Apply a fade effect during update for extra polish
+                    preview.style.opacity = '0';
+                    setTimeout(() => {
+                        preview.src = e.target.result;
+                        preview.style.opacity = '1';
+                    }, 150);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 </body>
 
