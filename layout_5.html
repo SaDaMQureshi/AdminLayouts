@@ -1,0 +1,3820 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.7/css/dataTables.bootstrap5.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        /* ==========================================
+   OFFICE DESIGN SYSTEM (VARIABLES)
+   ========================================== */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-light: rgba(79, 70, 229, 0.08);
+            --primary-hover: #4338ca;
+
+            --bg-main: #f8fafc;
+            --bg-panel: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+
+            --border-color: #e2e8f0;
+            --border-focus: #4f46e5;
+            --border-radius-lg: 16px;
+            --border-radius-md: 10px;
+
+            --shadow-sm: 0 2px 8px -1px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.06);
+            --sidebar-width: 260px;
+        }
+
+        /* ==========================================
+        BASE & STRUCTURE SETUP
+        ========================================== */
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-wrapper.collapsed {
+            margin-left: 0;
+        }
+
+        /* ==========================================
+   SIDEBAR DESIGN SYSTEM
+   ========================================== */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border-color);
+            z-index: 1040;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-icon {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item a i {
+            font-size: 1.2rem;
+        }
+
+        .menu-item:hover>a,
+        .menu-item.active>a {
+            color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        /* ==========================================
+   SIDEBAR SUBMENU EXTENSION
+   ========================================== */
+        .menu-item.has-submenu>a {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .arrow-icon {
+            font-size: 0.75rem !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-muted);
+        }
+
+        .submenu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-left: 1rem;
+        }
+
+        .submenu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 400;
+            border-radius: var(--border-radius-md);
+            transition: all 0.2s ease;
+            margin-top: 0.2rem;
+            background-color: transparent;
+        }
+
+        .submenu li a i {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .submenu li a:hover {
+            color: var(--primary-color) !important;
+            background-color: var(--primary-light) !important;
+        }
+
+        .submenu li a:hover i {
+            color: var(--primary-color);
+        }
+
+        .menu-item.open>.submenu {
+            max-height: 300px;
+        }
+
+        .menu-item.open .arrow-icon {
+            transform: rotate(90deg);
+            color: var(--primary-color);
+        }
+
+        .menu-item.open>a {
+            color: var(--primary-color);
+        }
+
+        /* ==========================================
+   NAVBAR & TIMERS
+   ========================================== */
+        .navbar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            height: 75px;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+
+        .toggle-btn {
+            border: 1px solid var(--border-color);
+            background: var(--bg-panel);
+            border-radius: var(--border-radius-md);
+            color: var(--text-main);
+            padding: 0.5rem 0.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toggle-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .timer-box {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700;
+            color: var(--text-main);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .timer-box i {
+            color: var(--primary-color);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* ==========================================
+   PROFILE SELECTION DROPDOWN
+   ========================================== */
+        .profile-select {
+            cursor: pointer;
+            padding: 0.35rem 0.75rem;
+            border: 1px solid transparent;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+        }
+
+        .profile-select:hover {
+            background: var(--bg-main);
+            border-color: var(--border-color);
+        }
+
+        .profile-img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+
+        .profile-name {
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .profile-role {
+            color: var(--text-muted);
+        }
+
+        .profile-arrow {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ==========================================
+   CUSTOM FORM ELEMENTS & PRIMARY CARDS
+   ========================================== */
+        .primary-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 2.25rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .page-title {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .form-group-custom {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control-custom,
+        .form-select-custom {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .file-input-custom::file-selector-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            margin-right: 1rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s ease;
+        }
+
+        .file-input-custom::file-selector-button:hover {
+            background: var(--primary-hover);
+        }
+
+        .form-control-custom:focus,
+        .form-select-custom:focus {
+            border-color: var(--border-focus);
+            background-color: var(--bg-panel);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .form-select-custom {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px 12px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            transition: all 0.25s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            color: #ffffff;
+        }
+
+        .btn-primary:active {
+            background-color: var(--primary-hover) !important;
+            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.35);
+        }
+
+        /* ==========================================
+        CUSTOM DATATABLES STYLING OVERRIDES
+        ========================================== */
+        .primary-card-header {
+            border-bottom: 1px solid var(--border-color);
+            background-color: rgba(248, 250, 252, 0.4);
+        }
+
+        #officeDataTable {
+            border-collapse: separate !important;
+            border-spacing: 0 4px !important;
+        }
+
+        #officeDataTable thead th {
+            background-color: var(--bg-main) !important;
+            color: var(--text-muted) !important;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none !important;
+            padding: 12px 16px;
+        }
+
+        #officeDataTable tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        #officeDataTable tbody td {
+            padding: 14px 16px !important;
+            border-bottom: 1px solid var(--border-color) !important;
+            color: var(--text-main);
+            font-size: 0.92rem;
+        }
+
+        #officeDataTable tbody tr:hover td {
+            background-color: var(--primary-light) !important;
+        }
+
+        .table-avatar-init {
+            width: 28px;
+            height: 28px;
+            background: var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            /* Keeps the image clipped to the perfect circle */
+        }
+
+        .table-avatar-init img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Prevents image distortion */
+            display: block;
+        }
+
+        .badge-status {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-radius: 30px;
+        }
+
+        .status-active {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .status-onleave {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        /* Clean action dropdown configurations */
+        .table-dropdown-toggle {
+            color: var(--text-main);
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .table-dropdown-menu .dropdown-item {
+            font-size: 0.88rem;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .table-dropdown-menu .dropdown-item i {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .table-dropdown-menu .dropdown-item:hover i {
+            color: inherit;
+        }
+
+        .dataTables_wrapper .dataTables_filter input,
+        .dataTables_wrapper .dataTables_length select {
+            padding: 0.45rem 0.85rem !important;
+            font-size: 0.9rem !important;
+            background-color: var(--bg-main) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--border-radius-md) !important;
+            color: var(--text-main) !important;
+            outline: none !important;
+            transition: all 0.2s ease;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus,
+        .dataTables_wrapper .dataTables_length select:focus {
+            border-color: var(--border-focus) !important;
+            background-color: var(--bg-panel) !important;
+            box-shadow: 0 0 0 3px var(--primary-light) !important;
+        }
+
+
+        .page-link {
+            color: var(--text-main) !important;
+            border-radius: 6px !important;
+            margin: 0 2px;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            box-shadow: none;
+            color: #ffffff !important;
+        }
+
+        .page-link:hover {
+            background-color: var(--primary-light) !important;
+            color: var(--primary-color) !important;
+        }
+
+
+        /* ==========================================
+   BREADCRUMBS DESIGN SYSTEM (WHITE RIGHT-ALIGNED)
+   ========================================== */
+        .breadcrumb-custom {
+            list-style: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 0.6rem 1.2rem;
+        }
+
+        .breadcrumb-item-custom a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .breadcrumb-item-custom a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumb-item-custom a i {
+            font-size: 0.95rem;
+        }
+
+        .breadcrumb-separator {
+            color: var(--text-muted);
+            opacity: 0.4;
+            font-size: 0.72rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .breadcrumb-item-custom.active {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+
+        /* ==========================================
+   SELECT2 DESIGN SYSTEM COMPATIBILITY LAYER
+   ========================================== */
+        .select2-container--default .select2-selection--single,
+        .select2-container--default .select2-selection--multiple {
+            background-color: var(--bg-main) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--border-radius-md) !important;
+            min-height: 45px !important;
+            padding: 0.25rem 0.5rem !important;
+            transition: all 0.2s ease !important;
+            outline: none !important;
+        }
+
+        /* Single select internal rendering element positioning fix */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--text-main) !important;
+            line-height: 35px !important;
+            font-size: 0.95rem !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 43px !important;
+            right: 10px !important;
+        }
+
+        /* Select2 Focus states integration framework matching theme rules */
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: var(--border-focus) !important;
+            background-color: var(--bg-panel) !important;
+            box-shadow: 0 0 0 4px var(--primary-light) !important;
+        }
+
+        /* Multi-Select Interactive Tags styling parameters overrides */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: var(--primary-color) !important;
+            border: none !important;
+            color: white !important;
+            font-size: 0.85rem !important;
+            font-weight: 500 !important;
+            border-radius: 4px !important;
+            padding: 2px 8px !important;
+            margin-top: 6px !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: rgba(255, 255, 255, 0.7) !important;
+            border: none !important;
+            margin-right: 5px !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+            color: white !important;
+            background: transparent !important;
+        }
+
+        /* Open Dropdown options mapping system containers */
+        .select2-dropdown {
+            background-color: var(--bg-panel) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--border-radius-md) !important;
+            box-shadow: var(--shadow-md) !important;
+            overflow: hidden;
+            z-index: 1060 !important;
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid var(--border-color) !important;
+            background-color: var(--bg-main) !important;
+            border-radius: 6px !important;
+            padding: 0.45rem 0.75rem !important;
+            outline: none !important;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+        }
+
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: var(--primary-light) !important;
+            color: var(--primary-color) !important;
+        }
+
+        /* ==========================================
+   ADVANCED EXTRA FORM FIELD INPUTS DESIGN SYSTEM
+   ========================================== */
+
+        /* Date, Month, and Number Browser Custom Overrides */
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="month"]::-webkit-calendar-picker-indicator {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1zm1-3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3H2V1z'/%3e%3c/svg%3e");
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator:hover,
+        input[type="month"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+
+        /* Texture Overrides for Clean Typography Textareas */
+        textarea.form-control-custom {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        /* Custom Uniform Color Input Box */
+        .form-color-custom {
+            appearance: none;
+            -webkit-appearance: none;
+            border: 1px solid var(--border-color);
+            width: 50px;
+            height: 45px;
+            background: none;
+            cursor: pointer;
+            border-radius: var(--border-radius-md);
+            padding: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .form-color-custom::-webkit-color-swatch {
+            border: none;
+            border-radius: 6px;
+        }
+
+        .form-color-custom:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        /* CUSTOM CHECKBOX ARCHITECTURE OVERRIDES */
+        .form-check-custom {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-left: 32px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.92rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .form-check-custom input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 20px;
+            width: 20px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-check-custom:hover input~.checkmark {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .form-check-custom input:checked~.checkmark {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 7px;
+            top: 3px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .form-check-custom input:checked~.checkmark:after {
+            display: block;
+        }
+
+        /* CUSTOM RADIO INTERACTIVE ARCHITECTURE OVERRIDES */
+        .form-radio-custom {
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-left: 32px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.92rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .form-radio-custom input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .radiomark {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 20px;
+            width: 20px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-radio-custom:hover input~.radiomark {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .form-radio-custom input:checked~.radiomark {
+            background-color: var(--bg-panel);
+            border-color: var(--primary-color);
+            border-width: 6px;
+        }
+
+
+        /* ==========================================
+   BADGES & STATUS CHIPS DESIGN SYSTEM
+   ========================================== */
+
+        /* Universal Structural Base Configuration Rules */
+        .badge-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 6px;
+            letter-spacing: 0.25px;
+            transition: all 0.2s ease;
+        }
+
+        /* Rounded Pill Modifier Modification overrides */
+        .badge-pill {
+            border-radius: 50px !important;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* Numeric Count Pill Badges Elements */
+        .badge-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #ffffff;
+            border-radius: 50px;
+            border: 2px solid var(--bg-panel);
+        }
+
+        /* STATUS DOT GENERATORS CORES */
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        /* Color Variables Layer Configuration - Solid Blocks */
+        .bg-solid-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .bg-solid-success {
+            background-color: #10b981;
+            color: #ffffff;
+        }
+
+        .bg-solid-warning {
+            background-color: #f59e0b;
+            color: #ffffff;
+        }
+
+        .bg-solid-danger {
+            background-color: #ef4444;
+            color: #ffffff;
+        }
+
+        .bg-solid-info {
+            background-color: #06b6d4;
+            color: #ffffff;
+        }
+
+        .bg-solid-dark {
+            background-color: var(--text-main);
+            color: #ffffff;
+        }
+
+        /* Color Variables Layer Configuration - Soft Sub-tints */
+        .badge-soft-primary {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .badge-soft-success {
+            background-color: rgba(16, 185, 129, 0.08);
+            color: #10b981;
+        }
+
+        .badge-soft-warning {
+            background-color: rgba(245, 158, 11, 0.08);
+            color: #f59e0b;
+        }
+
+        .badge-soft-danger {
+            background-color: rgba(239, 68, 68, 0.08);
+            color: #ef4444;
+        }
+
+        .badge-soft-info {
+            background-color: rgba(6, 182, 212, 0.08);
+            color: #06b6d4;
+        }
+
+        .badge-soft-dark {
+            background-color: rgba(15, 23, 114, 0.06);
+            color: var(--text-main);
+        }
+
+        /* Dot Specific Color Filters */
+        .dot-success {
+            background-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .dot-warning {
+            background-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        .dot-danger {
+            background-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+
+        /* ==========================================
+   BUTTON ARCHITECTURE DESIGN SYSTEM 
+   ========================================== */
+
+        /* Universal Button Reset and Structural Rules */
+        .btn-primary-custom,
+        .btn-secondary-custom,
+        .btn-success-custom,
+        .btn-danger-custom,
+        .btn-outline-primary-custom,
+        .btn-outline-secondary-custom,
+        .btn-outline-success-custom,
+        .btn-outline-danger-custom {
+            padding: 0.65rem 1.4rem;
+            font-size: 0.92rem;
+            font-weight: 600;
+            border-radius: var(--border-radius-md);
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        /* Base Interaction Modifications */
+        .btn-primary-custom:active,
+        .btn-secondary-custom:active,
+        .btn-success-custom:active,
+        .btn-danger-custom:active {
+            transform: scale(0.98);
+        }
+
+        /* Block Styles Mapping Matrix */
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+
+        .btn-primary-custom:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+            color: #ffffff;
+        }
+
+        .btn-secondary-custom {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary-custom:hover:not(:disabled) {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-success-custom {
+            background-color: #10b981;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .btn-success-custom:hover:not(:disabled) {
+            background-color: #0d9488;
+            color: #ffffff;
+        }
+
+        .btn-danger-custom {
+            background-color: #ef4444;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+        }
+
+        .btn-danger-custom:hover:not(:disabled) {
+            background-color: #dc2626;
+            color: #ffffff;
+        }
+
+        /* Custom warning button matching the theme ecosystem */
+        .btn-warning-custom {
+            background-color: #f59e0b;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+            padding: 0.65rem 1.4rem;
+            font-size: 0.92rem;
+            font-weight: 600;
+            border-radius: var(--border-radius-md);
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-warning-custom:hover {
+            background-color: #d97706;
+            color: #ffffff;
+        }
+
+        .btn-warning-custom:active {
+            transform: scale(0.98);
+        }
+
+        /* Framing Outline Style Configurations */
+        .btn-outline-primary-custom {
+            background: transparent;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline-primary-custom:hover:not(:disabled) {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .btn-outline-secondary-custom {
+            background: transparent;
+            border-color: var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .btn-outline-secondary-custom:hover:not(:disabled) {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+
+        .btn-outline-success-custom {
+            background: transparent;
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .btn-outline-success-custom:hover:not(:disabled) {
+            background-color: rgba(16, 185, 129, 0.05);
+            color: #10b981;
+        }
+
+        .btn-outline-danger-custom {
+            background: transparent;
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .btn-outline-danger-custom:hover:not(:disabled) {
+            background-color: rgba(239, 68, 68, 0.05);
+            color: #ef4444;
+        }
+
+        /* Miniatures & Proportional Variants */
+        .btn-icon-only {
+            width: 42px;
+            height: 42px;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .btn-icon-only i {
+            font-size: 1.1rem;
+        }
+
+        /* Disabled State Filters */
+        .btn-primary-custom:disabled,
+        .btn-outline-success-custom:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Segmented Button Groups Architecture Layer */
+        .btn-group-custom {
+            display: inline-flex;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 4px;
+            border-radius: var(--border-radius-md);
+        }
+
+        .btn-group-item {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 1.1rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-group-item:hover {
+            color: var(--text-main);
+        }
+
+        .btn-group-item.active {
+            background-color: var(--bg-panel);
+            color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ==========================================
+   CARDS & WRAPPERS INFRASTRUCTURE DESIGN SYSTEM 
+   ========================================== */
+
+        /* 1. METRIC STATS CHIP CARD STYLING */
+        .card-metric-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+        }
+
+        .card-metric-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .card-metric-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-metric-value {
+            font-weight: 700;
+            font-size: 1.65rem;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .card-metric-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        /* 2. TASK & OPERATIONS CARD MONITORING PANEL */
+        .card-task-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-progress-bar-track {
+            width: 100%;
+            height: 6px;
+            background-color: var(--bg-main);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .card-progress-bar-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        /* 3. RICH MEDIA GRID AND PORTFOLIO BLOCKS */
+        .card-media-wrapper {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+
+        .card-media-wrapper:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-color);
+        }
+
+        .card-media-img-box {
+            width: 100%;
+            height: 160px;
+            overflow: hidden;
+            background-color: var(--bg-main);
+        }
+
+        .card-media-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-media-wrapper:hover .card-media-img {
+            transform: scale(1.05);
+        }
+
+        .card-link-hover {
+            transition: color 0.2s ease;
+        }
+
+        .card-link-hover:hover {
+            color: var(--primary-color) !important;
+        }
+
+        /* Extra utility variable injection matching primary context button colors */
+        .text-primary-color {
+            color: var(--primary-color) !important;
+        }
+
+        /* ==========================================
+   DASHBOARD CARDS COUNT DESIGN SYSTEM 
+   ========================================== */
+        .card-metric-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+        }
+
+        .card-metric-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .card-metric-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-metric-value {
+            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .card-metric-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+
+        .card-metric-footer {
+            font-size: 0.82rem;
+        }
+
+        /* Base Theme Specific Soft Variables Utility */
+        .bg-soft-primary {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .bg-soft-success {
+            background-color: rgba(16, 185, 129, 0.08);
+            color: #10b981;
+        }
+
+        .bg-soft-warning {
+            background-color: rgba(245, 158, 11, 0.08);
+            color: #f59e0b;
+        }
+
+        .bg-soft-danger {
+            background-color: rgba(239, 68, 68, 0.08);
+            color: #ef4444;
+        }
+
+        /* ==========================================
+   CAROUSEL CORE DESIGN SYSTEM OVERRIDES
+   ========================================== */
+
+        /* Outer Framework Viewport Boundaries */
+        .carousel-img-container {
+            position: relative;
+            width: 100%;
+            height: 440px;
+            /* Uniform programmatic system altitude bounds */
+            background-color: var(--text-main);
+            overflow: hidden;
+        }
+
+        .carousel-img-element {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* Linear Text-Readability Protection Scrim Overlay Vector */
+        .carousel-scrim-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.92) 20%, rgba(15, 23, 42, 0.4) 60%, rgba(15, 23, 42, 0.15) 100%);
+        }
+
+        /* Typography Position Assignments Layer */
+        .carousel-caption-custom {
+            position: absolute;
+            top: 50%;
+            left: 4.5rem;
+            transform: translateY(-50%);
+            width: 50%;
+            z-index: 10;
+            color: #ffffff;
+        }
+
+        .carousel-heading {
+            font-size: 2.15rem;
+            font-weight: 800;
+            letter-spacing: -0.75px;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .carousel-subtext {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 0;
+        }
+
+        /* CUSTOM NAVIGATIONAL BUTTON SHAPES INTERFACES */
+        .carousel-control-custom-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            background-color: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 15;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .carousel-control-custom-btn:hover {
+            background-color: #ffffff;
+            color: var(--text-main);
+            box-shadow: var(--shadow-md);
+        }
+
+        .carousel-control-custom-btn.prev {
+            left: 1.5rem;
+        }
+
+        .carousel-control-custom-btn.next {
+            right: 1.5rem;
+        }
+
+        /* REPOSITIONED POSITION DOT INDICATORS SYSTEM */
+        .carousel-indicators-custom {
+            position: absolute;
+            bottom: 2rem;
+            right: 4.5rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 15;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .carousel-indicators-custom button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.35);
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .carousel-indicators-custom button.active {
+            background-color: var(--primary-color);
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.6);
+        }
+
+        /* Responsive Component Media Corrections */
+        @media (max-width: 992px) {
+            .carousel-caption-custom {
+                width: 75%;
+                left: 3rem;
+            }
+
+            .carousel-indicators-custom {
+                right: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .carousel-img-container {
+                height: 480px;
+            }
+
+            .carousel-scrim-overlay {
+                background: rgba(15, 23, 42, 0.85);
+            }
+
+            .carousel-caption-custom {
+                width: 85%;
+                left: 2rem;
+            }
+
+            .carousel-heading {
+                font-size: 1.65rem;
+            }
+
+            .carousel-control-custom-btn {
+                display: none;
+                /* Safely relies on dynamic swipe touch events on screens under 768px */
+            }
+
+            .carousel-indicators-custom {
+                left: 2rem;
+                right: auto;
+                bottom: 1.5rem;
+            }
+        }
+
+        /* ==========================================
+   COLLAPSE & ACCORDION SYSTEM STYLES
+   ========================================== */
+        .accordion-custom-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            /* Separates the item boxes cleanly */
+        }
+
+        .collapse-item-card {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md) !important;
+            overflow: hidden;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .collapse-item-card:hover {
+            border-color: rgba(79, 70, 229, 0.25);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Header Trigger Interactive Button Elements */
+        .collapse-trigger-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.15rem 1.5rem;
+            background-color: transparent;
+            border: none;
+            outline: none !important;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .collapse-trigger-btn:hover {
+            background-color: var(--bg-main);
+        }
+
+        /* Native Bootstrap State Vector Pointer Rotations */
+        .collapse-arrow-indicator {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* When the trigger button is NOT collapsed (meaning the panel is OPEN) */
+        .collapse-trigger-btn:not(.collapsed) {
+            background-color: var(--primary-light);
+        }
+
+        .collapse-trigger-btn:not(.collapsed) .collapse-arrow-indicator {
+            transform: rotate(180deg);
+            color: var(--primary-color);
+        }
+
+        /* Inner Description Box Properties */
+        .collapse-body-content {
+            padding: 1.25rem 1.5rem 1.5rem 3.25rem;
+            /* Aligns left margin nicely with headings text */
+            border-top: 1px solid var(--border-color);
+            background-color: rgba(248, 250, 252, 0.4);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        /* ==========================================
+   DROPDOWNS & OVERLAYS SYSTEM ARCHITECTURE 
+   ========================================== */
+
+        /* Outer Panel Container Rules Override */
+        .dropdown-menu-custom {
+            background-color: var(--bg-panel) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--border-radius-md) !important;
+            padding: 0.35rem;
+            margin-top: 0.5rem !important;
+            box-shadow: var(--shadow-md) !important;
+            animation: dropdownFadeEntrance 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Individual Selectable Anchor Rows */
+        .dropdown-item-custom {
+            padding: 0.55rem 1rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            transition: all 0.15s ease;
+        }
+
+        .dropdown-item-custom i {
+            font-size: 0.95rem;
+        }
+
+        /* Active and Hover Interaction Injections */
+        .dropdown-item-custom:hover {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+        }
+
+        .dropdown-item-custom.active,
+        .dropdown-item-custom:active {
+            background-color: var(--primary-color) !important;
+            color: #ffffff !important;
+        }
+
+        .dropdown-item-custom.active i,
+        .dropdown-item-custom:active i {
+            color: #ffffff !important;
+        }
+
+        /* Sub-Label Headers Inside Elements */
+        .dropdown-header-custom {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+        }
+
+        /* Divider Line Breaks Rules */
+        .dropdown-divider-custom {
+            border-top: 1px solid var(--border-color);
+            margin: 0.35rem 0;
+            opacity: 1;
+        }
+
+        /* Smooth Entrance Microanimation Event */
+        @keyframes dropdownFadeEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ==========================================
+   HORIZONTAL TABS INTERFACE DESIGN SYSTEM
+   ========================================== */
+        .tabs-navigation-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 0.45rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-tabs-custom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            border-bottom: none !important;
+            /* Cleans up default browser line splits */
+        }
+
+        /* Base Pill Button Items Structures */
+        .nav-link-item {
+            display: flex;
+            align-items: center;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 0.6rem 1.2rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            outline: none !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link-item:hover {
+            color: var(--text-main);
+            background-color: var(--bg-main);
+        }
+
+        /* Active State Styles Triggered by Bootstrap JavaScript engine classes */
+        .nav-link-item.active {
+            color: var(--primary-color) !important;
+            background-color: var(--primary-light) !important;
+            border-color: rgba(79, 70, 229, 0.12) !important;
+        }
+
+        .nav-link-item.active i {
+            color: var(--primary-color) !important;
+        }
+
+        /* Smooth Fade In Transitions Adjustments */
+        .tab-pane.fade {
+            transition: opacity 0.15s linear;
+        }
+
+        /* ==========================================
+   TOAST NOTIFICATION ARCHITECTURE LAYERS
+   ========================================== */
+        .toast-custom-card {
+            background-color: var(--bg-panel) !important;
+            border: 1px solid var(--border-color) !important;
+            border-left: 4px solid transparent;
+            /* Target color overrides handled via border classes */
+            border-radius: var(--border-radius-md) !important;
+            box-shadow: var(--shadow-lg) !important;
+            width: 350px !important;
+            margin-top: 0.75rem;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Toast Header Bar Configurations */
+        .toast-header-custom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Real-Time Status Pulse Vector */
+        .toast-indicator-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            position: relative;
+            animation: toastPulseGlow 2s infinite ease-in-out;
+        }
+
+        /* Message Text Box Body Layer */
+        .toast-body-custom {
+            padding: 1rem;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Minimal Custom Close Action Trigger */
+        .btn-close-toast {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 0.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-close-toast:hover {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+        }
+
+        /* Status Pulse Animation Engine */
+        @keyframes toastPulseGlow {
+            0% {
+                transform: scale(0.9);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.9);
+                opacity: 0.6;
+            }
+        }
+
+        /* Modern Card Layout & Tokens */
+        .todo-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Sleek Clean Scrollbar Track */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Interactive List Row Controls */
+        .widget-todo-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            margin-bottom: 2px;
+        }
+
+        .widget-todo-item:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        /* Native Checkbox Overhaul */
+        .widget-todo-item input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cbd5e1;
+            border-radius: 4px;
+            margin-right: 12px;
+            outline: none;
+            display: inline-grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: #ffffff;
+        }
+
+        .widget-todo-item input[type="checkbox"]::before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            transform: scale(0);
+            transform-origin: center;
+            transition: 120ms transform ease-in-out;
+            background-color: #ffffff;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        .widget-todo-item input[type="checkbox"]:checked {
+            background-color: #4f46e5;
+            /* Modern Indigo Core */
+            border-color: #4f46e5;
+        }
+
+        .widget-todo-item input[type="checkbox"]:checked::before {
+            transform: scale(1);
+        }
+
+        /* Text & Completed Structural States */
+        .widget-todo-item .todo-text {
+            font-size: 0.9rem;
+            color: #334155;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            user-select: none;
+            white-space: wrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 75%;
+        }
+
+        .widget-todo-item.completed {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            opacity: 0.65;
+        }
+
+        .widget-todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: #64748b;
+        }
+
+        /* Trash Action Interface */
+        .todo-delete-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 4px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            opacity: 0;
+        }
+
+        .widget-todo-item:hover .todo-delete-btn {
+            opacity: 1;
+        }
+
+        .todo-delete-btn:hover {
+            color: #ef4444 !important;
+            background: #fee2e2;
+        }
+
+        /* Input Field Polishing */
+        .todo-input-group .form-control {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px 0 0 8px !important;
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+
+        .todo-input-group .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .todo-input-group .btn-add {
+            background: #4f46e5;
+            border: 1px solid #4f46e5;
+            color: #ffffff;
+            border-radius: 0 8px 8px 0 !important;
+            transition: background 0.2s ease;
+        }
+
+        .todo-input-group .btn-add:hover {
+            background: #4338ca;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-building-fill-check brand-icon"></i>
+            <span>NexusOffice</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="#"><i class="bi bi-grid-1x2-fill"></i> <span>Dashboard</span></a>
+            </li>
+
+            <li class="menu-item has-submenu">
+                <a href="javascript:void(0);" class="submenu-toggle">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Employees</span>
+                    <i class="bi bi-chevron-right arrow-icon ms-auto"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#"><i class="bi bi-dot"></i> Team Directory</a></li>
+                    <li><a href="#"><i class="bi bi-dot"></i> Attendance Tracking</a></li>
+                    <li><a href="#"><i class="bi bi-dot"></i> Performance Review</a></li>
+                </ul>
+            </li>
+
+            <li class="menu-item has-submenu">
+                <a href="javascript:void(0);" class="submenu-toggle">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                    <span>Analytics</span>
+                    <i class="bi bi-chevron-right arrow-icon ms-auto"></i>
+                </a>
+                <ul class="submenu">
+                    <li><a href="#"><i class="bi bi-dot"></i> Financial Reports</a></li>
+                    <li><a href="#"><i class="bi bi-dot"></i> Project Velocity</a></li>
+                </ul>
+            </li>
+
+            <li class="menu-item">
+                <a href="#"><i class="bi bi-gear-fill"></i> <span>Settings</span></a>
+            </li>
+        </ul>
+    </aside>
+
+    <div class="main-wrapper" id="mainWrapper">
+
+        <nav class="navbar navbar-expand px-4">
+            <button class="btn toggle-btn" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="ms-auto d-flex align-items-center gap-4">
+                <div class="timer-box d-flex align-items-center gap-2">
+                    <i class="bi bi-clock-history animate-pulse"></i>
+                    <span id="sessionTimer">00:00:00</span>
+                </div>
+
+                <div class="dropdown">
+                    <div class="profile-select d-flex align-items-center gap-2" id="profileDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
+                            alt="Profile" class="profile-img">
+                        <div class="d-none d-md-block">
+                            <h6 class="profile-name">Sarah Jenkins</h6>
+                            <small class="profile-role">HR Director</small>
+                        </div>
+                        <i class="bi bi-chevron-down profile-arrow"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end p-2 mt-2" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item rounded" href="#"><i class="bi bi-person me-2"></i> My Profile</a>
+                        </li>
+                        <li><a class="dropdown-item rounded" href="#"><i class="bi bi-shield-check me-2"></i>
+                                Security</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item rounded text-danger" href="#"><i
+                                    class="bi bi-box-arrow-right me-2"></i> Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Office Suite Navigation Breadcrumb -->
+        <nav aria-label="breadcrumb" class="d-flex justify-content-end">
+            <ol class="breadcrumb-custom d-flex align-items-center gap-2 m-0">
+                <li class="breadcrumb-item-custom">
+                    <a href="#"><i class="bi bi-house-door-fill me-1"></i>Home</a>
+                </li>
+                <li class="breadcrumb-separator">
+                    <i class="bi bi-chevron-right"></i>
+                </li>
+                <li class="breadcrumb-item-custom">
+                    <a href="#">Organization</a>
+                </li>
+                <li class="breadcrumb-separator">
+                    <i class="bi bi-chevron-right"></i>
+                </li>
+                <li class="breadcrumb-item-custom active" aria-current="page">
+                    Employees Registry
+                </li>
+            </ol>
+        </nav>
+
+        <main class="content-body p-2">
+            <div class="container-fluid">
+
+                <!-- Dashboard KPI Metrics Count Grid Section -->
+                <div class="row g-4 mt-2 mb-4">
+
+                    <!-- KPI Card 1: Total Workforce Pool -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card-metric-panel">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="card-metric-title">Total Employees</span>
+                                    <h3 class="card-metric-value">1,248</h3>
+                                </div>
+                                <div class="card-metric-icon bg-soft-primary">
+                                    <i class="bi bi-people-fill"></i>
+                                </div>
+                            </div>
+                            <div class="card-metric-footer mt-3">
+                                <span class="text-success fw-semibold"><i class="bi bi-arrow-up-short"></i> +24
+                                    new</span>
+                                <span class="text-muted ms-1">joined this month</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI Card 2: Attendance Realtime Verification -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card-metric-panel">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="card-metric-title">Present Today</span>
+                                    <h3 class="card-metric-value">1,180</h3>
+                                </div>
+                                <div class="card-metric-icon bg-soft-success">
+                                    <i class="bi bi-person-check-fill"></i>
+                                </div>
+                            </div>
+                            <div class="card-metric-footer mt-3">
+                                <span class="text-success fw-semibold"><i
+                                        class="bi bi-graph-up-arrow text-success small me-1"></i> 94.5%</span>
+                                <span class="text-muted ms-1">average attendance rate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI Card 3: Inactive Operations/On Leave Status -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card-metric-panel">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="card-metric-title">On Leave</span>
+                                    <h3 class="card-metric-value">42</h3>
+                                </div>
+                                <div class="card-metric-icon bg-soft-warning">
+                                    <i class="bi bi-person-dash-fill"></i>
+                                </div>
+                            </div>
+                            <div class="card-metric-footer mt-3">
+                                <span class="text-main fw-semibold">18 Scheduled</span>
+                                <span class="text-muted ms-1">to return next week</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI Card 4: Action Requests Critical Gate -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="card-metric-panel">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="card-metric-title">Pending Approvals</span>
+                                    <h3 class="card-metric-value">15</h3>
+                                </div>
+                                <div class="card-metric-icon bg-soft-danger">
+                                    <i class="bi bi-clock-fill animate-pulse"></i>
+                                </div>
+                            </div>
+                            <div class="card-metric-footer mt-3">
+                                <span
+                                    class="badge-status status-onleave d-inline-flex align-items-center gap-1 py-1 px-2 fw-bold"
+                                    style="font-size: 0.72rem;">
+                                    <i class="bi bi-exclamation-circle-fill"></i> Requires HR Action
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Redesigned High-Density Dashboard Widgets Section -->
+                <div class="row g-4 mt-2">
+
+                    <!-- Widget 1: Minimal Centered Clock Node -->
+                    <div class="col-xl-4 col-md-6">
+                        <div class="primary-card h-100 d-flex flex-column justify-content-between p-4">
+                            <div
+                                class="d-flex align-items-center justify-content-between border-bottom border-light pb-2 mb-3">
+                                <span class="card-metric-title mb-0">Date/Time</span>
+                                <span class="badge-custom badge-soft-primary font-monospace small"><i
+                                        class="bi bi-clock me-1"></i>Live</span>
+                            </div>
+
+                            <!-- Main Numeric Display Canvas Area -->
+                            <div class="text-center py-4">
+                                <h1 class="display-3 fw-bold text-main font-monospace tracking-tight m-0"
+                                    id="widgetLiveClock" style="font-size: 3.5rem;">00:00:00</h1>
+                            </div>
+
+                            <!-- Custom Centered Metadata Layout Footer -->
+                            <div class="pt-3 border-top border-light text-center">
+                                <div class="fs-6 fw-bold text-primary-color font-monospace" id="widgetCenteredCalendar">
+                                    Loading Datetime Node...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="todo-card h-100 d-flex flex-column justify-content-between p-4">
+                            <div>
+                                <!-- Header Layout Component -->
+                                <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3"
+                                    style="border-color: #f1f5f9 !important;">
+                                    <span class="fw-bold text-dark m-0"
+                                        style="font-size: 1rem; letter-spacing: -0.01em;">Operational Tasks</span>
+                                    <span class="badge rounded-pill font-monospace" id="todoCounter"
+                                        style="background: #e0f2fe; color: #0369a1; font-size: 0.75rem; font-weight: 600; padding: 6px 10px;">0/0
+                                        Done</span>
+                                </div>
+
+                                <!-- Scrollable Dynamic Task Injection Container Wrapper -->
+                                <div class="d-flex flex-column gap-2 custom-scroll" id="todoItemsContainer"
+                                    style="max-height: 240px; overflow-y: auto; padding-right: 4px;">
+                                    <!-- JavaScript appends programmatic task nodes here safely -->
+                                </div>
+                            </div>
+
+                            <!-- Task Assembly Construction Input Area Box -->
+                            <div class="pt-3 border-top mt-3" style="border-color: #f1f5f9 !important;">
+                                <form id="todoCreationForm" onsubmit="handleTodoSubmit(event)">
+                                    <div class="input-group todo-input-group">
+                                        <input type="text" class="form-control shadow-none py-2 px-3"
+                                            placeholder="Add assignment..." id="newTodoInput" required
+                                            autocomplete="off">
+                                        <button class="btn btn-add px-3 d-flex align-items-center" type="submit">
+                                            <i class="bi bi-plus-lg fw-bold"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Primary Data Table Card Component -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="primary-card p-0 overflow-hidden">
+                            <div
+                                class="primary-card-header d-flex align-items-center justify-content-between px-4 py-3">
+                                <div>
+                                    <h5 class="card-title mb-1">Employees List</h5>
+                                </div>
+                                <a class="btn btn-primary btn-sm py-2 px-3"><i
+                                        class="bi bi-person-plus-fill me-2"></i>Add Record</a>
+                            </div>
+
+                            <div class="p-4 table-responsive">
+                                <table id="officeDataTable" class="table table-hover w-100 align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>S#</th>
+                                            <th>Full Name</th>
+                                            <th>Department</th>
+                                            <th>Status</th>
+                                            <th>Join Date</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>1</strong></td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2 mb-2">
+                                                    <div class="table-avatar-init">
+                                                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
+                                                            alt="Avatar">
+                                                    </div>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="fw-semibold">Alexander Morgan</span>
+                                                        <small class="text-muted"
+                                                            style="font-size: 0.75rem;">alex.m@nexusoffice.com</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Operations & Strategy</td>
+                                            <td><span class="badge-status status-active">Active</span></td>
+                                            <td>Jan 12, 2024</td>
+                                            <td class="text-center">
+                                                <div class="dropdown d-inline-block">
+                                                    <button class="btn table-dropdown-toggle dropdown-toggle"
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
+                                                    <ul
+                                                        class="dropdown-menu dropdown-menu-end table-dropdown-menu p-2 shadow-sm">
+                                                        <li><a class="dropdown-item rounded" href="#"><i
+                                                                    class="bi bi-eye"></i> View</a></li>
+                                                        <li><a class="dropdown-item rounded" href="#"><i
+                                                                    class="bi bi-pencil-square"></i> Edit</a></li>
+                                                        <li><a class="dropdown-item rounded" href="#"><i
+                                                                    class="bi bi-printer"></i> Print</a></li>
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li><a class="dropdown-item rounded text-danger" href="#"><i
+                                                                    class="bi bi-trash"></i> Delete</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Control Fields -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="primary-card">
+                            <div class="border-bottom border-light pb-3 mb-4">
+                                <h5 class="card-title mb-1">User Profile Configuration</h5>
+                                <p class="text-muted small mb-0">Modify active directory profile variables and clearance
+                                    roles parameters.</p>
+                            </div>
+
+                            <form id="officeDataForm" novalidate>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Full Name</label>
+                                            <input type="text" class="form-control-custom"
+                                                placeholder="e.g. Alexander Morgan">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Corporate Email Address</label>
+                                            <input type="email" class="form-control-custom"
+                                                placeholder="username@nexusoffice.com">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Primary Core Department</label>
+                                            <select class="form-select2-custom w-100" name="department">
+                                                <option value="ops">Operations & Strategy</option>
+                                                <option value="ux">Creative & UX Engineering</option>
+                                                <option value="fin">Finance & Risk Management</option>
+                                                <option value="hr">Human Resources & Culture</option>
+                                                <option value="tech">Systems Technology Stack</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Assigned System Tags (Multi)</label>
+                                            <select class="form-select2-multi-custom w-100" name="tags[]"
+                                                multiple="multiple">
+                                                <option value="tag-admin" selected>Administrator</option>
+                                                <option value="tag-remote">Remote-First</option>
+                                                <option value="tag-lead" selected>Team Lead</option>
+                                                <option value="tag-billing">Billing Access</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Verification Documentation Upload</label>
+                                            <input type="file" class="form-control-custom file-input-custom">
+                                            <div class="form-text text-muted small mt-1">Accepted formats: PDF, PNG,
+                                                JPEG up to 10MB limits.</div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Security Authentication Key
+                                                (Password)</label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control-custom pe-5"
+                                                    placeholder="••••••••••••" id="userAccessPassword">
+                                                <button type="button"
+                                                    class="btn position-absolute end-0 top-50 translate-middle-y border-0 text-muted px-3"
+                                                    onclick="togglePasswordVisibility()"><i
+                                                        class="bi bi-eye-fill"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Allocated Station Key Node (Number)</label>
+                                            <input type="number" class="form-control-custom" min="1" max="999"
+                                                placeholder="e.g. 104">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Activation Date Baseline</label>
+                                            <input type="date" class="form-control-custom">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Operational Target Schedule (Month)</label>
+                                            <input type="month" class="form-control-custom">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Interface Accent Profiler (Color)</label>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input type="color" class="form-color-custom" value="#4f46e5">
+                                                <span class="small text-muted font-monospace">Selected Element
+                                                    Hex</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Workspace Authorization Clearances
+                                                (Checkboxes)</label>
+                                            <div class="d-flex flex-column gap-2 mt-1">
+                                                <label class="form-check-custom">
+                                                    <input type="checkbox" checked>
+                                                    <span class="checkmark"></span>
+                                                    <span class="label-text">Master Encryption Core Access</span>
+                                                </label>
+                                                <label class="form-check-custom">
+                                                    <input type="checkbox">
+                                                    <span class="checkmark"></span>
+                                                    <span class="label-text">Financial Analytics & Ledgers</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Operational Shift Rotations Parameters
+                                                (Radio)</label>
+                                            <div class="d-flex flex-column gap-2 mt-1">
+                                                <label class="form-radio-custom">
+                                                    <input type="radio" name="shiftPreference" checked>
+                                                    <span class="radiomark"></span>
+                                                    <span class="label-text">Standard Hybrid Corporate Allocation</span>
+                                                </label>
+                                                <label class="form-radio-custom">
+                                                    <input type="radio" name="shiftPreference">
+                                                    <span class="radiomark"></span>
+                                                    <span class="label-text">Continuous Overnight Operations
+                                                        Matrix</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-group-custom">
+                                            <label class="form-label-custom">Profile Operational Summary & Context Notes
+                                                (Textarea)</label>
+                                            <textarea class="form-control-custom" rows="4"
+                                                placeholder="Describe the profile scope, specialized clearings, and core professional milestones..."></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top border-light">
+                                    <button type="button" class="btn btn-light px-4 py-2"
+                                        style="border-radius: var(--border-radius-md); font-weight: 600; font-size: 0.95rem;">Cancel</button>
+                                    <button type="submit" class="btn btn-primary px-4 py-2"><i
+                                            class="bi bi-cloud-arrow-up-fill me-2"></i>Save Configurations</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Badges Showcase Card Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="primary-card">
+                            <!-- Card Header Configuration -->
+                            <div class="border-bottom border-light pb-3 mb-4">
+                                <h5 class="card-title mb-1">Status Badges & Indicators Matrix</h5>
+                                <p class="text-muted small mb-0">System tokens used for visual classification, state
+                                    changes, and numeric tracking indicators.</p>
+                            </div>
+
+                            <div class="d-flex flex-column gap-4">
+
+                                <!-- Section 1: Standard Solid Badges -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Standard Solid Status Badges</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge-custom bg-solid-primary">Primary State</span>
+                                        <span class="badge-custom bg-solid-success">Success Verified</span>
+                                        <span class="badge-custom bg-solid-warning">Warning Alert</span>
+                                        <span class="badge-custom bg-solid-danger">Critical Failure</span>
+                                        <span class="badge-custom bg-solid-info">System Info</span>
+                                        <span class="badge-custom bg-solid-dark">Archived</span>
+                                    </div>
+                                </div>
+
+                                <!-- Section 2: Premium Soft/Subtle Tint Badges -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Premium Soft Subtle Tint Badges</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge-custom badge-soft-primary">Active Channel</span>
+                                        <span class="badge-custom badge-soft-success">Completed Run</span>
+                                        <span class="badge-custom badge-soft-warning">Pending Review</span>
+                                        <span class="badge-custom badge-soft-danger">Rejected Entry</span>
+                                        <span class="badge-custom badge-soft-info">New Update</span>
+                                        <span class="badge-custom badge-soft-dark">Draft Mode</span>
+                                    </div>
+                                </div>
+
+                                <!-- Section 3: Pill Style Badges (Rounded) -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Rounded Pill Variations</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge-custom badge-pill bg-solid-primary">User Role</span>
+                                        <span class="badge-custom badge-pill badge-soft-success">Online Sync</span>
+                                        <span class="badge-custom badge-pill badge-soft-warning">Escalated</span>
+                                        <span class="badge-custom badge-pill badge-soft-danger">Suspended</span>
+                                    </div>
+                                </div>
+
+                                <!-- Section 4: Interactive/Dot Indicators -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Interactive Dot Status Rows</h6>
+                                    <div class="d-flex flex-wrap gap-4">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="status-dot dot-success animate-pulse"></span>
+                                            <span class="small fw-semibold text-main">Production Core Stable</span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="status-dot dot-warning"></span>
+                                            <span class="small fw-semibold text-main">High API Latency Detected</span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="status-dot dot-danger animate-pulse"></span>
+                                            <span class="small fw-semibold text-main">Hardware Node Failure</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 5: Numeric Notification Tags -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Notification Count Metrics</h6>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <button type="button"
+                                            class="btn btn-light position-relative py-2 px-3 border border-light"
+                                            style="border-radius: var(--border-radius-md);">
+                                            <i class="bi bi-bell-fill text-muted"></i> Inbox Messages
+                                            <span
+                                                class="position-absolute top-0 start-100 translate-middle badge-count bg-solid-danger">99+</span>
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-light position-relative py-2 px-3 border border-light"
+                                            style="border-radius: var(--border-radius-md);">
+                                            <i class="bi bi-git text-muted"></i> Pull Requests
+                                            <span
+                                                class="position-absolute top-0 start-100 translate-middle badge-count bg-solid-primary">12</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Buttons Matrix Showcase Card Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="primary-card">
+                            <!-- Card Header Configuration -->
+                            <div class="border-bottom border-light pb-3 mb-4">
+                                <h5 class="card-title mb-1">Button Actions & Operations Matrix</h5>
+                                <p class="text-muted small mb-0">Standard interactive triggers used for state
+                                    submissions, destructive commands, panel overrides, and inline micro-actions.</p>
+                            </div>
+
+                            <div class="d-flex flex-column gap-4">
+
+                                <!-- Section 1: Standard Brand State Actions -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Core Theme Actions</h6>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <button type="button" class="btn btn-primary-custom">Primary Slate</button>
+                                        <button type="button" class="btn btn-secondary-custom">Secondary
+                                            Neutral</button>
+                                        <button type="button" class="btn btn-success-custom">Success Commit</button>
+                                        <button type="button" class="btn btn-danger-custom">Destructive Event</button>
+                                    </div>
+                                </div>
+
+                                <!-- Section 2: Muted Outline Framing Styles -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Muted Outline Framing</h6>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <button type="button" class="btn btn-outline-primary-custom">Outline
+                                            Primary</button>
+                                        <button type="button" class="btn btn-outline-secondary-custom">Outline
+                                            Neutral</button>
+                                        <button type="button" class="btn btn-outline-success-custom">Verification
+                                            Frame</button>
+                                        <button type="button" class="btn btn-outline-danger-custom">Isolation
+                                            Warning</button>
+                                    </div>
+                                </div>
+
+                                <!-- Section 3: Icon Alignment Formats -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Icon Pairings & Miniatures</h6>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <button type="button" class="btn btn-primary-custom"><i
+                                                class="bi bi-cloud-arrow-up-fill me-2"></i>Deployment Upload</button>
+                                        <button type="button" class="btn btn-outline-secondary-custom"><i
+                                                class="bi bi-download me-2"></i>Export Logs</button>
+                                        <button type="button" class="btn btn-secondary-custom btn-icon-only"
+                                            aria-label="Refresh Registry"><i class="bi bi-arrow-clockwise"></i></button>
+                                        <button type="button" class="btn btn-danger-custom btn-icon-only"
+                                            aria-label="Delete Record"><i class="bi bi-trash3-fill"></i></button>
+                                    </div>
+                                </div>
+
+                                <!-- Section 4: Dynamic Working States -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Asynchronous Processing States</h6>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <button type="button" class="btn btn-primary-custom" disabled>
+                                            <span class="spinner-border spinner-border-sm me-2" role="status"
+                                                aria-hidden="true"></span>
+                                            Syncing Directories...
+                                        </button>
+                                        <button type="button" class="btn btn-outline-success-custom" disabled>
+                                            <i class="bi bi-check-circle-fill me-2"></i>Operation Complete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Section 5: Anchored Group Frameworks -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Anchored Segment Groups</h6>
+                                    <div class="btn-group-custom" role="group" aria-label="Data Filter Sorting Stack">
+                                        <button type="button" class="btn-group-item active">Daily Grid</button>
+                                        <button type="button" class="btn-group-item">Weekly Block</button>
+                                        <button type="button" class="btn-group-item">Monthly Ledger</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Archetype Systems Showcase Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <!-- Structural Base Wrapper -->
+                        <div class="primary-card">
+                            <!-- Card Header Configuration -->
+                            <div class="border-bottom border-light pb-3 mb-4">
+                                <h5 class="card-title mb-1">Structural Cards & Panels Matrix</h5>
+                                <p class="text-muted small mb-0">Standard content wrapper blocks used for systemic
+                                    dashboards, statistical summaries, data visualizations, and project monitoring
+                                    grids.</p>
+                            </div>
+
+                            <div class="d-flex flex-column gap-5">
+
+                                <!-- 1. Stats Counters Grid Matrix Row -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Metric KPI Panels Rows</h6>
+                                    <div class="row g-4">
+                                        <!-- Stat Item 1 -->
+                                        <div class="col-sm-6 col-xl-3">
+                                            <div class="card-metric-panel">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <span class="card-metric-title">Active Deployments</span>
+                                                        <h3 class="card-metric-value">1,482</h3>
+                                                    </div>
+                                                    <div class="card-metric-icon bg-soft-primary">
+                                                        <i class="bi bi-cloud-check-fill"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="card-metric-footer mt-3">
+                                                    <span class="text-success fw-semibold"><i
+                                                            class="bi bi-arrow-up-short"></i> +12.4%</span>
+                                                    <span class="text-muted ms-1">since last cycle</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Stat Item 2 -->
+                                        <div class="col-sm-6 col-xl-3">
+                                            <div class="card-metric-panel">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <span class="card-metric-title">Resource Utilization</span>
+                                                        <h3 class="card-metric-value">87.4%</h3>
+                                                    </div>
+                                                    <div class="card-metric-icon bg-soft-success">
+                                                        <i class="bi bi-cpu-fill"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="card-metric-footer mt-3">
+                                                    <span class="text-success fw-semibold"><i
+                                                            class="bi bi-arrow-up-short"></i> +3.1%</span>
+                                                    <span class="text-muted ms-1">system optimization</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Stat Item 3 -->
+                                        <div class="col-sm-6 col-xl-3">
+                                            <div class="card-metric-panel">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <span class="card-metric-title">API Response Latency</span>
+                                                        <h3 class="card-metric-value">240ms</h3>
+                                                    </div>
+                                                    <div class="card-metric-icon bg-soft-warning">
+                                                        <i class="bi bi-lightning-charge-fill"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="card-metric-footer mt-3">
+                                                    <span class="text-danger fw-semibold"><i
+                                                            class="bi bi-arrow-down-short"></i> -14.2%</span>
+                                                    <span class="text-muted ms-1">faster load bounds</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Stat Item 4 -->
+                                        <div class="col-sm-6 col-xl-3">
+                                            <div class="card-metric-panel">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <span class="card-metric-title">Critical Cluster
+                                                            Anomalies</span>
+                                                        <h3 class="card-metric-value">2</h3>
+                                                    </div>
+                                                    <div class="card-metric-icon bg-soft-danger">
+                                                        <i class="bi bi-exclamation-octagon-fill"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="card-metric-footer mt-3">
+                                                    <span
+                                                        class="badge-status status-active d-inline-flex align-items-center gap-1 py-1"><span
+                                                            class="status-dot dot-success"></span> Running
+                                                        Diagnostics</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Split Task & Action Tracking Grid -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Monitoring & Operational Trackers</h6>
+                                    <div class="row g-4">
+                                        <!-- Task Card Left -->
+                                        <div class="col-lg-6">
+                                            <div class="card-task-panel">
+                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                    <span class="badge-custom badge-soft-primary">Core
+                                                        infrastructure</span>
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-link text-muted p-0 border-0"
+                                                            type="button" data-bs-toggle="dropdown"><i
+                                                                class="bi bi-three-dots-vertical"></i></button>
+                                                        <ul class="dropdown-menu dropdown-menu-end p-2 shadow-sm fs-7">
+                                                            <li><a class="dropdown-item rounded" href="#"><i
+                                                                        class="bi bi-pencil me-2"></i>Edit
+                                                                    Configuration</a></li>
+                                                            <li><a class="dropdown-item rounded text-danger" href="#"><i
+                                                                        class="bi bi-pause-circle me-2"></i>Halt
+                                                                    Stream</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <h5 class="fw-bold mb-1">Database Sharding Allocation</h5>
+                                                <p class="text-muted small mb-4">Migrating primary customer data arrays
+                                                    to decentralized relational regional cloud structures.</p>
+
+                                                <div class="mb-4">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="small font-monospace text-muted">Migration
+                                                            Progress</span>
+                                                        <span class="small fw-bold text-main">74% Complete</span>
+                                                    </div>
+                                                    <div class="card-progress-bar-track">
+                                                        <div class="card-progress-bar-fill" style="width: 74%;"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    class="d-flex align-items-center justify-content-between pt-2 border-top border-light">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <div class="table-avatar-init">AM</div>
+                                                        <div class="table-avatar-init">BR</div>
+                                                        <span class="small text-muted font-monospace">+3
+                                                            engineers</span>
+                                                    </div>
+                                                    <small class="text-muted fw-medium"><i
+                                                            class="bi bi-calendar4-week me-1"></i>Due June 15</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Info Showcase Card Right -->
+                                        <div class="col-lg-6">
+                                            <div
+                                                class="card-task-panel bg-solid-primary text-muted position-relative overflow-hidden d-flex flex-column justify-content-between h-100">
+                                                <!-- Abstract decorative background element layout vector shape -->
+                                                <div class="position-absolute opacity-10 end-0 bottom-0 pointer-events-none translate-middle-x"
+                                                    style="font-size: 11rem; line-height: 0; margin-bottom: -40px;"><i
+                                                        class="bi bi-shield-lock-fill"></i></div>
+
+                                                <div>
+                                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                                        <i class="bi bi-shield-fill-check text-white fs-4"></i>
+                                                        <span
+                                                            class="small fw-bold text-uppercase tracking-wider">Enterprise
+                                                            Integrity Guard</span>
+                                                    </div>
+                                                    <h4 class="fw-bold mb-2">Automated Security Auditing Protocol is
+                                                        Active</h4>
+                                                    <p class="text-muted-50 small mb-0">System configuration endpoints
+                                                        are being continuously audited under compliance standards
+                                                        criteria. No security violations are recorded.</p>
+                                                </div>
+                                                <div class="mt-4 pt-3">
+                                                    <button
+                                                        class="btn btn-light text-primary-color fw-bold py-2 px-4 border-0"
+                                                        style="border-radius: var(--border-radius-md); font-size: 0.9rem;">Review
+                                                        Node Vault</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Rich Media Grid Row Blocks -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Rich Media Content Items</h6>
+                                    <div class="row g-4">
+                                        <div class="col-md-4">
+                                            <div class="card-media-wrapper">
+                                                <div class="card-media-img-box">
+                                                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80"
+                                                        alt="Workspaces Infrastructure" class="card-media-img">
+                                                </div>
+                                                <div class="p-3">
+                                                    <small class="text-muted font-monospace d-block mb-1">Systems
+                                                        Integration • 4 min read</small>
+                                                    <h6 class="fw-bold text-main mb-2"><a href="#"
+                                                            class="text-decoration-none text-main card-link-hover">Configuring
+                                                            Unified Developer Containers</a></h6>
+                                                    <p class="text-muted small mb-0">An architectural overview of modern
+                                                        container isolation profiles inside scalable sandboxed virtual
+                                                        ecosystems.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card-media-wrapper">
+                                                <div class="card-media-img-box">
+                                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=80"
+                                                        alt="Data Analytics Visualization" class="card-media-img">
+                                                </div>
+                                                <div class="p-3">
+                                                    <small class="text-muted font-monospace d-block mb-1">Financial
+                                                        Ledgers • 6 min read</small>
+                                                    <h6 class="fw-bold text-main mb-2"><a href="#"
+                                                            class="text-decoration-none text-main card-link-hover">Real-Time
+                                                            Ledger Audit Workflows</a></h6>
+                                                    <p class="text-muted small mb-0">Streamlining high-throughput
+                                                        financial audits via concurrent ledger pipelines and
+                                                        cryptographic validation engines.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card-media-wrapper">
+                                                <div class="card-media-img-box">
+                                                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=400&q=80"
+                                                        alt="UI Kit Assets Architecture" class="card-media-img">
+                                                </div>
+                                                <div class="p-3">
+                                                    <small class="text-muted font-monospace d-block mb-1">UX Engineering
+                                                        • 3 min read</small>
+                                                    <h6 class="fw-bold text-main mb-2"><a href="#"
+                                                            class="text-decoration-none text-main card-link-hover">Designing
+                                                            Consistent Component APIs</a></h6>
+                                                    <p class="text-muted small mb-0">Standardizing interface contracts,
+                                                        dynamic typography scales, and CSS variable bindings across
+                                                        multiple cross-functional sub-panels.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Carousel Systems Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="primary-card p-0 overflow-hidden">
+
+                            <!-- Structural Carousel Parent Context -->
+                            <div id="nexusOfficeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel"
+                                data-bs-interval="6000">
+
+                                <!-- Slide Location Position Dot Indicators -->
+                                <div class="carousel-indicators-custom">
+                                    <button type="button" data-bs-target="#nexusOfficeCarousel" data-bs-slide-to="0"
+                                        class="active" aria-current="true" aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#nexusOfficeCarousel" data-bs-slide-to="1"
+                                        aria-label="Slide 2"></button>
+                                    <button type="button" data-bs-target="#nexusOfficeCarousel" data-bs-slide-to="2"
+                                        aria-label="Slide 3"></button>
+                                </div>
+
+                                <!-- Carousel Inner Image/Content Wrappers -->
+                                <div class="carousel-inner">
+
+                                    <!-- Slide Segment 1 (Active) -->
+                                    <div class="carousel-item active">
+                                        <div class="carousel-img-container">
+                                            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80"
+                                                class="carousel-img-element" alt="Corporate HQ Facility">
+                                            <div class="carousel-scrim-overlay"></div>
+                                        </div>
+                                        <div class="carousel-caption-custom">
+                                            <span class="badge-custom badge-soft-primary mb-3">Facility
+                                                Operations</span>
+                                            <h2 class="carousel-heading">Next-Gen Hybrid Collaboration Hub Openings</h2>
+                                            <p class="carousel-subtext">The main floor corporate workspaces have been
+                                                systematically retrofitted with smart environmental controllers and
+                                                unified video routing arrays.</p>
+                                            <div class="mt-4">
+                                                <a href="#"
+                                                    class="btn btn-primary-custom py-2 px-4 text-decoration-none">View
+                                                    Access Guidelines</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Slide Segment 2 -->
+                                    <div class="carousel-item">
+                                        <div class="carousel-img-container">
+                                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80"
+                                                class="carousel-img-element" alt="Cloud Cluster Deployment">
+                                            <div class="carousel-scrim-overlay"></div>
+                                        </div>
+                                        <div class="carousel-caption-custom">
+                                            <span class="badge-custom badge-soft-success mb-3">Systems Status</span>
+                                            <h2 class="carousel-heading">Infrastructure Migration to Quantum Nodes</h2>
+                                            <p class="carousel-subtext">Database clustering systems completed their
+                                                cross-regional syncing schedules ahead of target windows, resulting in
+                                                an immediate latency reduction.</p>
+                                            <div class="mt-4">
+                                                <a href="#"
+                                                    class="btn btn-success-custom py-2 px-4 text-decoration-none"><i
+                                                        class="bi bi-terminal-fill me-2"></i>Review Live Metrics</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Slide Segment 3 -->
+                                    <div class="carousel-item">
+                                        <div class="carousel-img-container">
+                                            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80"
+                                                class="carousel-img-element" alt="Engineering Team Meetup">
+                                            <div class="carousel-scrim-overlay"></div>
+                                        </div>
+                                        <div class="carousel-caption-custom">
+                                            <span class="badge-custom badge-soft-warning mb-3">Culture &
+                                                Development</span>
+                                            <h2 class="carousel-heading">Annual Engineering Summit Schedule Released
+                                            </h2>
+                                            <p class="carousel-subtext">Registration thresholds for technical track labs
+                                                and workshop sessions are now available for core software development
+                                                teams.</p>
+                                            <div class="mt-4">
+                                                <a href="#"
+                                                    class="btn btn-secondary-custom py-2 px-4 text-decoration-none">Check
+                                                    Itinerary</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Navigational Direction Arrow Triggers -->
+                                <button class="carousel-control-custom-btn prev" type="button"
+                                    data-bs-target="#nexusOfficeCarousel" data-bs-slide="prev">
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                                <button class="carousel-control-custom-btn next" type="button"
+                                    data-bs-target="#nexusOfficeCarousel" data-bs-slide="next">
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Accordion & Collapse Systems Showcase Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="primary-card">
+
+                            <!-- Card Header Configuration -->
+                            <div class="border-bottom border-light pb-3 mb-4">
+                                <h5 class="card-title mb-1">System Architecture Documentation (Collapse)</h5>
+                                <p class="text-muted small mb-0">Collapsible content panels used for nested information
+                                    hierarchies, policy guidelines, and dense technical reference repositories.</p>
+                            </div>
+
+                            <!-- Custom Accordion Wrapper Group -->
+                            <div class="accordion-custom-group" id="systemDocumentationAccordion">
+
+                                <!-- Collapse Panel Item 1 -->
+                                <div class="collapse-item-card">
+                                    <button class="collapse-trigger-btn collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#panelSecurityVault"
+                                        aria-expanded="false" aria-controls="panelSecurityVault">
+                                        <span class="d-flex align-items-center gap-3">
+                                            <i class="bi bi-shield-lock-fill text-primary-color fs-5"></i>
+                                            <span class="fw-bold text-main text-start">Dynamic Encryption Key Lifecycle
+                                                Management</span>
+                                        </span>
+                                        <i class="bi bi-chevron-down collapse-arrow-indicator"></i>
+                                    </button>
+                                    <div id="panelSecurityVault" class="collapse"
+                                        data-bs-parent="#systemDocumentationAccordion">
+                                        <div class="collapse-body-content">
+                                            <p class="text-muted mb-3">All production database endpoints utilize a
+                                                dynamic, rotating multi-tenant encryption standard ($AES-256$).
+                                                Cryptographic keys are updated automatically every twenty-four hours via
+                                                automated cluster orchestration tasks.</p>
+                                            <div class="badge-custom badge-soft-success"><i
+                                                    class="bi bi-shield-check me-1"></i> ISO 27001 Compliant</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Collapse Panel Item 2 -->
+                                <div class="collapse-item-card">
+                                    <button class="collapse-trigger-btn collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#panelLoadBalancing"
+                                        aria-expanded="false" aria-controls="panelLoadBalancing">
+                                        <span class="d-flex align-items-center gap-3">
+                                            <i class="bi bi-diagram-3-fill text-success fs-5"></i>
+                                            <span class="fw-bold text-main text-start">Edge Network Router & Load
+                                                Balancing Pools</span>
+                                        </span>
+                                        <i class="bi bi-chevron-down collapse-arrow-indicator"></i>
+                                    </button>
+                                    <div id="panelLoadBalancing" class="collapse"
+                                        data-bs-parent="#systemDocumentationAccordion">
+                                        <div class="collapse-body-content">
+                                            <p class="text-muted mb-0">Incoming traffic flows map across distributed
+                                                regional gateway routers. If processing load levels on a single cloud
+                                                cluster instance climb above $80\%$, excess user request pipelines are
+                                                automatically shifted to backup nodes to ensure $99.99\%$ continuous
+                                                application uptime baseline values.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Collapse Panel Item 3 -->
+                                <div class="collapse-item-card">
+                                    <button class="collapse-trigger-btn collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#panelBackupPolicy"
+                                        aria-expanded="false" aria-controls="panelBackupPolicy">
+                                        <span class="d-flex align-items-center gap-3">
+                                            <i class="bi bi-cloud-arrow-down-fill text-warning fs-5"></i>
+                                            <span class="fw-bold text-main text-start">Data Retention & Disaster
+                                                Recovery Procedures</span>
+                                        </span>
+                                        <i class="bi bi-chevron-down collapse-arrow-indicator"></i>
+                                    </button>
+                                    <div id="panelBackupPolicy" class="collapse"
+                                        data-bs-parent="#systemDocumentationAccordion">
+                                        <div class="collapse-body-content">
+                                            <p class="text-muted mb-3">System file state checkpoints are logged hourly
+                                                and stored safely inside decoupled cold-storage buckets. Full cluster
+                                                disaster recovery routines are triggered within three minutes of a
+                                                verified infrastructure failure event.</p>
+                                            <a href="#"
+                                                class="small text-decoration-none fw-semibold text-primary-color">Download
+                                                Disaster Recovery Blueprints <i class="bi bi-arrow-right small"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary Dropdown Systems Showcase Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="primary-card">
+
+                            <!-- Card Header Configuration -->
+                            <div class="border-bottom border-light pb-3 mb-4">
+                                <h5 class="card-title mb-1">Interactive Dropdown & Contextual Menus Matrix</h5>
+                                <p class="text-muted small mb-0">Standard toggle panels used for functional operations,
+                                    advanced filters, dynamic context choices, and settings overlays.</p>
+                            </div>
+
+                            <div class="d-flex flex-column gap-5">
+
+                                <!-- 1. Context Menu Variations -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Contextual Operations Rows</h6>
+                                    <div class="d-flex flex-wrap gap-3">
+
+                                        <!-- Menu Standard Left -->
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary-custom dropdown-toggle" type="button"
+                                                id="actionsMenuDropdown" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <i class="bi bi-gear-fill me-2 text-muted"></i>Settings Action Panel
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-custom shadow-md"
+                                                aria-labelledby="actionsMenuDropdown">
+                                                <li>
+                                                    <h6 class="dropdown-header-custom">Deployment Options</h6>
+                                                </li>
+                                                <li><a class="dropdown-item dropdown-item-custom active" href="#"><i
+                                                            class="bi bi-play-circle me-2"></i>Trigger Live Sync</a>
+                                                </li>
+                                                <li><a class="dropdown-item dropdown-item-custom" href="#"><i
+                                                            class="bi bi-arrow-repeat me-2"></i>Rollback Last Commit</a>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider-custom">
+                                                </li>
+                                                <li>
+                                                    <h6 class="dropdown-header-custom">Danger Control Zonal</h6>
+                                                </li>
+                                                <li><a class="dropdown-item dropdown-item-custom text-danger"
+                                                        href="#"><i class="bi bi-trash3-fill me-2"></i>Purge
+                                                        Directory</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Split Button Variant -->
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-primary-custom"><i
+                                                    class="bi bi-cloud-arrow-down-fill me-2"></i>Download Logs</button>
+                                            <button type="button"
+                                                class="btn btn-primary-custom dropdown-toggle dropdown-toggle-split px-2"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="visually-hidden">Toggle Dropdown Split</span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-custom shadow-md">
+                                                <li><a class="dropdown-item dropdown-item-custom" href="#">Export JSON
+                                                        Schema</a></li>
+                                                <li><a class="dropdown-item dropdown-item-custom" href="#">Export CSV
+                                                        Spreadsheet</a></li>
+                                                <li><a class="dropdown-item dropdown-item-custom" href="#">Plain Text
+                                                        Raw Format</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- 2. Dense Filters with Form Selectors -->
+                                <div>
+                                    <h6 class="form-label-custom mb-3">Advanced Checkbox Filter Overlays</h6>
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary-custom dropdown-toggle" type="button"
+                                            id="filterCriteriaDropdown" data-bs-toggle="dropdown"
+                                            data-bs-auto-close="outside" aria-expanded="false">
+                                            <i class="bi bi-filter-square me-2"></i>Filter Team Rosters
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-custom p-3 shadow-md"
+                                            style="width: 260px;" aria-labelledby="filterCriteriaDropdown">
+                                            <h6
+                                                class="dropdown-header-custom px-0 pt-0 pb-2 border-bottom border-light mb-2">
+                                                Select Cluster Regions</h6>
+
+                                            <div class="form-check custom-checkbox mb-2">
+                                                <input class="form-check-input" type="checkbox" id="checkNorth" checked>
+                                                <label class="form-check-label text-main small fw-medium"
+                                                    for="checkNorth">North America East (NA-E)</label>
+                                            </div>
+                                            <div class="form-check custom-checkbox mb-2">
+                                                <input class="form-check-input" type="checkbox" id="checkEuro">
+                                                <label class="form-check-label text-main small fw-medium"
+                                                    for="checkEuro">Europe West Central (EU-W)</label>
+                                            </div>
+                                            <div class="form-check custom-checkbox mb-3">
+                                                <input class="form-check-input" type="checkbox" id="checkAsia" checked>
+                                                <label class="form-check-label text-main small fw-medium"
+                                                    for="checkAsia">Asia Pacific South (AP-S)</label>
+                                            </div>
+
+                                            <div class="d-flex gap-2 pt-2 border-top border-light">
+                                                <button type="button"
+                                                    class="btn btn-primary-custom w-100 py-1 px-2 fs-7">Apply
+                                                    Filters</button>
+                                                <button type="button"
+                                                    class="btn btn-secondary-custom w-100 py-1 px-2 fs-7">Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Native Horizontal Tabs Interface System -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <!-- Tab Navigation Row (Stays flat, non-scrolling) -->
+                        <div class="tabs-navigation-panel">
+                            <ul class="nav nav-tabs-custom" id="workspaceTabsDeck" role="tablist">
+
+                                <!-- Tab Trigger 1 -->
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link-item active" id="tabNodeOverview" data-bs-toggle="tab"
+                                        data-bs-target="#panelNodeOverview" type="button" role="tab"
+                                        aria-controls="panelNodeOverview" aria-selected="true">
+                                        <i class="bi bi-grid-fill me-2"></i>Cluster Overview
+                                    </button>
+                                </li>
+
+                                <!-- Tab Trigger 2 -->
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link-item" id="tabNodeMetrics" data-bs-toggle="tab"
+                                        data-bs-target="#panelNodeMetrics" type="button" role="tab"
+                                        aria-controls="panelNodeMetrics" aria-selected="false">
+                                        <i class="bi bi-cpu-fill me-2"></i>Performance Metrics
+                                    </button>
+                                </li>
+
+                                <!-- Tab Trigger 3 -->
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link-item" id="tabNodeSecurity" data-bs-toggle="tab"
+                                        data-bs-target="#panelNodeSecurity" type="button" role="tab"
+                                        aria-controls="panelNodeSecurity" aria-selected="false">
+                                        <i class="bi bi-shield-lock-fill me-2"></i>Security Policy
+                                    </button>
+                                </li>
+
+                                <!-- Tab Trigger 4 -->
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link-item" id="tabNodeLogs" data-bs-toggle="tab"
+                                        data-bs-target="#panelNodeLogs" type="button" role="tab"
+                                        aria-controls="panelNodeLogs" aria-selected="false">
+                                        <i class="bi bi-terminal-fill me-2"></i>System Logs
+                                    </button>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <!-- Tab Content Master Container Wrapper -->
+                        <div class="tab-content" id="workspaceTabsDeckContent">
+
+                            <!-- Panel Content 1: Overview (Active by Default) -->
+                            <div class="tab-pane fade show active" id="panelNodeOverview" role="tabpanel"
+                                aria-labelledby="tabNodeOverview">
+                                <div class="primary-card">
+                                    <div class="border-bottom border-light pb-3 mb-3">
+                                        <span class="badge-custom badge-soft-primary mb-2">System Space Alpha</span>
+                                        <h5 class="card-title">Cluster Overview Architecture</h5>
+                                    </div>
+                                    <p class="text-muted leading-relaxed mb-0">This production runtime framework
+                                        provisions decentralized virtualization layers across segmented bare-metal
+                                        computing resources. The local environment manages node registration sequences,
+                                        data routing meshes, and memory state optimization queues natively.</p>
+                                </div>
+                            </div>
+
+                            <!-- Panel Content 2: Metrics -->
+                            <div class="tab-pane fade" id="panelNodeMetrics" role="tabpanel"
+                                aria-labelledby="tabNodeMetrics">
+                                <div class="primary-card">
+                                    <div class="border-bottom border-light pb-3 mb-3">
+                                        <span class="badge-custom badge-soft-success mb-2">Telemetries</span>
+                                        <h5 class="card-title">Performance Metrics Real-Time Analysis</h5>
+                                    </div>
+                                    <p class="text-muted leading-relaxed mb-3">Dynamic thread execution limits scale
+                                        elastically to prevent resource starvation. When total processing bandwidth
+                                        usage climbs beyond a critical limit, secondary pipeline threads are
+                                        automatically offloaded.</p>
+                                    <div class="row g-3">
+                                        <div class="col-sm-6">
+                                            <div class="p-3 border border-light rounded-3 bg-main">
+                                                <div class="small text-muted mb-1">Average Response Latency</div>
+                                                <div class="fs-5 fw-bold text-main">14.2 ms</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="p-3 border border-light rounded-3 bg-main">
+                                                <div class="small text-muted mb-1">Resource Utilization</div>
+                                                <div class="fs-5 fw-bold text-success">42.8%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel Content 3: Security -->
+                            <div class="tab-pane fade" id="panelNodeSecurity" role="tabpanel"
+                                aria-labelledby="tabNodeSecurity">
+                                <div class="primary-card">
+                                    <div class="border-bottom border-light pb-3 mb-3">
+                                        <span class="badge-custom badge-soft-warning mb-2">Access Control</span>
+                                        <h5 class="card-title">Security Policy Framework</h5>
+                                    </div>
+                                    <p class="text-muted leading-relaxed mb-0">All active data sockets enforce strict
+                                        transport-layer access permissions alongside identity validation tokens. Ingress
+                                        traffic maps exclusively through filtered proxy relays, immediately dropping any
+                                        unverified API requests.</p>
+                                </div>
+                            </div>
+
+                            <!-- Panel Content 4: Logs -->
+                            <div class="tab-pane fade" id="panelNodeLogs" role="tabpanel" aria-labelledby="tabNodeLogs">
+                                <div class="primary-card">
+                                    <div class="border-bottom border-light pb-3 mb-3">
+                                        <span class="badge-custom badge-soft-secondary mb-2">Diagnostics</span>
+                                        <h5 class="card-title">System Log Output Node</h5>
+                                    </div>
+                                    <div
+                                        class="bg-dark text-light p-3 rounded-3 font-monospace fs-7 border border-secondary">
+                                        <div class="text-success">[21:58:30] SYSTEM: Infrastructure initialization
+                                            complete.</div>
+                                        <div class="text-info">[21:58:32] METRIC: Regional load balances stable at 0.42.
+                                        </div>
+                                        <div class="text-warning">[21:58:35] DEPLOY: Key rotation task scheduled in 4
+                                            hours.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="primary-card">
+                            <div class="border-bottom border-light pb-3 mb-3">
+                                <h5 class="card-title mb-1">Notification System Testing Bench</h5>
+                                <p class="text-muted small mb-0">Click the action buttons below to programmatically push
+                                    live toast notifications to the bottom right of your viewport layout.</p>
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-3 py-2">
+                                <button type="button" class="btn btn-success-custom"
+                                    onclick="launchSystemToast('toastSuccessNode')">
+                                    <i class="bi bi-check-circle-fill me-2"></i>Trigger Success
+                                </button>
+
+                                <button type="button" class="btn btn-warning-custom"
+                                    onclick="launchSystemToast('toastWarningNode')">
+                                    <i class="bi bi-exclamation-circle-fill me-2"></i>Trigger Warning
+                                </button>
+
+                                <button type="button" class="btn btn-danger-custom"
+                                    onclick="launchSystemToast('toastFailureNode')">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Trigger Exception
+                                </button>
+
+                                <button type="button" class="btn btn-outline-primary-custom"
+                                    style="padding: 0.65rem 1.4rem;" onclick="launchSystemToast('toastInfoNode')">
+                                    <i class="bi bi-info-circle-fill me-2"></i>Trigger Info
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Global Toast Notifications Window Staging Canvas Container -->
+                <div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index: 1080;">
+
+                    <!-- Toast Instance Element 1: Success State -->
+                    <div id="toastSuccessNode" class="toast toast-custom-card border-success" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header-custom bg-soft-success">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="toast-indicator-pulse bg-success"></div>
+                                <i class="bi bi-check-circle-fill text-success fs-6"></i>
+                                <strong class="text-main small fw-bold">Sync Action Success</strong>
+                            </div>
+                            <button type="button" class="btn-close-toast" data-bs-dismiss="toast" aria-label="Close">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div class="toast-body-custom">
+                            Regional infrastructure synchronization tasks completed successfully. 12 data nodes updated.
+                        </div>
+                    </div>
+
+                    <!-- Toast Instance Element 2: Danger/Failure State -->
+                    <div id="toastFailureNode" class="toast toast-custom-card border-danger" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header-custom bg-soft-danger">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="toast-indicator-pulse bg-danger"></div>
+                                <i class="bi bi-exclamation-triangle-fill text-danger fs-6"></i>
+                                <strong class="text-main small fw-bold">Runtime Exception</strong>
+                            </div>
+                            <button type="button" class="btn-close-toast" data-bs-dismiss="toast" aria-label="Close">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div class="toast-body-custom">
+                            Database connection timeout occurred on cluster segment node NA-East-3. Retrying stack...
+                        </div>
+                    </div>
+
+                    <div id="toastWarningNode" class="toast toast-custom-card border-warning" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header-custom bg-soft-warning">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="toast-indicator-pulse bg-warning"></div>
+                                <i class="bi bi-exclamation-circle-fill text-warning fs-6"></i>
+                                <strong class="text-main small fw-bold">Threshold Alert</strong>
+                            </div>
+                            <button type="button" class="btn-close-toast" data-bs-dismiss="toast" aria-label="Close">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div class="toast-body-custom">
+                            Memory allocations on runtime node segment Cluster-B have reached 84%. Elastic scaling
+                            triggered.
+                        </div>
+                    </div>
+
+                    <div id="toastInfoNode" class="toast toast-custom-card border-info" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header-custom bg-soft-info">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="toast-indicator-pulse bg-info"></div>
+                                <i class="bi bi-info-circle-fill text-info fs-6"></i>
+                                <strong class="text-main small fw-bold">System Broadcast</strong>
+                            </div>
+                            <button type="button" class="btn-close-toast" data-bs-dismiss="toast" aria-label="Close">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div class="toast-body-custom">
+                            Scheduled routine maintenance window will commence in 4 hours. No downtime expected for
+                            active sessions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const sidebar = document.getElementById("sidebar");
+            const mainWrapper = document.getElementById("mainWrapper");
+            const sidebarToggle = document.getElementById("sidebarToggle");
+            const timerElement = document.getElementById("sessionTimer");
+
+            // 1. Sidebar Toggle Action Functionality
+            sidebarToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                mainWrapper.classList.toggle("collapsed");
+            });
+
+            // 2. Auto-Close Responsive Layout Engine
+            function checkResponsiveLayout() {
+                if (window.innerWidth < 992) {
+                    sidebar.classList.add("collapsed");
+                    mainWrapper.classList.add("collapsed");
+                } else {
+                    sidebar.classList.remove("collapsed");
+                    mainWrapper.classList.remove("collapsed");
+                }
+            }
+
+            // Trigger auto-check on runtime initialization and view scaling
+            checkResponsiveLayout();
+            window.addEventListener("resize", checkResponsiveLayout);
+
+            // 3. Smooth Submenu Dropdown Accordion Architecture
+            const submenuToggles = document.querySelectorAll(".submenu-toggle");
+            submenuToggles.forEach(toggle => {
+                toggle.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const currentMenuItem = this.parentElement;
+                    const isOpen = currentMenuItem.classList.contains("open");
+
+                    document.querySelectorAll(".menu-item.has-submenu").forEach(item => {
+                        if (item !== currentMenuItem) {
+                            item.classList.remove("open");
+                        }
+                    });
+
+                    if (isOpen) {
+                        currentMenuItem.classList.remove("open");
+                    } else {
+                        currentMenuItem.classList.add("open");
+                    }
+                });
+            });
+
+            // 4. Real-time Office Digital Clock System
+            function updateClock() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                let seconds = now.getSeconds();
+
+                hours = hours % 12 || 12;
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // 5. Initialize Clean Datatable Structure
+            $('#officeDataTable').DataTable({
+                responsive: true,
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50, 100, 500],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search registry...",
+                    lengthMenu: "Show _MENU_ entries",
+                }
+            });
+        });
+
+
+        // Initialize Select2 Custom Extensions for single-option matching selections
+        $('.form-select2-custom').select2({
+            placeholder: "Select an architectural cluster component...",
+            minimumResultsForSearch: 5, // Automatically hides the input search bar if options list is very short
+            width: '100%'
+        });
+
+        // Initialize Select2 Custom Extensions for advanced multi-selection parameters
+        $('.form-select2-multi-custom').select2({
+            placeholder: "Assign operational parameters...",
+            width: '100%',
+            allowClear: true
+        });
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById("userAccessPassword");
+            const actionIconButton = event.currentTarget.querySelector("i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                actionIconButton.classList.remove("bi-eye-fill");
+                actionIconButton.classList.add("bi-eye-slash-fill");
+            } else {
+                passwordInput.type = "password";
+                actionIconButton.classList.remove("bi-eye-slash-fill");
+                actionIconButton.classList.add("bi-eye-fill");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Initialize all embedded toasts explicitly via Bootstrap's engine instance hooks
+            const toastElements = [].slice.call(document.querySelectorAll('.toast'));
+            const toastInstances = toastElements.map(toastEl => {
+                return new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: 5000 // Automatically hides after 5 seconds of visibility
+                });
+            });
+        });
+
+        /**
+         * Global Helper Utility to programmatically pop a Toast banner element via its target ID
+         * Example Usage: launchSystemToast('toastSuccessNode');
+         */
+        function launchSystemToast(toastElementId) {
+            const targetNode = document.getElementById(toastElementId);
+            if (targetNode) {
+                const liveInstance = bootstrap.Toast.getOrCreateInstance(targetNode);
+                liveInstance.show();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start unified chronograph tracker loop execution
+            initCenteredChronograph();
+
+            // Parse and render tasks saved within cookies storage allocations
+            loadTodoItemsFromCookies();
+        });
+
+        /**
+         * Centered Chronograph Chronometer Sync Engine
+         */
+        function initCenteredChronograph() {
+            const clockDisplayNode = document.getElementById('widgetLiveClock');
+            const calendarFooterNode = document.getElementById('widgetCenteredCalendar');
+
+            const abbreviatedDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const abbreviatedMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            function refreshClockView() {
+                const liveMoment = new Date();
+
+                let hh = String(liveMoment.getHours() % 12 || 12).padStart(2, '0');
+                let mm = String(liveMoment.getMinutes()).padStart(2, '0');
+                let ss = String(liveMoment.getSeconds()).padStart(2, '0');
+                let yy = String(liveMoment.getFullYear()).padStart(2, 0);
+
+                // Output format mapping sequence matches target system requirements
+                let currentDayStr = abbreviatedDays[liveMoment.getDay()];
+                let currentDateNum = String(liveMoment.getDate()).padStart(2, '0');
+                let currentMonthStr = abbreviatedMonths[liveMoment.getMonth()];
+
+                // Dynamic formatting output: Day-Date-Month-26
+                let formattedFooterString = `${currentDayStr}-${currentDateNum}-${currentMonthStr}-${yy}`;
+
+                if (clockDisplayNode) clockDisplayNode.innerText = `${hh}:${mm}:${ss}`;
+                if (calendarFooterNode) calendarFooterNode.innerText = formattedFooterString;
+            }
+
+            refreshClockView();
+            setInterval(refreshClockView, 1000);
+        }
+
+        /**
+         * Cookie Storage Engine Data Controllers
+         */
+        function setCookieStorage(key, value, durationDays = 30) {
+            const expirationDate = new Date();
+            expirationDate.setTime(expirationDate.getTime() + (durationDays * 24 * 60 * 60 * 1000));
+            const finalCookieString = `${key}=${encodeURIComponent(JSON.stringify(value))};expires=${expirationDate.toUTCString()};path=/;SameSite=Strict`;
+            document.cookie = finalCookieString;
+        }
+
+        function getCookieStorage(key) {
+            const trackingName = `${key}=`;
+            const splitCookiesArray = document.cookie.split(';');
+            for (let i = 0; i < splitCookiesArray.length; i++) {
+                let cookieSegment = splitCookiesArray[i].trim();
+                if (cookieSegment.indexOf(trackingName) === 0) {
+                    try {
+                        return JSON.parse(decodeURIComponent(cookieSegment.substring(trackingName.length, cookieSegment.length)));
+                    } catch (e) {
+                        return [];
+                    }
+                }
+            }
+            return [];
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize active todo records array out of cookies store data layers
+        loadTodoItemsFromCookies();
+    });
+
+    /**
+     * Cookie Layer Core Storage Controllers
+     */
+    function setCookieStorage(key, value, durationDays = 30) {
+        const expirationDate = new Date();
+        expirationDate.setTime(expirationDate.getTime() + (durationDays * 24 * 60 * 60 * 1000));
+        const finalCookieString = `${key}=${encodeURIComponent(JSON.stringify(value))};expires=${expirationDate.toUTCString()};path=/;SameSite=Strict`;
+        document.cookie = finalCookieString;
+    }
+
+    function getCookieStorage(key) {
+        const trackingName = `${key}=`;
+        const splitCookiesArray = document.cookie.split(';');
+        for(let i = 0; i < splitCookiesArray.length; i++) {
+            let cookieSegment = splitCookiesArray[i].trim();
+            if (cookieSegment.indexOf(trackingName) === 0) {
+                try {
+                    return JSON.parse(decodeURIComponent(cookieSegment.substring(trackingName.length, cookieSegment.length)));
+                } catch(e) {
+                    return [];
+                }
+            }
+        }
+        return [];
+    }
+
+    /**
+     * User Interface Action Operations Mechanics
+     */
+    function handleTodoSubmit(event) {
+        event.preventDefault();
+        const taskInputField = document.getElementById('newTodoInput');
+        const incomingTextValue = taskInputField.value.trim();
+
+        if (incomingTextValue !== "") {
+            const applicationTasksPool = getCookieStorage('nexus_dashboard_todos');
+
+            const freshTaskObject = {
+                id: 'task_' + Date.now(),
+                text: incomingTextValue,
+                done: false
+            };
+
+            applicationTasksPool.push(freshTaskObject);
+            setCookieStorage('nexus_dashboard_todos', applicationTasksPool);
+
+            renderSingleTodoItemNode(freshTaskObject);
+            taskInputField.value = ""; 
+            syncMetricsCountersDisplay();
+        }
+    }
+
+    function renderSingleTodoItemNode(taskObject) {
+        const injectionTargetWrapper = document.getElementById('todoItemsContainer');
+        if (!injectionTargetWrapper) return;
+
+        const completedClassModifier = taskObject.done ? 'completed' : '';
+        const executionCheckedState = taskObject.done ? 'checked' : '';
+
+        const frameworkTodoLabelElement = document.createElement('label');
+        frameworkTodoLabelElement.className = `widget-todo-item ${completedClassModifier}`;
+        frameworkTodoLabelElement.id = taskObject.id;
+        
+        frameworkTodoLabelElement.innerHTML = `
+            <input type="checkbox" ${executionCheckedState} onchange="modifyTaskCompletionState('${taskObject.id}', this)">
+            <span class="todo-text">${taskObject.text}</span>
+            <button type="button" class="todo-delete-btn ms-auto d-flex align-items-center justify-content-center" onclick="deleteTaskNodeInstance('${taskObject.id}', event)">
+                <i class="bi bi-trash3-fill" style="font-size: 0.85rem;"></i>
+            </button>
+        `;
+
+        injectionTargetWrapper.appendChild(frameworkTodoLabelElement);
+    }
+
+    function modifyTaskCompletionState(targetTaskId, HTMLCheckboxRef) {
+        const dataStackPool = getCookieStorage('nexus_dashboard_todos');
+        const structuralItemCardElement = document.getElementById(targetTaskId);
+
+        const targetTaskIndex = dataStackPool.findIndex(item => item.id === targetTaskId);
+        if (targetTaskIndex !== -1) {
+            dataStackPool[targetTaskIndex].done = HTMLCheckboxRef.checked;
+            setCookieStorage('nexus_dashboard_todos', dataStackPool);
+
+            if (HTMLCheckboxRef.checked) {
+                structuralItemCardElement.classList.add('completed');
+            } else {
+                structuralItemCardElement.classList.remove('completed');
+            }
+            syncMetricsCountersDisplay();
+        }
+    }
+
+    function deleteTaskNodeInstance(targetTaskId, clickEvent) {
+        clickEvent.preventDefault();
+        clickEvent.stopPropagation();
+
+        let currentTasksPool = getCookieStorage('nexus_dashboard_todos');
+        currentTasksPool = currentTasksPool.filter(item => item.id !== targetTaskId);
+        setCookieStorage('nexus_dashboard_todos', currentTasksPool);
+
+        const interfaceNodeTargetElement = document.getElementById(targetTaskId);
+        if (interfaceNodeTargetElement) {
+            interfaceNodeTargetElement.remove();
+        }
+        syncMetricsCountersDisplay();
+    }
+
+    function loadTodoItemsFromCookies() {
+        const containerNodeBlock = document.getElementById('todoItemsContainer');
+        if (containerNodeBlock) containerNodeBlock.innerHTML = ""; 
+
+        const savedActiveCookiesTasks = getCookieStorage('nexus_dashboard_todos');
+
+        // Leaves layout initialization completely clean for user additions
+        if (savedActiveCookiesTasks.length === 0) {
+            const fallbacksBaseSet = [];
+            setCookieStorage('nexus_dashboard_todos', fallbacksBaseSet);
+        } else {
+            savedActiveCookiesTasks.forEach(task => renderSingleTodoItemNode(task));
+        }
+        syncMetricsCountersDisplay();
+    }
+
+    function syncMetricsCountersDisplay() {
+        const totalCountedElements = document.querySelectorAll('.widget-todo-item').length;
+        const completedCheckedElements = document.querySelectorAll('.widget-todo-item input:checked').length;
+        const numericalDisplayBadgeNode = document.getElementById('todoCounter');
+
+        if (numericalDisplayBadgeNode) {
+            numericalDisplayBadgeNode.innerText = `${completedCheckedElements}/${totalCountedElements} Done`;
+        }
+    }
+    </script>
+</body>
+
+</html>
