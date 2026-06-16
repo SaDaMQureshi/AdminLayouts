@@ -1,0 +1,3450 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediTrack - Premium Enterprise ERP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+    />
+    <style>
+      :root {
+        /* --- Premium Corporate Palette --- */
+        --primary-color: #0f172a; /* Slate 900 */
+        --primary-light: #f8fafc; /* Slate 50 */
+        --primary-dark: #020617; /* Slate 950 */
+
+        --secondary-color: #475569; /* Slate 600 */
+        --secondary-light: #f1f5f9; /* Slate 100 */
+        --secondary-dark: #334155; /* Slate 700 */
+
+        --accent-color: #0284c7; /* Premium Sky 600 */
+        --accent-light: #e0f2fe; /* Sky 100 */
+        --accent-dark: #0369a1; /* Sky 700 */
+
+        --sidebar-bg: #1e293b; /* Slate 800 */
+        --sidebar-hover: #334155; /* Slate 700 */
+        --sidebar-active: #38bdf8; /* Enterprise Sky Blue Accent */
+        --body-bg: #f8fafc; /* Premium Application Canvas */
+        --card-bg: #ffffff;
+        --border-color: #e2e8f0; /* Crispy Border Slate 200 */
+
+        /* --- Status Colors --- */
+        --success-color: #10b981; /* Premium Mint */
+        --success-light: #ecfdf5;
+        --danger-color: #ef4444; /* Corporate Crimson */
+        --danger-light: #fef2f2;
+        --warning-color: #f59e0b; /* Soft Amber */
+        --warning-light: #fffbeb;
+
+        /* --- FX & Systems --- */
+        --font-stack:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        --soft-shadow:
+          0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.03);
+        --card-shadow:
+          0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.02);
+        --transition-speed: 0.2s;
+        --card-radius: 12px;
+      }
+
+      body {
+        font-family: var(--font-stack);
+        background-color: var(--body-bg);
+        color: #334155;
+        overflow-x: hidden;
+        letter-spacing: -0.01em;
+      }
+
+      /* --- Bootstrap Custom Color Overrides --- */
+      .text-primary {
+        color: var(--accent-color) !important;
+      }
+      .text-success {
+        color: var(--success-color) !important;
+      }
+      .text-danger {
+        color: var(--danger-color) !important;
+      }
+      .bg-primary {
+        background-color: var(--primary-color) !important;
+      }
+
+      .btn-primary {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+        font-weight: 500;
+        border-radius: 6px;
+        transition: var(--transition-speed);
+      }
+      .btn-primary:hover {
+        background-color: var(--accent-dark);
+        border-color: var(--accent-dark);
+      }
+      .btn-outline-primary {
+        color: var(--accent-color);
+        border-color: var(--accent-color);
+        font-weight: 500;
+        border-radius: 6px;
+        transition: var(--transition-speed);
+      }
+      .btn-outline-primary:hover {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+        color: #fff;
+      }
+
+      /* --- Layout Structure --- */
+      #app-wrapper {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      #main-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: auto;
+        background-color: var(--body-bg);
+        transition: margin var(--transition-speed) ease-in-out;
+      }
+
+      /* --- Premium Enterprise Sidebar Layout --- */
+      #sidebar {
+        width: 260px;
+        min-width: 260px;
+        background-color: var(--sidebar-bg);
+        color: #94a3b8;
+        display: flex;
+        flex-direction: column;
+        transition: all var(--transition-speed) ease-in-out;
+        z-index: 1040;
+        border-right: 1px solid rgba(255, 255, 255, 0.03);
+      }
+
+      #sidebar.collapsed {
+        margin-left: -260px;
+      }
+
+      /* Sidebar header stays fixed to prevent branding from scrolling out of view */
+      .sidebar-header {
+        height: 70px;
+        padding: 0 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background-color: var(--primary-dark);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .sidebar-brand {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .sidebar-brand i {
+        color: var(--sidebar-active);
+        font-size: 1.25rem;
+      }
+
+      .sidebar-menu-wrapper {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 1.25rem 0;
+      }
+
+      /* Sidebar Navigation Link System */
+      .sidebar-menu .accordion-item {
+        background: transparent;
+        border: none;
+      }
+
+      .sidebar-menu .accordion-button {
+        background: transparent;
+        color: #94a3b8;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        box-shadow: none;
+        border-radius: 0;
+        transition: var(--transition-speed);
+      }
+
+      .sidebar-menu .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2364748b'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        background-size: 0.75rem;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .sidebar-menu .accordion-button:not(.collapsed) {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.02);
+        font-weight: 600;
+      }
+
+      .sidebar-menu .accordion-button:not(.collapsed) i {
+        color: var(--sidebar-active);
+      }
+
+      .sidebar-menu .accordion-button:not(.collapsed)::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+      }
+
+      .sidebar-menu .accordion-button:hover {
+        background-color: var(--sidebar-hover);
+        color: #fff;
+      }
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.75rem 1.5rem;
+        color: #94a3b8;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: var(--transition-speed);
+      }
+
+      .sidebar-link:hover,
+      .sidebar-link.active {
+        background-color: var(--sidebar-hover);
+        color: #fff;
+      }
+
+      .sidebar-link.active {
+        background-color: rgba(14, 165, 233, 0.1);
+        color: var(--sidebar-active);
+        border-left: 3px solid var(--sidebar-active);
+        padding-left: calc(1.5rem - 3px);
+        font-weight: 600;
+      }
+
+      /* Premium Cascading Submenu Styling */
+      .submenu-list {
+        list-style: none;
+        padding: 0.35rem 0;
+        margin: 0;
+        background-color: rgba(0, 0, 0, 0.12);
+      }
+
+      .submenu-item a {
+        display: block;
+        padding: 0.5rem 1rem 0.5rem 3.1rem;
+        color: #94a3b8;
+        text-decoration: none;
+        font-size: 0.85rem;
+        position: relative;
+        transition: var(--transition-speed);
+      }
+
+      .submenu-item a::before {
+        content: "";
+        position: absolute;
+        left: 2.1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 4px;
+        background-color: #475569;
+        border-radius: 50%;
+        transition: var(--transition-speed);
+      }
+
+      .submenu-item a:hover {
+        color: #fff;
+      }
+
+      .submenu-item a:hover::before {
+        background-color: var(--sidebar-active);
+        box-shadow: 0 0 8px var(--sidebar-active);
+      }
+
+      /* --- Corporate Glass-Finished Top Navbar --- */
+      .navbar-custom {
+        min-height: 70px;
+        background-color: #ffffff;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: var(--soft-shadow);
+        position: sticky;
+        top: 0;
+        z-index: 1020;
+      }
+
+      .nav-btn-toggle {
+        background: none;
+        border: none;
+        font-size: 1.35rem;
+        color: var(--secondary-color);
+        cursor: pointer;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-speed);
+      }
+
+      .nav-btn-toggle:hover {
+        background-color: var(--secondary-light);
+        color: var(--primary-color);
+      }
+
+      /* --- Premium Admin Dropdown Profile System --- */
+      .profile-dropdown .dropdown-toggle::after {
+        display: none;
+      }
+
+      .profile-dropdown-menu {
+        border: 1px solid var(--border-color);
+        box-shadow: var(--card-shadow);
+        border-radius: 8px;
+        padding: 0.5rem 0;
+        min-width: 240px;
+        animation: dropdownFade 0.2s ease-out;
+      }
+
+      @keyframes dropdownFade {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .dropdown-header-box {
+        padding: 0.85rem 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 0.4rem;
+        background-color: var(--primary-light);
+      }
+
+      .profile-dropdown-menu .dropdown-item {
+        font-size: 0.875rem;
+        color: var(--secondary-dark);
+        display: flex;
+        align-items: center;
+        padding: 0.6rem 1.25rem;
+      }
+
+      .profile-dropdown-menu .dropdown-item:hover {
+        background-color: var(--secondary-light);
+        color: var(--primary-color);
+      }
+
+      /* --- Right Sidebar Action Drawer Canvas --- */
+      .offcanvas-right-panel {
+        width: 400px !important;
+        border-left: 1px solid var(--border-color);
+        box-shadow: var(--card-shadow);
+        background-color: #fff;
+      }
+
+      /* --- Premium Enterprise Cards --- */
+      .premium-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--card-radius);
+        box-shadow: var(--soft-shadow);
+        transition:
+          transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.2s ease;
+      }
+
+      .premium-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--card-shadow);
+      }
+
+      .premium-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--secondary-color);
+        padding: 1.1rem 1.5rem;
+        border-top-left-radius: var(--card-radius);
+        border-top-right-radius: var(--card-radius);
+      }
+
+      /* --- Functional Dashboard Metric Layouts --- */
+      .metric-value {
+        font-size: 1.85rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        letter-spacing: -0.02em;
+      }
+
+      .badge-premium-success {
+        background-color: var(--success-light);
+        color: var(--success-color);
+        font-weight: 600;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+      }
+
+      .badge-premium-danger {
+        background-color: var(--danger-light);
+        color: var(--danger-color);
+        font-weight: 600;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+      }
+
+      /* --- Clean Corporate Footer --- */
+      .footer-custom {
+        background: #ffffff;
+        border-top: 1px solid var(--border-color);
+        padding: 1.1rem 1.5rem;
+        font-size: 0.825rem;
+        color: var(--secondary-color);
+      }
+
+      /* --- Responsive Breakpoints Logic --- */
+      @media (max-width: 991.98px) {
+        #sidebar {
+          position: fixed;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          margin-left: -260px;
+        }
+        #sidebar.active {
+          margin-left: 0;
+        }
+        #sidebar.collapsed {
+          margin-left: -260px;
+        }
+      }
+
+      /* --- Premium Form Workspace Variables & Utility --- */
+      .form-workspace-card {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      }
+
+      .form-group-wrapper {
+        margin-bottom: 1.25rem;
+      }
+
+      .form-group-wrapper .form-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 0.4rem;
+        display: block;
+      }
+
+      /* Base inputs matched to theme colors */
+      .form-group-wrapper .form-control,
+      .form-group-wrapper .form-select {
+        font-size: 0.8125rem;
+        color: var(--primary-color);
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        transition:
+          border-color 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out;
+      }
+
+      /* Premium Focus & Hover Rings */
+      .form-group-wrapper .form-control:focus,
+      .form-group-wrapper .form-select:focus {
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 3px var(--accent-light) !important;
+        outline: 0;
+      }
+
+      /* Custom color input overrides */
+      .form-control-color-premium {
+        padding: 0.3rem 0.5rem !important;
+        height: 35px;
+        width: 100%;
+        cursor: pointer;
+      }
+
+      /* Checkbox, Radio, & Switch Accents */
+      .form-group-wrapper .form-check-input {
+        border-color: var(--border-color);
+        cursor: pointer;
+      }
+
+      .form-group-wrapper .form-check-input:checked {
+        background-color: var(--accent-color) !important;
+        border-color: var(--accent-color) !important;
+      }
+
+      .form-group-wrapper .form-check-input:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px var(--accent-light) !important;
+      }
+
+      .panel-surface {
+        background-color: var(--primary-light);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+      }
+      /* --- Premium Select2 Corporate Overrides --- */
+      .select2-container--default .select2-selection--single,
+      .select2-container--default .select2-selection--multiple {
+        border: 1px solid var(--border-color) !important;
+        border-radius: 6px !important;
+        min-height: 35px !important;
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.8125rem !important;
+        color: var(--primary-color) !important;
+        background-color: #ffffff !important;
+        transition:
+          border-color 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out;
+      }
+
+      /* Focused State */
+      .select2-container--default.select2-container--focus
+        .select2-selection--single,
+      .select2-container--default.select2-container--focus
+        .select2-selection--multiple {
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 3px var(--accent-light) !important;
+        outline: 0;
+      }
+
+      /* Arrow Positioning Fix */
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+        height: 33px !important;
+        right: 6px !important;
+      }
+
+      /* Render Dropdown Menu */
+      .select2-dropdown {
+        border: 1px solid var(--border-color) !important;
+        border-radius: 6px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+        font-size: 0.8125rem !important;
+        z-index: 1060;
+      }
+
+      /* Highlighted List Item Options */
+      .select2-container--default
+        .select2-results__option--highlighted[aria-selected] {
+        background-color: var(--accent-color) !important;
+        color: #ffffff !important;
+      }
+
+      .select2-container--default
+        .select2-results__option[aria-selected="true"] {
+        background-color: var(--primary-light) !important;
+        color: var(--primary-color);
+      }
+
+      /* Multi-Select Badges Overrides */
+      .select2-container--default
+        .select2-selection--multiple
+        .select2-selection__choice {
+        background-color: var(--primary-light) !important;
+        border: 1px solid var(--border-color) !important;
+        color: var(--primary-color) !important;
+        font-size: 0.75rem !important;
+        font-weight: 500;
+        border-radius: 4px !important;
+        padding: 1px 6px !important;
+        margin-top: 2px !important;
+      }
+
+      .select2-container--default
+        .select2-selection--multiple
+        .select2-selection__choice__remove {
+        border-right: 1px solid var(--border-color) !important;
+        color: var(--secondary-color) !important;
+        margin-right: 6px !important;
+      }
+
+      .select2-container--default
+        .select2-selection--multiple
+        .select2-selection__choice__remove:hover {
+        background-color: rgba(255, 0, 0, 0.1) !important;
+        color: red !important;
+      }
+      /* ==========================================================
+   1. STRIP BOOTSTRAP DEFAULT BOX-SHADOW FROM ALL FORM FIELDS
+   ========================================================== */
+      .form-workspace-card .form-control:focus,
+      .form-workspace-card .form-select:focus,
+      .form-workspace-card .form-check-input:focus {
+        border-color: var(--accent-color) !important;
+        /* Removes default blue Bootstrap shadow, replaces with crisp accents */
+        box-shadow: 0 0 0 3px var(--accent-light) !important;
+        outline: 0;
+      }
+
+      /* Fix specific input variants like date, month, and color */
+      .form-workspace-card input[type="date"]:focus,
+      .form-workspace-card input[type="month"]:focus,
+      .form-workspace-card input[type="color"]:focus {
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 3px var(--accent-light) !important;
+      }
+
+      /* ==========================================================
+   2. FIX SELECT2 DROPDOWN OPTION HOVER STATES
+   ========================================================== */
+
+      /* Active Hovering state: Forces clear text over your solid brand accent color */
+      .select2-container--default
+        .select2-results__option--highlighted[aria-selected] {
+        background-color: var(--accent-color) !important;
+        color: #ffffff !important;
+      }
+
+      /* Currently selected item state inside the dropdown array */
+      .select2-container--default
+        .select2-results__option[aria-selected="true"] {
+        background-color: var(--primary-light) !important;
+        color: var(--primary-color) !important;
+      }
+
+      /* General list options default styling configuration */
+      .select2-results__option {
+        padding: 6px 12px !important;
+        color: var(--primary-color) !important;
+        font-size: 0.8125rem !important;
+      }
+      /* --- Premium Corporate DataTables Framework --- */
+      .dataTables_wrapper .row {
+        margin-bottom: 0.75rem;
+        align-items: center;
+      }
+
+      /* Control Element Controls (Search & Length Select) */
+      .dataTables_length label,
+      .dataTables_filter label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+      }
+
+      .dataTables_length select,
+      .dataTables_filter input {
+        font-size: 0.8125rem !important;
+        color: var(--primary-color) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 6px !important;
+        padding: 0.375rem 0.75rem !important;
+      }
+
+      .dataTables_length select:focus,
+      .dataTables_filter input:focus {
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 3px var(--accent-light) !important;
+        outline: 0;
+      }
+
+      /* Table Typographic Blueprint */
+      .premium-table {
+        font-size: 0.8125rem !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        width: 100% !important;
+      }
+
+      .premium-table thead th {
+        background-color: var(--primary-light) !important;
+        color: var(--primary-color) !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.725rem;
+        padding: 12px 16px !important;
+        border-bottom: 2px solid var(--border-color) !important;
+      }
+
+      .premium-table tbody td {
+        padding: 12px 16px !important;
+        color: var(--primary-color);
+        vertical-align: middle;
+        border-bottom: 1px solid var(--border-color) !important;
+      }
+
+      /* Hover Rows styling using system variables */
+      .premium-table tbody tr:hover {
+        background-color: rgba(
+          var(--accent-color-rgb, 0, 82, 204),
+          0.02
+        ) !important;
+      }
+
+      /* Custom Status Badges */
+      .badge-premium {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.25rem 0.6rem;
+        border-radius: 4px;
+      }
+
+      /* Pagination Overrides to track your accent color */
+      .page-item.active .page-link {
+        background-color: var(--accent-color) !important;
+        border-color: var(--accent-color) !important;
+        color: #ffffff !important;
+      }
+
+      .page-link {
+        font-size: 0.75rem !important;
+        font-weight: 600;
+        color: var(--secondary-color);
+        border: 1px solid var(--border-color);
+      }
+
+      .page-link:focus {
+        box-shadow: 0 0 0 3px var(--accent-light) !important;
+      }
+      /* --- Premium Table Dropdown Overrides --- */
+      .premium-dropdown-menu {
+        border: 1px solid var(--border-color) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+        border-radius: 6px !important;
+        padding: 0.35rem 0 !important;
+      }
+
+      .premium-dropdown-menu .dropdown-item {
+        font-size: 0.785rem !important;
+        font-weight: 500 !important;
+        color: var(--primary-color) !important;
+        padding: 0.45rem 1rem !important;
+        transition: all 0.1s ease-in-out;
+      }
+
+      /* Hover Interactivity using System Accent Colors */
+      .premium-dropdown-menu .dropdown-item:hover {
+        background-color: var(--primary-light) !important;
+        color: var(--accent-color) !important;
+      }
+
+      .premium-dropdown-menu .dropdown-item.text-danger:hover {
+        background-color: rgba(220, 53, 69, 0.06) !important;
+        color: #dc3545 !important;
+      }
+
+      .premium-dropdown-menu .dropdown-divider {
+        border-top: 1px solid var(--border-color) !important;
+        margin: 0.35rem 0 !important;
+      }
+      /* --- Premium Toast Notification System --- */
+      .toast-container-global {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 1090;
+      }
+
+      .premium-toast {
+        background: #ffffff !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+        min-width: 320px;
+        overflow: hidden;
+      }
+
+      /* Accent Indicator Bars */
+      .premium-toast::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 4px;
+      }
+
+      .premium-toast.toast-success::before {
+        background-color: #198754;
+      }
+      .premium-toast.toast-error::before {
+        background-color: #dc3545;
+      }
+      .premium-toast.toast-warning::before {
+        background-color: #ffc107;
+      }
+      .premium-toast.toast-system::before {
+        background-color: var(--accent-color);
+      }
+
+      .premium-toast .toast-header {
+        background-color: transparent !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important;
+        padding: 0.75rem 1rem 0.75rem 1.25rem;
+        color: var(--primary-color);
+      }
+
+      .premium-toast .toast-body {
+        padding: 1rem 1.25rem !important;
+        font-size: 0.8125rem;
+        color: var(--secondary-color);
+        line-height: 1.4;
+      }
+      /* --- Premium Identity Geometric Variants --- */
+      .avatar-group-grid {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      /* Base Variables */
+      .premium-avatar-shape {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+        background-color: var(--primary-light);
+        color: var(--accent-color);
+        font-weight: 600;
+        font-size: 0.8125rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        width: 42px;
+        height: 42px;
+      }
+
+      .premium-avatar-shape img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Shape Geometry Configurations */
+      .avatar-circle {
+        border-radius: 50%;
+      }
+      .avatar-square {
+        border-radius: 0px;
+      }
+      .avatar-squircle {
+        border-radius: 10px;
+      }
+      .avatar-rounded {
+        border-radius: 6px;
+      }
+
+      .premium-avatar-shape img.avatar-squircle {
+        border-radius: 10px;
+      }
+      .premium-avatar-shape img.avatar-rounded {
+        border-radius: 6px;
+      }
+
+      /* Overlapping Pile/Stack Component */
+      .avatar-stack-pile {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+      }
+
+      .avatar-stack-pile .premium-avatar-shape {
+        margin-right: -14px;
+        border: 2px solid #ffffff !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition:
+          transform 0.15s ease-in-out,
+          z-index 0.15s;
+        z-index: 1;
+      }
+
+      .avatar-stack-pile .premium-avatar-shape:hover {
+        transform: translateY(-4px);
+        z-index: 10 !important;
+      }
+
+      /* Profile Cover Banner Header Blueprint */
+      .profile-banner-workspace {
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        overflow: hidden;
+        background: #ffffff;
+      }
+
+      .profile-cover-image {
+        height: 140px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color) 0%,
+          var(--accent-color) 100%
+        );
+        position: relative;
+      }
+
+      .profile-banner-content {
+        padding: 0 1.5rem 1.5rem 1.5rem;
+        position: relative;
+      }
+
+      .profile-banner-avatar-offset {
+        margin-top: -45px;
+        margin-bottom: 0.75rem;
+        z-index: 2;
+      }
+
+      .profile-banner-avatar-offset .premium-avatar-shape {
+        width: 84px;
+        height: 84px;
+        border: 4px solid #ffffff !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+      /* --- Premium Corporate Buttons Matrix --- */
+      .button-matrix-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      /* Fix: ensure icons and text inside buttons don't collapse/wrap
+         - Force inline-flex so icons and text align correctly
+         - Add a small gap and nowrap to keep icon + label on one line
+         - Support non-standard spacing utility `me-1.5` used in markup */
+      .button-matrix-row .btn,
+      .button-matrix-row .btn.btn-outline-primary,
+      .notification-anchor,
+      .btn[position-relative-fix] {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        white-space: nowrap !important;
+      }
+
+      /* Icon rendering helpers */
+      .btn .bi,
+      .button-matrix-row .btn .bi {
+        display: inline-block;
+        line-height: 1;
+      }
+
+      /* Add support for fractional margin utility used in HTML (me-1.5) */
+      [class~="me-1.5"] {
+        margin-inline-end: 0.375rem !important;
+      }
+
+      /* Base structural text adjustments across layout elements */
+      .btn-sm,
+      .btn-group-sm > .btn {
+        font-size: 0.8125rem !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+        padding: 0.45rem 0.85rem !important;
+        transition: all 0.15s ease-in-out;
+      }
+
+      /* Sizing Scale Framework Override */
+      .btn-xs {
+        font-size: 0.725rem !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 4px !important;
+        font-weight: 600 !important;
+      }
+      .btn-md {
+        font-size: 0.875rem !important;
+        padding: 0.55rem 1.25rem !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+      }
+      .btn-lg {
+        font-size: 1rem !important;
+        padding: 0.75rem 1.75rem !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+      }
+
+      /* Custom Overrides linked explicitly to your core parameters */
+      .btn-outline-primary {
+        color: var(--secondary-color) !important;
+        border-color: var(--border-color) !important;
+        background-color: transparent !important;
+      }
+
+      .btn-outline-primary:hover {
+        background-color: var(--primary-light) !important;
+        border-color: rgba(var(--accent-color-rgb, 0, 82, 204), 0.4) !important;
+        color: var(--accent-color) !important;
+      }
+
+      /* Button Focus Rings Strip */
+      .btn:focus,
+      .btn-check:focus + .btn {
+        box-shadow: 0 0 0 3px var(--accent-light) !important;
+        outline: 0;
+      }
+
+      /* Button Group / Segmented Control Adjustments */
+      .premium-btn-group .btn-check:checked + .btn {
+        background-color: var(--accent-color) !important;
+        border-color: var(--accent-color) !important;
+        color: #ffffff !important;
+      }
+
+      .premium-btn-group .btn-outline-secondary {
+        color: var(--secondary-color) !important;
+        border-color: var(--border-color) !important;
+        font-size: 0.8125rem;
+        font-weight: 600;
+      }
+
+      .premium-btn-group .btn-outline-secondary:hover {
+        background-color: var(--primary-light) !important;
+      }
+
+      /* --- Premium Corporate Badges Framework --- */
+      .badge-matrix-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      /* Base Typographic Overrides */
+      .badge-premium-base {
+        font-size: 0.725rem !important;
+        font-weight: 600 !important;
+        padding: 0.35rem 0.65rem !important;
+        border-radius: 4px;
+        letter-spacing: 0.2px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border: 1px solid transparent;
+      }
+
+      /* Pill Variance Scale */
+      .badge-premium-pill {
+        border-radius: 50rem !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+      }
+
+      /* Premium Soft Transparent Semantic Alignments */
+      .badge-soft-primary {
+        background-color: var(--primary-light) !important;
+        color: var(--accent-color) !important;
+        border-color: rgba(
+          var(--accent-color-rgb, 0, 82, 204),
+          0.15
+        ) !important;
+      }
+      .badge-soft-success {
+        background-color: rgba(25, 135, 84, 0.06) !important;
+        color: #198754 !important;
+        border-color: rgba(25, 135, 84, 0.15) !important;
+      }
+      .badge-soft-warning {
+        background-color: rgba(255, 193, 7, 0.08) !important;
+        color: #b58100 !important;
+        border-color: rgba(255, 193, 7, 0.2) !important;
+      }
+      .badge-soft-danger {
+        background-color: rgba(220, 53, 69, 0.06) !important;
+        color: #dc3545 !important;
+        border-color: rgba(220, 53, 69, 0.15) !important;
+      }
+      .badge-soft-secondary {
+        background-color: #f8f9fa !important;
+        color: var(--secondary-color) !important;
+        border-color: var(--border-color) !important;
+      }
+
+      /* Micro Status Indicator Pips */
+      .status-indicator-pip {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+      .status-indicator-pip.pip-success {
+        background-color: #198754;
+      }
+      .status-indicator-pip.pip-danger {
+        background-color: #dc3545;
+      }
+      .status-indicator-pip.pip-warning {
+        background-color: #ffc107;
+      }
+      .status-indicator-pip.pip-primary {
+        background-color: var(--accent-color);
+      }
+
+      /* Interactive Dismissible Tag Vectors */
+      .premium-dismissible-tag {
+        transition: all 0.15s ease-in-out;
+      }
+      .premium-dismissible-tag .btn-close-tag {
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.1s ease;
+        font-size: 0.65rem;
+      }
+      .premium-dismissible-tag .btn-close-tag:hover {
+        opacity: 1;
+        color: #dc3545;
+      }
+      /* --- Premium Badge Notification Overlays --- */
+      .notification-anchor {
+        position: relative !important;
+      }
+
+      /* Floating Corner Indicator */
+      .notification-badge-floating {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(35%, -35%);
+        font-size: 0.65rem !important;
+        font-weight: 700 !important;
+        padding: 0.25rem 0.4rem !important;
+        border: 2px solid #ffffff !important;
+        min-width: 18px;
+        height: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+      }
+
+      /* Minimalist Micro Dot Indicator (No numbers) */
+      .notification-dot-floating {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        transform: translate(25%, -25%);
+        width: 8px;
+        height: 8px;
+        background-color: #dc3545;
+        border: 1.5px solid #ffffff;
+        border-radius: 50%;
+        z-index: 2;
+      }
+
+      /* Inline Contextual Badge Layouts */
+      .badge-notification-inline {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        background-color: var(--primary-light);
+        color: var(--accent-color);
+        margin-left: 0.5rem;
+      }
+
+      /* --- Premium Corporate Tabs Framework --- */
+      .premium-nav-tabs {
+        border-bottom: 1px solid var(--border-color) !important;
+        gap: 0.25rem;
+      }
+
+      .premium-nav-tabs .nav-link {
+        font-size: 0.8125rem !important;
+        font-weight: 600 !important;
+        color: var(--secondary-color) !important;
+        border: 1px solid transparent !important;
+        border-radius: 6px 6px 0 0 !important;
+        padding: 0.6rem 1.1rem !important;
+        margin-bottom: -1px;
+        background: transparent;
+        transition: all 0.15s ease-in-out;
+      }
+
+      /* Tab Hover State */
+      .premium-nav-tabs .nav-link:hover {
+        color: var(--primary-color) !important;
+        background-color: var(--primary-light) !important;
+        border-color: var(--border-color) var(--border-color) transparent !important;
+      }
+
+      /* Tab Active Selection State tied to variables */
+      .premium-nav-tabs .nav-link.active {
+        color: var(--accent-color) !important;
+        background-color: #ffffff !important;
+        border-color: var(--border-color) var(--border-color) #ffffff !important;
+        position: relative;
+      }
+
+      /* --- Premium Vertical Pill/Tab Stack Module --- */
+      .premium-nav-vertical {
+        border-right: 1px solid var(--border-color);
+        padding-right: 0.75rem;
+      }
+
+      .premium-nav-vertical .nav-link {
+        font-size: 0.8125rem !important;
+        font-weight: 600 !important;
+        color: var(--secondary-color) !important;
+        border-radius: 6px !important;
+        padding: 0.65rem 1rem !important;
+        text-align: left;
+        border: 1px solid transparent;
+        margin-bottom: 0.25rem;
+        transition: all 0.15s ease-in-out;
+      }
+
+      .premium-nav-vertical .nav-link:hover {
+        background-color: var(--primary-light) !important;
+        color: var(--primary-color) !important;
+      }
+
+      .premium-nav-vertical .nav-link.active {
+        background-color: var(--primary-light) !important;
+        color: var(--accent-color) !important;
+        border-color: rgba(
+          var(--accent-color-rgb, 0, 82, 204),
+          0.15
+        ) !important;
+      }
+
+      /* Universal tab content area micro spacing padding */
+      .tab-workspace-content {
+        padding-top: 1.25rem;
+        font-size: 0.8125rem;
+        color: var(--secondary-color);
+        line-height: 1.5;
+      }
+
+      /* Drop default Bootstrap blue focus highlight ring */
+      .premium-nav-tabs .nav-link:focus,
+      .premium-nav-vertical .nav-link:focus {
+        box-shadow: none !important;
+        outline: none !important;
+      }
+
+      /* --- Premium Corporate Collapse & Accordions --- */
+      .premium-accordion .accordion-item {
+        background-color: #ffffff !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px !important;
+        margin-bottom: 0.5rem;
+        overflow: hidden;
+      }
+
+      /* Header Trigger Button */
+      .premium-accordion .accordion-button {
+        font-size: 0.8125rem !important;
+        font-weight: 600 !important;
+        color: var(--primary-color) !important;
+        background-color: #ffffff !important;
+        padding: 0.85rem 1.25rem !important;
+        box-shadow: none !important;
+        transition: background-color 0.15s ease-in-out;
+      }
+
+      .premium-accordion .accordion-button:not(.collapsed) {
+        color: var(--accent-color) !important;
+        background-color: var(--primary-light) !important;
+        border-bottom: 1px solid var(--border-color) !important;
+      }
+
+      /* Custom Accordion Chevron Rotation Fix */
+      .premium-accordion .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%236c757d'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+        background-size: 0.85rem !important;
+        transition: transform 0.2s ease-in-out;
+      }
+
+      .premium-accordion .accordion-button:not(.collapsed)::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230052cc'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+      }
+
+      /* Body Content Area */
+      .premium-accordion .accordion-body {
+        padding: 1.25rem !important;
+        font-size: 0.8125rem;
+        color: var(--secondary-color);
+        line-height: 1.5;
+        background-color: #ffffff;
+      }
+
+      /* Independent Collapse Panel Box Styling */
+      .collapse-workspace-panel {
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background-color: #ffffff;
+        padding: 1rem 1.25rem;
+        font-size: 0.8125rem;
+        color: var(--secondary-color);
+        line-height: 1.5;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app-wrapper">
+      <aside id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-brand">
+            <i class="bi bi-heart-pulse-fill"></i>
+            <span>MediTrack Suite</span>
+          </div>
+        </div>
+
+        <div class="sidebar-menu-wrapper">
+          <div class="accordion sidebar-menu" id="sidebarAccordion">
+            <div class="accordion-item">
+              <a href="#" class="sidebar-link active">
+                <i class="bi bi-grid-1x2-fill text-info"></i>
+                <span>Executive Dashboard</span>
+              </a>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingPatient">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#menuPatient"
+                  aria-expanded="false"
+                  aria-controls="menuPatient"
+                >
+                  <i class="bi bi-person-workspace"></i>
+                  <span>Patient Registry</span>
+                </button>
+              </h2>
+              <div
+                id="menuPatient"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingPatient"
+                data-bs-parent="#sidebarAccordion"
+              >
+                <div class="accordion-body p-0">
+                  <ul class="submenu-list">
+                    <li class="submenu-item">
+                      <a href="#">Admissions Directory</a>
+                    </li>
+                    <li class="submenu-item">
+                      <a href="#">Outpatient Scheduling</a>
+                    </li>
+                    <li class="submenu-item">
+                      <a href="#">Electronic Health Records</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingFinance">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#menuFinance"
+                  aria-expanded="false"
+                  aria-controls="menuFinance"
+                >
+                  <i class="bi bi-wallet2"></i>
+                  <span>Financial Ledger</span>
+                </button>
+              </h2>
+              <div
+                id="menuFinance"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingFinance"
+                data-bs-parent="#sidebarAccordion"
+              >
+                <div class="accordion-body p-0">
+                  <ul class="submenu-list">
+                    <li class="submenu-item">
+                      <a href="#">Invoice Processing</a>
+                    </li>
+                    <li class="submenu-item">
+                      <a href="#">Insurance Claims Broker</a>
+                    </li>
+                    <li class="submenu-item">
+                      <a href="#">Payroll Audit Module</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingInventory">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#menuInventory"
+                  aria-expanded="false"
+                  aria-controls="menuInventory"
+                >
+                  <i class="bi bi-boxes"></i>
+                  <span>Supply Chain / ERP</span>
+                </button>
+              </h2>
+              <div
+                id="menuInventory"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingInventory"
+                data-bs-parent="#sidebarAccordion"
+              >
+                <div class="accordion-body p-0">
+                  <ul class="submenu-list">
+                    <li class="submenu-item">
+                      <a href="#">Pharmacy Stock Ledger</a>
+                    </li>
+                    <li class="submenu-item">
+                      <a href="#">Asset Tracker Hub</a>
+                    </li>
+                    <li class="submenu-item">
+                      <a href="#">Procurement Requests</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div id="main-content">
+        <nav class="navbar-custom px-3 px-sm-4 py-2 py-sm-3">
+          <div class="d-flex align-items-center gap-3">
+            <button
+              class="nav-btn-toggle"
+              id="sidebar-toggle-btn"
+              title="Toggle Navigation Shell"
+            >
+              <i class="bi bi-justify-left"></i>
+            </button>
+            <span
+              class="text-muted d-none d-md-inline-block fw-semibold small tracking-wider"
+              >SYSTEM PLATFORM: GLOBAL CORE</span
+            >
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <button
+              class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2 px-3 py-2"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#quickActionPanel"
+              aria-controls="quickActionPanel"
+            >
+              <i class="bi bi-lightning-charge-fill"></i>
+            </button>
+
+            <div class="dropdown profile-dropdown">
+              <button
+                class="btn p-0 d-flex align-items-center gap-2 dropdown-toggle border-0"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <div
+                  class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center border border-2 border-light shadow-sm"
+                  style="
+                    width: 40px;
+                    height: 40px;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                  "
+                >
+                  AD
+                </div>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end profile-dropdown-menu">
+                <li>
+                  <div class="dropdown-header-box">
+                    <h6 class="mb-0 text-dark fw-bold">Dr. Alexander Drake</h6>
+                    <small class="text-muted fs-7"
+                      >Chief Operations Admin</small
+                    >
+                  </div>
+                </li>
+                <li>
+                  <a class="dropdown-item py-2" href="#"
+                    ><i class="bi bi-person me-3 text-secondary"></i> User
+                    Account Profile</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item py-2" href="#"
+                    ><i class="bi bi-sliders2 me-3 text-secondary"></i> Core
+                    System Settings</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider my-1" /></li>
+                <li>
+                  <a class="dropdown-item py-2 text-danger fw-medium" href="#"
+                    ><i class="bi bi-power me-3"></i> Terminate Session
+                    (Logout)</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <main class="flex-grow-1 p-4">
+          <div class="container-fluid p-0">
+            <!-- Form Element Component Library -->
+            <div class="card form-workspace-card border-0 mb-4">
+              <div class="card-header bg-transparent border-bottom-0">
+                <h5 class="card-title mb-0">Form Element Component Library</h5>
+              </div>
+              <div class="card-body p-4">
+                <form class="needs-validation" novalidate>
+                  <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-3 form-group-wrapper">
+                      <label for="typeText" class="form-label"
+                        >Standard Text Field</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="typeText"
+                        placeholder="Enter alphanumeric string"
+                        required
+                      />
+                    </div>
+
+                    <div class="col-12 col-md-3 form-group-wrapper">
+                      <label for="typeNumber" class="form-label"
+                        >Numeric Quantity Value</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="typeNumber"
+                        placeholder="0"
+                        min="0"
+                        max="100"
+                      />
+                    </div>
+
+                    <div class="col-12 col-md-3 form-group-wrapper">
+                      <label for="typePassword" class="form-label"
+                        >Security Passphrase Key</label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="typePassword"
+                        placeholder="••••••••"
+                      />
+                    </div>
+
+                    <div class="col-12 col-md-3 form-group-wrapper">
+                      <label for="typeSelect" class="form-label"
+                        >Dropdown Matrix Selector</label
+                      >
+                      <select class="form-select" id="typeSelect">
+                        <option selected disabled value="">
+                          Choose allocation...
+                        </option>
+                        <option value="1">Option Array Alpha</option>
+                        <option value="2">Option Array Beta</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-6 form-group-wrapper">
+                      <label for="select2Single" class="form-label"
+                        >Searchable Corporate Entity</label
+                      >
+                      <select
+                        class="form-control select2-single-init"
+                        id="select2Single"
+                        style="width: 100%"
+                      >
+                        <option value="" selected disabled>
+                          Search or choose node data assignment...
+                        </option>
+                        <option value="MED-A">
+                          Medical Facility Hub Alpha
+                        </option>
+                        <option value="MED-B">
+                          Clinical Outpatient Sector Beta
+                        </option>
+                        <option value="MED-G">
+                          Regional Quarantine Matrix Gamma
+                        </option>
+                        <option value="MED-D">
+                          Logistics Core Storage Delta
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 form-group-wrapper">
+                      <label for="select2Multiple" class="form-label"
+                        >Operational Security Clearance Flags</label
+                      >
+                      <select
+                        class="form-control select2-multiple-init"
+                        id="select2Multiple"
+                        multiple="multiple"
+                        style="width: 100%"
+                      >
+                        <option value="TAG-1" selected>
+                          System Administrator Ledger
+                        </option>
+                        <option value="TAG-2">
+                          Encrypted Database Write-Access
+                        </option>
+                        <option value="TAG-3" selected>
+                          API Telemetry Vector Stream
+                        </option>
+                        <option value="TAG-4">Billing Framework View</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-3 form-group-wrapper">
+                      <label for="typeDate" class="form-label"
+                        >Calendar Date Picker</label
+                      >
+                      <input type="date" class="form-control" id="typeDate" />
+                    </div>
+
+                    <div class="col-12 col-md-3 form-group-wrapper">
+                      <label for="typeMonth" class="form-label"
+                        >Fiscal Month/Year Selection</label
+                      >
+                      <input type="month" class="form-control" id="typeMonth" />
+                    </div>
+
+                    <div class="col-12 col-md-2 form-group-wrapper">
+                      <label for="typeColor" class="form-label"
+                        >Theme Vector Color</label
+                      >
+                      <input
+                        type="color"
+                        class="form-control form-control-color-premium"
+                        id="typeColor"
+                        value="#0052cc"
+                        title="Choose color allocation"
+                      />
+                    </div>
+
+                    <div class="col-12 col-md-4 form-group-wrapper">
+                      <label for="typeFile" class="form-label"
+                        >Document Manifest Binary File</label
+                      >
+                      <input type="file" class="form-control" id="typeFile" />
+                    </div>
+                  </div>
+
+                  <div class="row g-4 mb-4">
+                    <div class="col-12 col-lg-6 form-group-wrapper m-0">
+                      <label for="typeTextarea" class="form-label"
+                        >Comprehensive Diagnostics Log</label
+                      >
+                      <textarea
+                        class="form-control"
+                        id="typeTextarea"
+                        rows="4"
+                        placeholder="Input structural notes or multi-line parameter definitions here..."
+                      ></textarea>
+                    </div>
+
+                    <div class="col-12 col-lg-6 m-0">
+                      <label
+                        class="form-label font-size: 0.75rem; fw-semibold text-secondary mb-2"
+                        style="
+                          font-size: 0.75rem;
+                          font-weight: 600;
+                          color: var(--secondary-color);
+                        "
+                        >Control Rules & Toggle Attributes</label
+                      >
+                      <div
+                        class="panel-surface d-flex flex-column gap-3 h-100 justify-content-center form-brand-group form-group-wrapper m-0"
+                      >
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="typeCheckbox"
+                            checked
+                          />
+                          <label
+                            class="form-check-label small fw-medium text-dark"
+                            for="typeCheckbox"
+                          >
+                            Initialize ongoing telemetry analytics thread
+                            background loop
+                          </label>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-4">
+                          <span class="small fw-semibold text-secondary"
+                            >Route Domain:</span
+                          >
+                          <div class="form-check mb-0">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="matrixRadios"
+                              id="typeRadio1"
+                              checked
+                            />
+                            <label
+                              class="form-check-label small"
+                              for="typeRadio1"
+                              >Primary Core</label
+                            >
+                          </div>
+                          <div class="form-check mb-0">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="matrixRadios"
+                              id="typeRadio2"
+                            />
+                            <label
+                              class="form-check-label small"
+                              for="typeRadio2"
+                              >Satellite Backup</label
+                            >
+                          </div>
+                        </div>
+
+                        <div class="form-check form-switch mb-0">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="typeSwitch"
+                            checked
+                          />
+                          <label
+                            class="form-check-label small fw-medium text-dark"
+                            for="typeSwitch"
+                          >
+                            Enforce end-to-end ledger validation trail logging
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="d-flex justify-content-end gap-2 pt-3 border-top mt-4"
+                    style="border-color: var(--border-color) !important"
+                  >
+                    <button
+                      type="reset"
+                      class="btn btn-sm btn-link text-secondary text-decoration-none fw-semibold px-3 py-2"
+                    >
+                      Clear Parameters
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-primary px-4 py-2 rounded-2 fw-semibold"
+                    >
+                      Save Database Node
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- Enterprise Data Record Ledger -->
+            <div class="card form-workspace-card border-0 mb-4">
+              <div
+                class="card-header bg-transparent py-3 d-flex align-items-center justify-content-between"
+                style="border-bottom: 1px solid var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-database-gear text-primary fs-5"></i>
+                  <h6
+                    class="m-0 fw-bold text-dark text-uppercase tracking-wider"
+                    style="font-size: 0.8rem; letter-spacing: 0.5px"
+                  >
+                    Enterprise Data Record Ledger
+                  </h6>
+                </div>
+                <span
+                  class="badge bg-light text-secondary border border-light-subtle small font-monospace"
+                  >v2.4-stable</span
+                >
+              </div>
+
+              <div class="card-body p-4">
+                <div class="table-responsive">
+                  <table
+                    id="enterpriseLedgerTable"
+                    class="table premium-table align-middle"
+                  >
+                    <thead>
+                      <tr>
+                        <th style="width: 50px">S#</th>
+                        <th>Transaction ID</th>
+                        <th>Anchor Client / Representative</th>
+                        <th>Security Domain</th>
+                        <th>Timestamp Logs</th>
+                        <th>Deployment Route</th>
+                        <th>Operational Status</th>
+                        <th class="text-center" style="width: 100px">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="fw-semibold text-secondary">1</td>
+                        <td class="font-monospace fw-semibold text-secondary">
+                          #TRX-90812
+                        </td>
+                        <td>
+                          <div class="fw-bold text-dark">
+                            Apex Medical Systems
+                          </div>
+                          <span
+                            class="text-muted small"
+                            style="font-size: 0.7rem"
+                            >admin@apexmed.com</span
+                          >
+                        </td>
+                        <td>
+                          <span class="text-dark fw-medium"
+                            >Database Write-Access</span
+                          >
+                        </td>
+                        <td>
+                          2026-06-09 <span class="text-muted small">14:22</span>
+                        </td>
+                        <td>
+                          <code
+                            class="small text-primary bg-light px-2 py-1 rounded"
+                            >WAN_PRIMARY_CORE</code
+                          >
+                        </td>
+                        <td>
+                          <span
+                            class="badge bg-success-subtle text-success badge-premium"
+                            >Active Handshake</span
+                          >
+                        </td>
+                        <td class="text-center">
+                          <div class="dropdown">
+                            <button
+                              class="btn btn-sm btn-link text-secondary p-0 shadow-none"
+                              type="button"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                            >
+                              <i class="bi bi-three-dots-vertical fs-6"></i>
+                            </button>
+                            <ul
+                              class="dropdown-menu dropdown-menu-end premium-dropdown-menu"
+                            >
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i
+                                    class="bi bi-printer me-2 text-secondary"
+                                  ></i
+                                  >Print Record</a
+                                >
+                              </li>
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i class="bi bi-eye me-2 text-secondary"></i
+                                  >View Analytics</a
+                                >
+                              </li>
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i
+                                    class="bi bi-pencil me-2 text-secondary"
+                                  ></i
+                                  >Edit Parameters</a
+                                >
+                              </li>
+                              <li><hr class="dropdown-divider" /></li>
+                              <li>
+                                <a class="dropdown-item text-danger" href="#"
+                                  ><i class="bi bi-trash3 me-2"></i>Delete
+                                  Node</a
+                                >
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-semibold text-secondary">2</td>
+                        <td class="font-monospace fw-semibold text-secondary">
+                          #TRX-87421
+                        </td>
+                        <td>
+                          <div class="fw-bold text-dark">
+                            Horizon Laboratory Group
+                          </div>
+                          <span
+                            class="text-muted small"
+                            style="font-size: 0.7rem"
+                            >ops@horizonlab.org</span
+                          >
+                        </td>
+                        <td>
+                          <span class="text-dark fw-medium"
+                            >Telemetry Vector Stream</span
+                          >
+                        </td>
+                        <td>
+                          2026-06-09 <span class="text-muted small">11:05</span>
+                        </td>
+                        <td>
+                          <code
+                            class="small text-primary bg-light px-2 py-1 rounded"
+                            >CLOUD_SATELLITE</code
+                          >
+                        </td>
+                        <td>
+                          <span
+                            class="badge bg-danger-subtle text-danger badge-premium"
+                            >Fault Isolated</span
+                          >
+                        </td>
+                        <td class="text-center">
+                          <div class="dropdown">
+                            <button
+                              class="btn btn-sm btn-link text-secondary p-0 shadow-none"
+                              type="button"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                            >
+                              <i class="bi bi-three-dots-vertical fs-6"></i>
+                            </button>
+                            <ul
+                              class="dropdown-menu dropdown-menu-end premium-dropdown-menu"
+                            >
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i
+                                    class="bi bi-printer me-2 text-secondary"
+                                  ></i
+                                  >Print Record</a
+                                >
+                              </li>
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i class="bi bi-eye me-2 text-secondary"></i
+                                  >View Analytics</a
+                                >
+                              </li>
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i
+                                    class="bi bi-pencil me-2 text-secondary"
+                                  ></i
+                                  >Edit Parameters</a
+                                >
+                              </li>
+                              <li><hr class="dropdown-divider" /></li>
+                              <li>
+                                <a class="dropdown-item text-danger" href="#"
+                                  ><i class="bi bi-trash3 me-2"></i>Delete
+                                  Node</a
+                                >
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="fw-semibold text-secondary">3</td>
+                        <td class="font-monospace fw-semibold text-secondary">
+                          #TRX-76510
+                        </td>
+                        <td>
+                          <div class="fw-bold text-dark">
+                            Vanguard Healthcare Alliance
+                          </div>
+                          <span
+                            class="text-muted small"
+                            style="font-size: 0.7rem"
+                            >security@vanguard.io</span
+                          >
+                        </td>
+                        <td>
+                          <span class="text-dark fw-medium"
+                            >System Administrator Ledger</span
+                          >
+                        </td>
+                        <td>
+                          2026-06-08 <span class="text-muted small">17:40</span>
+                        </td>
+                        <td>
+                          <code
+                            class="small text-primary bg-light px-2 py-1 rounded"
+                            >WAN_PRIMARY_CORE</code
+                          >
+                        </td>
+                        <td>
+                          <span
+                            class="badge bg-warning-subtle text-warning badge-premium"
+                            >Sync Pending</span
+                          >
+                        </td>
+                        <td class="text-center">
+                          <div class="dropdown">
+                            <button
+                              class="btn btn-sm btn-link text-secondary p-0 shadow-none"
+                              type="button"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                            >
+                              <i class="bi bi-three-dots-vertical fs-6"></i>
+                            </button>
+                            <ul
+                              class="dropdown-menu dropdown-menu-end premium-dropdown-menu"
+                            >
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i
+                                    class="bi bi-printer me-2 text-secondary"
+                                  ></i
+                                  >Print Record</a
+                                >
+                              </li>
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i class="bi bi-eye me-2 text-secondary"></i
+                                  >View Analytics</a
+                                >
+                              </li>
+                              <li>
+                                <a class="dropdown-item" href="#"
+                                  ><i
+                                    class="bi bi-pencil me-2 text-secondary"
+                                  ></i
+                                  >Edit Parameters</a
+                                >
+                              </li>
+                              <li><hr class="dropdown-divider" /></li>
+                              <li>
+                                <a class="dropdown-item text-danger" href="#"
+                                  ><i class="bi bi-trash3 me-2"></i>Delete
+                                  Node</a
+                                >
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Global Event Notifications Matrix -->
+            <div class="card form-workspace-card border-0 mb-4">
+              <div
+                class="card-header bg-transparent py-3 d-flex align-items-center justify-content-between"
+                style="border-bottom: 1px solid var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-bell text-primary fs-5"></i>
+                  <h6
+                    class="m-0 fw-bold text-dark text-uppercase tracking-wider"
+                    style="font-size: 0.8rem; letter-spacing: 0.5px"
+                  >
+                    System Notifications Trigger Matrix
+                  </h6>
+                </div>
+              </div>
+
+              <div class="card-body p-4">
+                <p class="text-muted small mb-3">
+                  Deploy instant event feedback hooks using target
+                  initialization triggers.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-success px-3 py-2 fw-semibold rounded-2 toast-trigger"
+                    data-bs-target="#toastSuccess"
+                  >
+                    <i class="bi bi-check-circle me-1"></i> Trigger Success
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger px-3 py-2 fw-semibold rounded-2 toast-trigger"
+                    data-bs-target="#toastError"
+                  >
+                    <i class="bi bi-exclamation-octagon me-1"></i> Trigger Error
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="toast-container-global" id="globalToastContainer">
+              <div
+                id="toastSuccess"
+                class="toast premium-toast toast-success position-relative"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                data-bs-delay="4000"
+              >
+                <div
+                  class="toast-header d-flex align-items-center justify-content-between"
+                >
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-check-circle-fill text-success fs-6"></i>
+                    <strong class="text-dark fw-bold small"
+                      >System Verification Handshake</strong
+                    >
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-close small shadow-none ms-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="toast-body">
+                  Database entry parameters successfully parsed and committed
+                  down to the running node deployment architecture matrix.
+                </div>
+              </div>
+
+              <div
+                id="toastError"
+                class="toast premium-toast toast-error position-relative"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                data-bs-delay="4000"
+              >
+                <div
+                  class="toast-header d-flex align-items-center justify-content-between"
+                >
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-crosshair text-danger fs-6"></i>
+                    <strong class="text-dark fw-bold small"
+                      >Fault Isolation Alert</strong
+                    >
+                  </div>
+                  <button
+                    type="button"
+                    class="btn-close small shadow-none ms-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="toast-body">
+                  ERR_NULL_POINTER reference variance mismatch recorded across
+                  transactional execution registers. Action aborted.
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile and Avatar -->
+            <div class="card form-workspace-card border-0 mb-4">
+              <div
+                class="card-header bg-transparent py-3 d-flex align-items-center justify-content-between"
+                style="border-bottom: 1px solid var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-grid-3x3-gap text-primary fs-5"></i>
+                  <h6
+                    class="m-0 fw-bold text-dark text-uppercase tracking-wider"
+                    style="font-size: 0.8rem; letter-spacing: 0.5px"
+                  >
+                    Identity Shape Matrix & Banner Components
+                  </h6>
+                </div>
+              </div>
+
+              <div class="card-body p-4">
+                <div class="row g-4">
+                  <div class="col-12 col-xl-6">
+                    <div class="d-flex flex-column gap-4">
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >1. Perfect Circle Geometry</label
+                        >
+                        <div class="avatar-group-grid">
+                          <div class="premium-avatar-shape avatar-circle">
+                            <img
+                              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                              class="avatar-circle"
+                            />
+                          </div>
+                          <div class="premium-avatar-shape avatar-circle">
+                            <span>MK</span>
+                          </div>
+                          <div
+                            class="premium-avatar-shape avatar-circle bg-success-subtle text-success border-success-subtle"
+                          >
+                            <span>OK</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >2. Premium Squircle (High Radius)</label
+                        >
+                        <div class="avatar-group-grid">
+                          <div class="premium-avatar-shape avatar-squircle">
+                            <img
+                              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
+                              class="avatar-squircle"
+                            />
+                          </div>
+                          <div class="premium-avatar-shape avatar-squircle">
+                            <span>AD</span>
+                          </div>
+                          <div
+                            class="premium-avatar-shape avatar-squircle bg-warning-subtle text-warning border-warning-subtle"
+                          >
+                            <i class="bi bi-shield-exclamation"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >3. Micro-Rounded (Compact Utility)</label
+                        >
+                        <div class="avatar-group-grid">
+                          <div class="premium-avatar-shape avatar-rounded">
+                            <img
+                              src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80"
+                              class="avatar-rounded"
+                            />
+                          </div>
+                          <div class="premium-avatar-shape avatar-rounded">
+                            <span>SYS</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >4. Pure Architectural Square</label
+                        >
+                        <div class="avatar-group-grid">
+                          <div class="premium-avatar-shape avatar-square">
+                            <img
+                              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80"
+                              class="avatar-square"
+                            />
+                          </div>
+                          <div class="premium-avatar-shape avatar-square">
+                            <span>N5</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >5. Layered Team Stack Pile</label
+                        >
+                        <div class="avatar-stack-pile">
+                          <div
+                            class="premium-avatar-shape avatar-circle bg-light text-secondary fw-bold"
+                            style="z-index: 1"
+                          >
+                            <span>+4</span>
+                          </div>
+                          <div
+                            class="premium-avatar-shape avatar-circle"
+                            style="z-index: 2"
+                          >
+                            <img
+                              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80"
+                              class="avatar-circle"
+                            />
+                          </div>
+                          <div
+                            class="premium-avatar-shape avatar-circle"
+                            style="z-index: 3"
+                          >
+                            <img
+                              src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&auto=format&fit=crop&q=80"
+                              class="avatar-circle"
+                            />
+                          </div>
+                          <div
+                            class="premium-avatar-shape avatar-circle"
+                            style="z-index: 4"
+                          >
+                            <img
+                              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
+                              class="avatar-circle"
+                            />
+                          </div>
+                          <div
+                            class="premium-avatar-shape avatar-circle"
+                            style="z-index: 5"
+                          >
+                            <img
+                              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                              class="avatar-circle"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-xl-6">
+                    <label
+                      class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                      style="font-size: 0.7rem"
+                      >6. Account Cover Banner Layout View</label
+                    >
+
+                    <div class="profile-banner-workspace shadow-sm">
+                      <div class="profile-cover-image">
+                        <div class="position-absolute top-0 end-0 p-3">
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-light opacity-75 rounded-2 py-1 px-2 shadow-none"
+                            style="font-size: 0.7rem"
+                          >
+                            <i class="bi bi-camera me-1"></i> Edit Cover
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="profile-banner-content">
+                        <div
+                          class="d-flex justify-content-between align-items-end flex-wrap"
+                        >
+                          <div class="profile-banner-avatar-offset">
+                            <div class="premium-avatar-shape avatar-squircle">
+                              <img
+                                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+                                class="avatar-squircle"
+                              />
+                            </div>
+                          </div>
+
+                          <div class="d-flex gap-2 mb-2">
+                            <button
+                              type="button"
+                              class="btn btn-xs btn-outline-primary px-3 py-1.5 fw-semibold rounded-2"
+                              style="
+                                font-size: 0.75rem;
+                                color: var(--secondary-color);
+                                border-color: var(--border-color);
+                                background: transparent;
+                              "
+                            >
+                              <i class="bi bi-pencil"></i> Edit Profile
+                            </button>
+                            <button
+                              type="button"
+                              class="btn btn-xs btn-primary px-3 py-1.5 fw-semibold rounded-2"
+                              style="font-size: 0.75rem"
+                            >
+                              <i class="bi bi-envelope"></i> Message
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="mt-2">
+                          <div class="d-flex align-items-center gap-2">
+                            <h5
+                              class="text-dark fw-bold mb-0 tracking-tight"
+                              style="font-size: 1.15rem"
+                            >
+                              Marcus Vance
+                            </h5>
+                            <i
+                              class="bi bi-patch-check-fill text-primary"
+                              title="Verified Domain Operator"
+                            ></i>
+                          </div>
+                          <p class="text-muted small mb-3 fw-medium">
+                            Senior Database Systems Architecture Administrator
+                          </p>
+
+                          <div
+                            class="row g-2 pt-3 border-top"
+                            style="border-color: var(--border-color) !important"
+                          >
+                            <div class="col-4">
+                              <span
+                                class="d-block text-dark fw-bold"
+                                style="font-size: 0.9rem"
+                                >1,402</span
+                              >
+                              <span
+                                class="text-muted d-block"
+                                style="
+                                  font-size: 0.65rem;
+                                  text-transform: uppercase;
+                                  font-weight: 600;
+                                "
+                                >System Logs</span
+                              >
+                            </div>
+                            <div class="col-4">
+                              <span
+                                class="d-block text-dark fw-bold"
+                                style="font-size: 0.9rem"
+                                >99.98%</span
+                              >
+                              <span
+                                class="text-muted d-block"
+                                style="
+                                  font-size: 0.65rem;
+                                  text-transform: uppercase;
+                                  font-weight: 600;
+                                "
+                                >Node Uptime</span
+                              >
+                            </div>
+                            <div class="col-4">
+                              <span
+                                class="d-block text-dark fw-bold"
+                                style="font-size: 0.9rem"
+                                >42</span
+                              >
+                              <span
+                                class="text-muted d-block"
+                                style="
+                                  font-size: 0.65rem;
+                                  text-transform: uppercase;
+                                  font-weight: 600;
+                                "
+                                >Core Nodes</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons & Hierarchy Matrices -->
+            <div class="card form-workspace-card border-0 mb-4">
+              <div
+                class="card-header bg-transparent py-3 d-flex align-items-center justify-content-between"
+                style="border-bottom: 1px solid var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-toggle-on text-primary fs-5"></i>
+                  <h6
+                    class="m-0 fw-bold text-dark text-uppercase tracking-wider"
+                    style="font-size: 0.8rem; letter-spacing: 0.5px"
+                  >
+                    Action Buttons & Hierarchy Matrices
+                  </h6>
+                </div>
+              </div>
+
+              <div class="card-body p-4">
+                <div class="row g-4">
+                  <div class="col-12 col-xl-6">
+                    <div class="d-flex flex-column gap-4">
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >1. Core Action Hierarchy</label
+                        >
+                        <div class="button-matrix-row">
+                          <button type="button" class="btn btn-sm btn-primary">
+                            Primary Action
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary"
+                          >
+                            Secondary Plain
+                          </button>
+                          <button type="button" class="btn btn-sm btn-danger">
+                            Destructive Node
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >2. Contextual Icon Elements</label
+                        >
+                        <div class="button-matrix-row">
+                          <button type="button" class="btn btn-sm btn-primary">
+                            <i class="bi bi-cloud-arrow-up me-1.5"></i>Upload
+                            Dataset
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary"
+                          >
+                            <i class="bi bi-download me-1.5"></i>Export CSV
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary p-2"
+                          >
+                            <i class="bi bi-funnel"></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >3. Asynchronous Pipeline Spinners</label
+                        >
+                        <div class="button-matrix-row">
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            disabled
+                          >
+                            <span
+                              class="spinner-border spinner-border-sm me-1.5"
+                              aria-hidden="true"
+                            ></span
+                            >Saving Payload...
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            disabled
+                          >
+                            <span
+                              class="spinner-grow spinner-grow-sm me-1.5"
+                              aria-hidden="true"
+                            ></span
+                            >Syncing Sync...
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-xl-6">
+                    <div class="d-flex flex-column gap-4">
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >4. Scale Framework Parameters</label
+                        >
+                        <div class="button-matrix-row align-items-center">
+                          <button type="button" class="btn btn-xs btn-primary">
+                            X-Small
+                          </button>
+                          <button type="button" class="btn btn-sm btn-primary">
+                            Small Base
+                          </button>
+                          <button type="button" class="btn btn-md btn-primary">
+                            Medium Field
+                          </button>
+                          <button type="button" class="btn btn-lg btn-primary">
+                            Large Focus
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >5. Segmented Toggle Clusters (Radio Behavior)</label
+                        >
+                        <div>
+                          <div
+                            class="btn-group premium-btn-group shadow-sm"
+                            role="group"
+                            aria-label="Database routing switch group"
+                          >
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="btnServerCluster"
+                              id="cluster1"
+                              checked
+                            />
+                            <label
+                              class="btn btn-outline-secondary px-3 py-2"
+                              for="cluster1"
+                              >Cluster Alpha</label
+                            >
+
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="btnServerCluster"
+                              id="cluster2"
+                            />
+                            <label
+                              class="btn btn-outline-secondary px-3 py-2"
+                              for="cluster2"
+                              >Cluster Beta</label
+                            >
+
+                            <input
+                              type="radio"
+                              class="btn-check"
+                              name="btnServerCluster"
+                              id="cluster3"
+                            />
+                            <label
+                              class="btn btn-outline-secondary px-3 py-2"
+                              for="cluster3"
+                              >Failover Edge</label
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Badges & Status Meta-Tags -->
+            <div class="card form-workspace-card border-0 mb-4">
+              <div
+                class="card-header bg-transparent py-3 d-flex align-items-center justify-content-between"
+                style="border-bottom: 1px solid var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-tags text-primary fs-5"></i>
+                  <h6
+                    class="m-0 fw-bold text-dark text-uppercase tracking-wider"
+                    style="font-size: 0.8rem; letter-spacing: 0.5px"
+                  >
+                    Contextual Badges & Status Meta-Tags
+                  </h6>
+                </div>
+              </div>
+
+              <div class="card-body p-4">
+                <div class="row g-4">
+                  <div class="col-12 col-xl-6">
+                    <div class="d-flex flex-column gap-4">
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >1. Soft Semantic Sub-System States</label
+                        >
+                        <div class="badge-matrix-row">
+                          <span class="badge-premium-base badge-soft-primary"
+                            >Active Node</span
+                          >
+                          <span class="badge-premium-base badge-soft-success"
+                            >Verified</span
+                          >
+                          <span class="badge-premium-base badge-soft-warning"
+                            >Sync Intercept</span
+                          >
+                          <span class="badge-premium-base badge-soft-danger"
+                            >Fault Isolation</span
+                          >
+                          <span class="badge-premium-base badge-soft-secondary"
+                            >Archived</span
+                          >
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >2. High-Radius Pill System Layouts</label
+                        >
+                        <div class="badge-matrix-row">
+                          <span
+                            class="badge-premium-base badge-premium-pill badge-soft-primary"
+                            >Cluster Alpha</span
+                          >
+                          <span
+                            class="badge-premium-base badge-premium-pill badge-soft-success"
+                            >Stable</span
+                          >
+                          <span
+                            class="badge-premium-base badge-premium-pill badge-soft-danger"
+                            >Critical</span
+                          >
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >3. High-Contrast Solid Metrics</label
+                        >
+                        <div class="badge-matrix-row">
+                          <span
+                            class="badge bg-primary badge-premium-base border-0"
+                            >ROLE_ADMIN</span
+                          >
+                          <span
+                            class="badge bg-success badge-premium-base border-0"
+                            >ONLINE</span
+                          >
+                          <span
+                            class="badge bg-secondary badge-premium-base border-0"
+                            >SECURE_LOG</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-xl-6">
+                    <div class="d-flex flex-column gap-4">
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >4. Minimalist Status Indicator Pips</label
+                        >
+                        <div class="badge-matrix-row">
+                          <span class="badge-premium-base badge-soft-secondary"
+                            ><span
+                              class="status-indicator-pip pip-primary"
+                            ></span
+                            >Data Pipeline Active</span
+                          >
+                          <span class="badge-premium-base badge-soft-secondary"
+                            ><span
+                              class="status-indicator-pip pip-success"
+                            ></span
+                            >Operational</span
+                          >
+                          <span class="badge-premium-base badge-soft-secondary"
+                            ><span
+                              class="status-indicator-pip pip-warning"
+                            ></span
+                            >Latency Delays</span
+                          >
+                          <span class="badge-premium-base badge-soft-secondary"
+                            ><span
+                              class="status-indicator-pip pip-danger"
+                            ></span
+                            >Offline</span
+                          >
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-2"
+                          style="font-size: 0.7rem"
+                          >5. Dismissible Filter Tokens (Interactive)</label
+                        >
+                        <div class="badge-matrix-row">
+                          <span
+                            class="badge-premium-base badge-soft-secondary premium-dismissible-tag"
+                          >
+                            Region: AMER
+                            <i class="bi bi-x-lg btn-close-tag ms-1"></i>
+                          </span>
+                          <span
+                            class="badge-premium-base badge-soft-secondary premium-dismissible-tag"
+                          >
+                            Domain: Database
+                            <i class="bi bi-x-lg btn-close-tag ms-1"></i>
+                          </span>
+                          <span
+                            class="badge-premium-base badge-soft-secondary premium-dismissible-tag"
+                          >
+                            Clearance: Level-5
+                            <i class="bi bi-x-lg btn-close-tag ms-1"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                          <label
+                            class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-3"
+                            style="font-size: 0.7rem"
+                            >1. Floating Position Overlays</label
+                          >
+                          <div class="button-matrix-row gap-4">
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-primary position-relative notification-anchor p-2"
+                            >
+                              <i class="bi bi-bell fs-6"></i>
+                              <span
+                                class="badge bg-danger rounded-circle notification-badge-floating text-white"
+                                >4</span
+                              >
+                            </button>
+
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-primary position-relative notification-anchor px-3"
+                            >
+                              Inbox Messages
+                              <span
+                                class="badge bg-warning rounded-circle notification-badge-floating text-dark"
+                                >12</span
+                              >
+                            </button>
+
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-primary position-relative notification-anchor p-2"
+                            >
+                              <i class="bi bi-cpu fs-6"></i>
+                              <span class="notification-dot-floating"></span>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                          <label
+                            class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-3"
+                            style="font-size: 0.7rem"
+                            >2. Inline Structural Item Counters</label
+                          >
+                          <div
+                            class="d-flex flex-column gap-2"
+                            style="max-width: 280px"
+                          >
+                            <a
+                              href="#"
+                              class="d-flex align-items-center justify-content-between p-2 rounded text-decoration-none bg-light border"
+                              style="
+                                border-color: var(--border-color) !important;
+                              "
+                            >
+                              <span class="small fw-semibold text-dark"
+                                ><i
+                                  class="bi bi-folder2-open me-2 text-secondary"
+                                ></i
+                                >System Records</span
+                              >
+                              <span class="badge-notification-inline"
+                                >Updated</span
+                              >
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="card form-workspace-card border-0 mb-4">
+              <div
+                class="card-header bg-transparent py-3 d-flex align-items-center justify-content-between"
+                style="border-bottom: 1px solid var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-segmented-nav text-primary fs-5"></i>
+                  <h6
+                    class="m-0 fw-bold text-dark text-uppercase tracking-wider"
+                    style="font-size: 0.8rem; letter-spacing: 0.5px"
+                  >
+                    Segmented Navigations & Content Tabs
+                  </h6>
+                </div>
+              </div>
+
+              <div class="card-body p-4">
+                <div class="row g-5">
+                  <div class="col-12 col-xl-6">
+                    <label
+                      class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-3"
+                      style="font-size: 0.7rem"
+                      >1. Horizontal Boundary Tabs</label
+                    >
+
+                    <ul
+                      class="nav nav-tabs premium-nav-tabs"
+                      id="horizontalTabGrid"
+                      role="tablist"
+                    >
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link active"
+                          id="core-panel-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#core-panel"
+                          type="button"
+                          role="tab"
+                          aria-controls="core-panel"
+                          aria-selected="true"
+                        >
+                          <i class="bi bi-cpu me-1.5"></i>Core Metrics
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="security-panel-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#security-panel"
+                          type="button"
+                          role="tab"
+                          aria-controls="security-panel"
+                          aria-selected="false"
+                        >
+                          <i class="bi bi-shield-lock me-1.5"></i>Security Keys
+                        </button>
+                      </li>
+                    </ul>
+
+                    <div
+                      class="tab-content tab-workspace-content"
+                      id="horizontalTabGridContent"
+                    >
+                      <div
+                        class="tab-pane fade show active"
+                        id="core-panel"
+                        role="tabpanel"
+                        aria-labelledby="core-panel-tab"
+                      >
+                        Database virtualization pipelines are broadcasting
+                        telemetry metrics normally. System data load vectors
+                        matching standard administrative baseline performance
+                        schemas completely.
+                      </div>
+                      <div
+                        class="tab-pane fade"
+                        id="security-panel"
+                        role="tabpanel"
+                        aria-labelledby="security-panel-tab"
+                      >
+                        Encryption authorization hashes matching structural
+                        requirements. Security audit protocols tracking outbound
+                        payload distributions via core WAN routes seamlessly.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-xl-6">
+                    <label
+                      class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-3"
+                      style="font-size: 0.7rem"
+                      >2. Vertical Allocation Stacks</label
+                    >
+
+                    <div class="d-flex align-items-start h-100">
+                      <div
+                        class="nav flex-column nav-pills premium-nav-vertical h-100"
+                        id="verticalTabGrid"
+                        role="tablist"
+                        aria-orientation="vertical"
+                        style="min-width: 160px"
+                      >
+                        <button
+                          class="nav-link active"
+                          id="v-node1-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-node1"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-node1"
+                          aria-selected="true"
+                        >
+                          <i class="bi bi-hdd-network me-2"></i>Node Alpha
+                        </button>
+                        <button
+                          class="nav-link"
+                          id="v-node2-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-node2"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-node2"
+                          aria-selected="false"
+                        >
+                          <i class="bi bi-hdd-network me-2"></i>Node Beta
+                        </button>
+                      </div>
+
+                      <div
+                        class="tab-content tab-workspace-content ps-3 pt-0"
+                        id="verticalTabGridContent"
+                      >
+                        <div
+                          class="tab-pane fade show active"
+                          id="v-node1"
+                          role="tabpanel"
+                          aria-labelledby="v-node1-tab"
+                        >
+                          <strong class="text-dark d-block mb-1"
+                            >Primary Server Matrix Cluster</strong
+                          >
+                          Located in AMER datacenter cluster 4A. Running
+                          configuration deployment active for 1,402 hours with 0
+                          recorded exceptions.
+                        </div>
+                        <div
+                          class="tab-pane fade"
+                          id="v-node2"
+                          role="tabpanel"
+                          aria-labelledby="v-node2-tab"
+                        >
+                          <strong class="text-dark d-block mb-1"
+                            >Secondary Satellite Failover</strong
+                          >
+                          Located in APAC edge zone infrastructure nodes.
+                          Running state suspended to minimal mirror monitoring
+                          sync threads until priority load shifts occur.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Collapse -->
+            <div class="card form-workspace-card border-0 mb-4">
+              <div
+                class="card-header bg-transparent py-3 d-flex align-items-center justify-content-between"
+                style="border-bottom: 1px solid var(--border-color)"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-arrows-expand text-primary fs-5"></i>
+                  <h6
+                    class="m-0 fw-bold text-dark text-uppercase tracking-wider"
+                    style="font-size: 0.8rem; letter-spacing: 0.5px"
+                  >
+                    Collapsible Panels & Accordion Matrices
+                  </h6>
+                </div>
+              </div>
+
+              <div class="card-body p-4">
+                <div class="row g-5">
+                  <div class="col-12 col-xl-6">
+                    <label
+                      class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-3"
+                      style="font-size: 0.7rem"
+                      >1. Multi-Target Independent Toggle Panels</label
+                    >
+
+                    <div class="d-flex gap-2 mb-3">
+                      <button
+                        class="btn btn-sm btn-outline-primary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseTargetAlpha"
+                        aria-expanded="false"
+                        aria-controls="collapseTargetAlpha"
+                      >
+                        Toggle Node Alpha
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-primary"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseTargetBeta"
+                        aria-expanded="false"
+                        aria-controls="collapseTargetBeta"
+                      >
+                        Toggle Node Beta
+                      </button>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2">
+                      <div class="collapse" id="collapseTargetAlpha">
+                        <div class="collapse-workspace-panel">
+                          <strong class="text-dark d-block mb-1"
+                            ><i class="bi bi-cpu text-primary me-1.5"></i>Node
+                            Alpha Parameters</strong
+                          >
+                          Database runtime clustering configuration handles load
+                          scaling distribution arrays automatically across local
+                          host architectures.
+                        </div>
+                      </div>
+
+                      <div class="collapse" id="collapseTargetBeta">
+                        <div class="collapse-workspace-panel">
+                          <strong class="text-dark d-block mb-1"
+                            ><i class="bi bi-shield-lock text-danger me-1.5"></i
+                            >Node Beta Constraints</strong
+                          >
+                          Security access protocols tracking token validation
+                          sequences down to secure physical layers for absolute
+                          database alignment trails.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-xl-6">
+                    <label
+                      class="form-label small fw-bold text-secondary text-uppercase tracking-wider mb-3"
+                      style="font-size: 0.7rem"
+                      >2. Mutual Exclusion Accordion Stack</label
+                    >
+
+                    <div
+                      class="accordion premium-accordion"
+                      id="enterpriseWorkspaceAccordion"
+                    >
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button
+                            class="accordion-button"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#accElementOne"
+                            aria-expanded="true"
+                            aria-controls="accElementOne"
+                          >
+                            <i class="bi bi-hdd-network me-2"></i>Infrastructure
+                            Gateway Ledger Allocation
+                          </button>
+                        </h2>
+                        <div
+                          id="accElementOne"
+                          class="accordion-collapse collapse show"
+                          data-bs-parent="#enterpriseWorkspaceAccordion"
+                        >
+                          <div class="accordion-body">
+                            Global distribution networks are executing
+                            configuration loops without any registered process
+                            conflicts. Live routing paths evaluate optimization
+                            thresholds continuously to maintain high
+                            responsiveness criteria.
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button
+                            class="accordion-button collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#accElementTwo"
+                            aria-expanded="false"
+                            aria-controls="accElementTwo"
+                          >
+                            <i class="bi bi-database-exclamation me-2"></i
+                            >System Memory Latency Variances
+                          </button>
+                        </h2>
+                        <div
+                          id="accElementTwo"
+                          class="accordion-collapse collapse"
+                          data-bs-parent="#enterpriseWorkspaceAccordion"
+                        >
+                          <div class="accordion-body">
+                            Data pipeline memory heaps crossing critical margins
+                            trigger automated buffer collection arrays
+                            instantly. This routine drops local operational
+                            latency down into the expected target millisecond
+                            window.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <footer class="footer-custom">
+          <div
+            class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2"
+          >
+            <div>
+              <span
+                >&copy; 2026 <strong>MediTrack Inc.</strong> Enterprise
+                Architecture Core Suite v4.11.2</span
+              >
+            </div>
+            <div class="d-flex gap-4">
+              <a
+                href="#"
+                class="text-decoration-none text-muted border-bottom-hover"
+                >Service Level Status</a
+              >
+              <a
+                href="#"
+                class="text-decoration-none text-muted border-bottom-hover"
+                >Infrastructure Audit Logs</a
+              >
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <div
+      class="offcanvas offcanvas-end offcanvas-right-panel"
+      tabindex="-1"
+      id="quickActionPanel"
+      aria-labelledby="quickActionPanelLabel"
+    >
+      <div class="offcanvas-header border-bottom py-3 px-4">
+        <h5
+          class="offcanvas-title fw-bold text-dark d-flex align-items-center"
+          id="quickActionPanelLabel"
+        >
+          <i class="bi bi-lightning-charge-fill text-warning me-2 fs-5"></i
+          >Quick Actions
+        </h5>
+        <button
+          type="button"
+          class="btn-close text-reset shadow-none"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close Panel"
+        ></button>
+      </div>
+      <div class="offcanvas-body p-4">
+        <p class="text-muted small mb-4">
+          Execute isolated enterprise actions instantly without migrating out of
+          your workspace context.
+        </p>
+
+        <div class="d-grid gap-3">
+          <button
+            class="btn btn-primary d-flex align-items-center justify-content-start gap-3 p-3 text-start shadow-sm border-0"
+            type="button"
+          >
+            <i class="bi bi-person-plus-fill fs-4"></i>
+            <div>
+              <div class="fw-bold fs-6">Admit Emergency Intake</div>
+              <small class="opacity-75"
+                >Bypasses secondary triage configuration matrix</small
+              >
+            </div>
+          </button>
+
+          <button
+            class="btn btn-light d-flex align-items-center justify-content-start gap-3 p-3 text-start text-dark border"
+            type="button"
+            style="
+              background: #fff;
+              border-color: var(--border-color) !important;
+            "
+          >
+            <i class="bi bi-prescription2 fs-4 text-primary"></i>
+            <div>
+              <div class="fw-bold fs-6">Issue Emergency RX</div>
+              <small class="text-muted"
+                >Direct dispatch validation handshake to primary pharmacy</small
+              >
+            </div>
+          </button>
+
+          <button
+            class="btn btn-light d-flex align-items-center justify-content-start gap-3 p-3 text-start text-dark border"
+            type="button"
+            style="
+              background: #fff;
+              border-color: var(--border-color) !important;
+            "
+          >
+            <i class="bi bi-printer fs-4 text-secondary"></i>
+            <div>
+              <div class="fw-bold fs-6">Compile Shift Report</div>
+              <small class="text-muted"
+                >Bundles encrypted logs and exports instantly</small
+              >
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const sidebar = document.getElementById("sidebar");
+        const toggleBtn = document.getElementById("sidebar-toggle-btn");
+        const mainContent = document.getElementById("main-content");
+
+        // Universal Toggle Configuration Manager
+        toggleBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          if (window.innerWidth >= 992) {
+            sidebar.classList.toggle("collapsed");
+          } else {
+            sidebar.classList.toggle("active");
+            sidebar.classList.remove("collapsed");
+          }
+        });
+
+        // Click Outside to Dismiss Sidebar on Mobile Viewports
+        document.addEventListener("click", function (event) {
+          const isClickInsideSidebar = sidebar.contains(event.target);
+          const isClickInsideToggle = toggleBtn.contains(event.target);
+
+          if (
+            window.innerWidth < 992 &&
+            !isClickInsideSidebar &&
+            !isClickInsideToggle
+          ) {
+            if (sidebar.classList.contains("active")) {
+              sidebar.classList.remove("active");
+            }
+          }
+        });
+
+        // Window Resize Engine Clean Up Routines
+        window.addEventListener("resize", function () {
+          if (window.innerWidth >= 992) {
+            sidebar.classList.remove("active");
+          } else {
+            sidebar.classList.remove("collapsed");
+          }
+        });
+      });
+      // Initialize Custom Searchable Single Dropdown (initialize per element so dropdownParent is correct)
+      $(".select2-single-init").each(function () {
+        $(this).select2({
+          placeholder: "Search or choose node data assignment...",
+          allowClear: true,
+          closeOnSelect: true,
+          dropdownParent: $(this).closest(".form-workspace-card"), // attach to nearest card to avoid cross-container issues
+        });
+      });
+
+      // Initialize Custom Tokenized Multiple Selector Array (per element)
+      $(".select2-multiple-init").each(function () {
+        $(this).select2({
+          placeholder: "Select security clearance tracking tags...",
+          tokenSeparators: [",", " "],
+          closeOnSelect: false,
+          dropdownParent: $(this).closest(".form-workspace-card"),
+        });
+      });
+      // Initialize Premium Enterprise DataTables Instance
+      if ($("#enterpriseLedgerTable").length) {
+        $("#enterpriseLedgerTable").DataTable({
+          paging: true,
+          searching: true,
+          ordering: true,
+          info: true,
+          lengthChange: true,
+          pageLength: 10,
+          order: [[1, "desc"]], // Keeps sorting mapped precisely to Transaction ID column
+          columnDefs: [
+            { orderable: false, targets: [0, 7] }, // Disables sorting on S# and Actions columns
+            { searchable: false, targets: [0, 7] }, // Disables search lookup strings inside actions
+          ],
+          language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Filter ledger records...",
+            lengthMenu: "Display Rows: _MENU_",
+            info: "Showing system metrics _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+              previous: '<i class="bi bi-chevron-left"></i>',
+              next: '<i class="bi bi-chevron-right"></i>',
+            },
+          },
+          drawCallback: function () {
+            $(".dataTables_paginate .pagination").addClass(
+              "pagination-sm justify-content-end m-0",
+            );
+          },
+        });
+      }
+      $(document).ready(function () {
+        // Catch click events on elements with the trigger class descriptor
+        $(".toast-trigger").on("click", function () {
+          // Find the target live toast instance by matching ID attributes
+          const targetId =
+            $(this).attr("data-bs-target") || "#globalToastInstance";
+          const $toastElement = $(targetId);
+
+          if ($toastElement.length) {
+            // Instantiate and deploy the native Bootstrap 5 component lifecycle animation
+            const bsToast = bootstrap.Toast.getOrCreateInstance(
+              $toastElement[0],
+            );
+            bsToast.show();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
