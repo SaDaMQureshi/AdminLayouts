@@ -1,0 +1,3912 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Premium Office Admin Panel</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <style>
+      :root {
+        --color-primary: #4f46e5;
+        --color-primary-hover: #3b82f6;
+        --color-secondary: #64748b;
+        --color-secondary-hover: #475569;
+        --color-success: #10b981;
+        --color-success-hover: #059669;
+        --color-danger: #ef4444;
+        --color-danger-hover: #dc2626;
+        --color-warning: #f59e0b;
+        --color-warning-hover: #d97706;
+        --color-info: #06b6d4;
+        --color-info-hover: #0891b2;
+        --body-bg: #f1f5f9;
+        --sidebar-bg: #0f172a;
+        --sidebar-text: #94a3b8;
+        --sidebar-hover-bg: #1e293b;
+        --navbar-bg: #ffffff;
+        --card-bg: #ffffff;
+        --card-header-bg: #ffffff;
+        --card-border-color: #e2e8f0;
+        --text-main: #1e293b;
+        --border-radius-premium: 14px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--body-bg);
+        color: var(--text-main);
+        overflow-x: hidden;
+      }
+
+      /* ===================== SIDEBAR ===================== */
+      .sidebar {
+        width: 265px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: linear-gradient(180deg, #0f172a 0%, #131e30 100%);
+        color: var(--sidebar-text);
+        z-index: 1040;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      body.sidebar-collapsed .sidebar {
+        width: 72px;
+      }
+      body.sidebar-collapsed .sidebar .sidebar-brand span,
+      body.sidebar-collapsed .sidebar .sidebar-item span,
+      body.sidebar-collapsed .sidebar .sidebar-item .arrow-icon,
+      body.sidebar-collapsed .sidebar .sidebar-section-label {
+        display: none !important;
+      }
+      body.sidebar-collapsed .sidebar .submenu {
+        display: none !important;
+      }
+      body.sidebar-collapsed .sidebar-item a {
+        justify-content: center;
+        padding: 13px 0;
+      }
+      body.sidebar-collapsed .sidebar-item a i.nav-icon {
+        margin-right: 0;
+        font-size: 1.2rem;
+      }
+      body.sidebar-collapsed .sidebar-brand {
+        justify-content: center;
+        padding: 20px 0;
+      }
+      body.sidebar-collapsed .sidebar-brand .brand-icon {
+        margin-right: 0;
+      }
+
+      .sidebar-brand {
+        padding: 20px 22px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #ffffff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        height: 70px;
+        flex-shrink: 0;
+        letter-spacing: -0.02em;
+      }
+      .brand-icon {
+        width: 34px;
+        height: 34px;
+        background: linear-gradient(135deg, var(--color-primary), #7c3aed);
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 11px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+      }
+
+      .sidebar-scroll {
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex: 1;
+        padding: 16px 0 20px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+      }
+      .sidebar-scroll::-webkit-scrollbar {
+        width: 4px;
+      }
+      .sidebar-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+
+      .sidebar-section-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(148, 163, 184, 0.45);
+        padding: 12px 22px 6px;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .sidebar-item {
+        position: relative;
+      }
+      .sidebar-item a {
+        display: flex;
+        align-items: center;
+        padding: 10px 22px;
+        color: var(--sidebar-text);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: all 0.18s ease;
+        cursor: pointer;
+        border-radius: 0;
+        gap: 0;
+      }
+      .sidebar-item a i.nav-icon {
+        width: 20px;
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-right: 11px;
+        text-align: center;
+        transition: color 0.18s;
+      }
+      .sidebar-item a .arrow-icon {
+        margin-left: auto;
+        font-size: 0.7rem;
+        transition: transform 0.2s ease;
+        opacity: 0.5;
+      }
+      .sidebar-item a:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+      }
+      .sidebar-item a:hover i.nav-icon {
+        color: #a5b4fc;
+      }
+      .sidebar-item.active > a {
+        background: rgba(79, 70, 229, 0.15);
+        color: #ffffff;
+        border-left: 3px solid var(--color-primary);
+        padding-left: 19px;
+      }
+      .sidebar-item.active > a i.nav-icon {
+        color: #a5b4fc;
+      }
+      .sidebar-item.open > a {
+        color: #fff;
+      }
+      .sidebar-item.open .arrow-icon {
+        transform: rotate(90deg);
+        opacity: 0.8;
+      }
+
+      .submenu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        background: rgba(0, 0, 0, 0.18);
+        display: none;
+      }
+      .submenu .sidebar-item a {
+        padding: 8px 22px 8px 52px;
+        font-size: 0.83rem;
+        font-weight: 400;
+        color: rgba(148, 163, 184, 0.75);
+      }
+      .submenu .sidebar-item a:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .submenu .sidebar-item.active a {
+        color: #a5b4fc;
+      }
+
+      /* ===================== MAIN WRAPPER ===================== */
+      .main-wrapper {
+        margin-left: 265px;
+        min-height: 100vh;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+      }
+      body.sidebar-collapsed .main-wrapper {
+        margin-left: 72px;
+      }
+
+      /* ===================== TOP NAVBAR ===================== */
+      .top-navbar {
+        height: 70px;
+        background-color: var(--navbar-bg);
+        border-bottom: 1px solid var(--card-border-color);
+        padding: 0 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        flex-shrink: 0;
+      }
+      .toggle-sidebar-btn {
+        background: none;
+        border: none;
+        font-size: 1.15rem;
+        color: var(--color-secondary);
+        cursor: pointer;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.18s;
+      }
+      .toggle-sidebar-btn:hover {
+        background-color: #f1f5f9;
+        color: var(--text-main);
+      }
+
+      /* Notification Bell */
+      .notif-bell-btn {
+        position: relative;
+        background: none;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-secondary);
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .notif-bell-btn:hover {
+        background: #f1f5f9;
+        color: var(--text-main);
+      }
+      .notif-badge {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 8px;
+        height: 8px;
+        background: var(--color-danger);
+        border-radius: 50%;
+        border: 2px solid #fff;
+      }
+
+      /* Right Offcanvas Button in Header */
+      .offcanvas-trigger-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        background: linear-gradient(135deg, var(--color-primary), #7c3aed);
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 9px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 3px 10px rgba(79, 70, 229, 0.28);
+        letter-spacing: 0.01em;
+      }
+      .offcanvas-trigger-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 16px rgba(79, 70, 229, 0.38);
+      }
+
+      /* Notification Dropdown */
+      .notif-dropdown {
+        min-width: 340px;
+        padding: 0;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--card-border-color);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      .notif-dropdown-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--card-border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .notif-dropdown-header h6 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+      .notif-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.15s;
+        text-decoration: none;
+        color: var(--text-main);
+      }
+      .notif-item:hover {
+        background: #f8fafc;
+      }
+      .notif-item:last-of-type {
+        border-bottom: none;
+      }
+      .notif-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+      }
+      .notif-icon.success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--color-success);
+      }
+      .notif-icon.danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--color-danger);
+      }
+      .notif-icon.warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--color-warning);
+      }
+      .notif-icon.info {
+        background: rgba(6, 182, 212, 0.1);
+        color: var(--color-info);
+      }
+      .notif-icon.primary {
+        background: rgba(79, 70, 229, 0.1);
+        color: var(--color-primary);
+      }
+      .notif-text p {
+        margin: 0;
+        font-size: 0.82rem;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+      .notif-text small {
+        font-size: 0.74rem;
+        color: var(--color-secondary);
+      }
+      .notif-unread {
+        background: #fafbff;
+      }
+      .notif-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        flex-shrink: 0;
+        margin-top: 5px;
+      }
+
+      /* Avatar */
+      .avatar-premium {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(79, 70, 229, 0.3);
+      }
+      .dropdown-menu-premium {
+        border: 1px solid var(--card-border-color);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 8px;
+        min-width: 210px;
+      }
+      .dropdown-menu-premium .dropdown-item {
+        border-radius: 8px;
+        padding: 9px 14px;
+        font-weight: 500;
+        font-size: 0.87rem;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dropdown-menu-premium .dropdown-item i {
+        color: var(--color-secondary);
+        font-size: 0.9rem;
+      }
+      .dropdown-menu-premium .dropdown-item:hover {
+        background: #f1f5f9;
+        color: var(--color-primary);
+      }
+      .dropdown-menu-premium .dropdown-item:hover i {
+        color: var(--color-primary);
+      }
+
+      /* ===================== BREADCRUMB BAR ===================== */
+      .breadcrumb-bar {
+        background: #fff;
+        border-bottom: 1px solid var(--card-border-color);
+        padding: 12px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .breadcrumb-bar h5 {
+        margin: 0;
+        font-size: 0.97rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .breadcrumb {
+        margin: 0;
+      }
+      .breadcrumb-item a {
+        color: var(--color-secondary);
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 500;
+      }
+      .breadcrumb-item a:hover {
+        color: var(--color-primary);
+      }
+      .breadcrumb-item.active {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+      .breadcrumb-item + .breadcrumb-item::before {
+        color: #cbd5e1;
+      }
+
+      /* ===================== CARDS ===================== */
+      .content-body {
+        padding: 24px 28px;
+      }
+
+      .card-premium {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border-color);
+        border-radius: var(--border-radius-premium);
+        box-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.04),
+          0 4px 12px rgba(0, 0, 0, 0.03);
+        margin-bottom: 22px;
+      }
+      .card-premium .card-header {
+        background: var(--card-header-bg);
+        border-bottom: 1px solid var(--card-border-color);
+        padding: 16px 22px;
+        font-weight: 600;
+        font-size: 0.97rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card-premium .card-header .card-header-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .card-premium .card-body {
+        padding: 22px;
+      }
+
+      /* ===================== BUTTONS ===================== */
+      .btn-p,
+      .btn-s,
+      .btn-success2,
+      .btn-danger2,
+      .btn-warning2,
+      .btn-info2 {
+        padding: 9px 20px;
+        font-weight: 600;
+        border-radius: 9px;
+        font-size: 0.875rem;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: all 0.18s ease;
+        letter-spacing: 0.01em;
+      }
+      .btn-p {
+        background: var(--color-primary);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+      }
+      .btn-p:hover {
+        background: var(--color-primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+      }
+      .btn-s {
+        background: var(--color-secondary);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(100, 116, 139, 0.2);
+      }
+      .btn-s:hover {
+        background: var(--color-secondary-hover);
+        transform: translateY(-1px);
+      }
+      .btn-success2 {
+        background: var(--color-success);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+      }
+      .btn-success2:hover {
+        background: var(--color-success-hover);
+        transform: translateY(-1px);
+      }
+      .btn-danger2 {
+        background: var(--color-danger);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+      }
+      .btn-danger2:hover {
+        background: var(--color-danger-hover);
+        transform: translateY(-1px);
+      }
+      .btn-warning2 {
+        background: var(--color-warning);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+      }
+      .btn-warning2:hover {
+        background: var(--color-warning-hover);
+        transform: translateY(-1px);
+      }
+      .btn-info2 {
+        background: var(--color-info);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(6, 182, 212, 0.25);
+      }
+      .btn-info2:hover {
+        background: var(--color-info-hover);
+        transform: translateY(-1px);
+      }
+
+      /* Outlined variants */
+      .btn-outline-p {
+        background: transparent;
+        border: 1.5px solid var(--color-primary);
+        color: var(--color-primary);
+        padding: 8px 18px;
+        font-weight: 600;
+        border-radius: 9px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-outline-p:hover {
+        background: var(--color-primary);
+        color: #fff;
+      }
+      .btn-outline-danger {
+        background: transparent;
+        border: 1.5px solid var(--color-danger);
+        color: var(--color-danger);
+        padding: 8px 18px;
+        font-weight: 600;
+        border-radius: 9px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-outline-danger:hover {
+        background: var(--color-danger);
+        color: #fff;
+      }
+
+      /* Ghost */
+      .btn-ghost {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: var(--text-main);
+        padding: 8px 18px;
+        font-weight: 500;
+        border-radius: 9px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-ghost:hover {
+        background: #e2e8f0;
+      }
+
+      /* Icon-only */
+      .btn-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--card-border-color);
+        background: #f8fafc;
+        color: var(--color-secondary);
+        cursor: pointer;
+        transition: all 0.18s;
+        font-size: 0.9rem;
+      }
+      .btn-icon:hover {
+        background: #e2e8f0;
+        color: var(--text-main);
+      }
+      .btn-icon.danger {
+        border-color: rgba(239, 68, 68, 0.3);
+        color: var(--color-danger);
+        background: rgba(239, 68, 68, 0.05);
+      }
+      .btn-icon.danger:hover {
+        background: var(--color-danger);
+        color: #fff;
+      }
+
+      /* Small sizes */
+      .btn-sm-p {
+        padding: 6px 13px;
+        font-size: 0.79rem;
+        border-radius: 7px;
+      }
+
+      /* ===================== BADGES ===================== */
+      .badge-premium {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.73rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .badge-primary {
+        background: rgba(79, 70, 229, 0.1);
+        color: var(--color-primary);
+      }
+      .badge-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+      }
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+      }
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: #b45309;
+      }
+      .badge-info {
+        background: rgba(6, 182, 212, 0.1);
+        color: #0e7490;
+      }
+      .badge-secondary {
+        background: rgba(100, 116, 139, 0.1);
+        color: #475569;
+      }
+      .badge-dark {
+        background: rgba(15, 23, 42, 0.08);
+        color: #1e293b;
+      }
+
+      /* Pill badges */
+      .badge-pill {
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 0.71rem;
+        font-weight: 700;
+      }
+
+      /* Dot badges */
+      .badge-dot {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+      .badge-dot::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .badge-dot.success::before {
+        background: var(--color-success);
+      }
+      .badge-dot.danger::before {
+        background: var(--color-danger);
+      }
+      .badge-dot.warning::before {
+        background: var(--color-warning);
+      }
+      .badge-dot.info::before {
+        background: var(--color-info);
+      }
+      .badge-dot.secondary::before {
+        background: var(--color-secondary);
+      }
+
+      /* ===================== SECTION TITLE ===================== */
+      .section-title {
+        font-size: 0.73rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-secondary);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--card-border-color);
+      }
+
+      /* ===================== CAROUSEL ===================== */
+      .carousel-premium .carousel-inner {
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .carousel-slide {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        color: #fff;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+      .carousel-slide::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: inherit;
+        opacity: 1;
+        z-index: 0;
+      }
+      .carousel-slide > * {
+        position: relative;
+        z-index: 1;
+      }
+      .slide-1 {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      }
+      .slide-2 {
+        background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+      }
+      .slide-3 {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      }
+      .slide-4 {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      }
+      .carousel-slide h5 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .carousel-slide p {
+        font-size: 0.85rem;
+        opacity: 0.85;
+        margin: 0;
+      }
+      .carousel-slide .slide-metric {
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .carousel-premium .carousel-indicators [data-bs-target] {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
+        margin: 0 3px;
+      }
+      .carousel-premium .carousel-indicators .active {
+        background: #fff;
+      }
+      .carousel-premium .carousel-control-prev,
+      .carousel-premium .carousel-control-next {
+        width: 36px;
+        height: 36px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(4px);
+      }
+      .carousel-premium .carousel-control-prev {
+        left: 10px;
+      }
+      .carousel-premium .carousel-control-next {
+        right: 10px;
+      }
+
+      /* ===================== ACCORDION ===================== */
+      .accordion-premium .accordion-item {
+        border: 1px solid var(--card-border-color);
+        border-radius: 10px !important;
+        margin-bottom: 8px;
+        overflow: hidden;
+      }
+      .accordion-premium .accordion-button {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-main);
+        background: #fff;
+        padding: 14px 18px;
+        box-shadow: none;
+        border-radius: 10px !important;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .accordion-premium .accordion-button:not(.collapsed) {
+        color: var(--color-primary);
+        background: rgba(79, 70, 229, 0.04);
+        border-radius: 10px 10px 0 0 !important;
+      }
+      .accordion-premium .accordion-button::after {
+        margin-left: auto;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%234f46e5' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+      }
+      .accordion-premium .accordion-button.collapsed::after {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%2364748b' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+      }
+      .accordion-premium .accordion-body {
+        padding: 16px 18px;
+        font-size: 0.875rem;
+        color: #475569;
+        line-height: 1.65;
+      }
+      .accordion-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+
+      /* ===================== COLLAPSE ===================== */
+      .collapse-trigger-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 13px 16px;
+        background: #f8fafc;
+        border: 1px solid var(--card-border-color);
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: var(--text-main);
+        transition: all 0.18s;
+      }
+      .collapse-trigger-btn:hover {
+        background: #f1f5f9;
+      }
+      .collapse-trigger-btn[aria-expanded="true"] {
+        background: rgba(79, 70, 229, 0.06);
+        color: var(--color-primary);
+        border-color: rgba(79, 70, 229, 0.2);
+      }
+      .collapse-content {
+        background: #fff;
+        border: 1px solid var(--card-border-color);
+        border-top: none;
+        border-radius: 0 0 10px 10px;
+        padding: 16px;
+        font-size: 0.875rem;
+        color: #475569;
+        line-height: 1.65;
+      }
+
+      /* ===================== STAT CARDS ===================== */
+      .stat-card {
+        background: #fff;
+        border: 1px solid var(--card-border-color);
+        border-radius: 14px;
+        padding: 20px 22px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition:
+          transform 0.18s,
+          box-shadow 0.18s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      }
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+      }
+      .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+      }
+      .stat-icon.primary {
+        background: rgba(79, 70, 229, 0.1);
+        color: var(--color-primary);
+      }
+      .stat-icon.success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--color-success);
+      }
+      .stat-icon.warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--color-warning);
+      }
+      .stat-icon.info {
+        background: rgba(6, 182, 212, 0.1);
+        color: var(--color-info);
+      }
+      .stat-value {
+        font-size: 1.6rem;
+        font-weight: 800;
+        line-height: 1;
+        color: var(--text-main);
+      }
+      .stat-label {
+        font-size: 0.78rem;
+        color: var(--color-secondary);
+        font-weight: 500;
+        margin-top: 3px;
+      }
+      .stat-delta {
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .stat-delta.up {
+        color: var(--color-success);
+      }
+      .stat-delta.down {
+        color: var(--color-danger);
+      }
+
+      /* ===================== DROPDOWN (standalone) ===================== */
+      .dropdown-premium-menu {
+        border: 1px solid var(--card-border-color);
+        border-radius: 12px;
+        padding: 6px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        min-width: 190px;
+        z-index: 1060 !important;
+      }
+      .dropdown-premium-menu .dropdown-item {
+        border-radius: 7px;
+        padding: 9px 13px;
+        font-size: 0.86rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--text-main);
+      }
+      .dropdown-premium-menu .dropdown-item i {
+        color: var(--color-secondary);
+        font-size: 0.85rem;
+      }
+      .dropdown-premium-menu .dropdown-item:hover {
+        background: #f1f5f9;
+        color: var(--color-primary);
+      }
+      .dropdown-premium-menu .dropdown-item:hover i {
+        color: var(--color-primary);
+      }
+      .dropdown-premium-menu .dropdown-item.text-danger:hover {
+        background: rgba(239, 68, 68, 0.05);
+        color: var(--color-danger);
+      }
+
+      /* ===================== FORM ===================== */
+      .form-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-main);
+        margin-bottom: 6px;
+      }
+      .form-control,
+      .form-select {
+        border-radius: 9px;
+        padding: 9px 13px;
+        border: 1.5px solid #e2e8f0;
+        font-size: 0.9rem;
+        transition:
+          border-color 0.18s,
+          box-shadow 0.18s;
+      }
+      .form-control:focus,
+      .form-select:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+      }
+      .input-group-text {
+        color: var(--color-secondary);
+        border-color: #e2e8f0;
+        background: #f8fafc;
+        border-radius: 9px;
+      }
+      .input-group .form-control {
+        border-radius: 0 9px 9px 0 !important;
+      }
+      .input-group .input-group-text:first-child {
+        border-radius: 9px 0 0 9px !important;
+      }
+      .form-check-input:checked {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+      }
+
+      /* ===================== TABLE ===================== */
+      #employeeTable {
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+      }
+      #employeeTable thead th {
+        background: #f8fafc;
+        color: var(--color-secondary);
+        font-size: 0.73rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 700;
+        padding: 13px 16px;
+        border-bottom: 1px solid var(--card-border-color);
+      }
+      #employeeTable tbody td {
+        padding: 14px 16px;
+        font-size: 0.875rem;
+        color: var(--text-main);
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+      }
+      #employeeTable tbody tr:hover td {
+        background: #fafbff;
+      }
+      .btn-action-trigger {
+        background: none;
+        border: none;
+        color: var(--color-secondary);
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.18s;
+        padding: 0;
+      }
+      .btn-action-trigger:hover,
+      .show > .btn-action-trigger {
+        background: #f1f5f9;
+        color: var(--color-primary);
+      }
+      .dataTables_filter input {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 9px !important;
+        padding: 7px 12px !important;
+        font-size: 0.875rem;
+      }
+      .dataTables_filter input:focus {
+        outline: none;
+        border-color: var(--color-primary) !important;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+      .dataTables_length select {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 7px !important;
+        padding: 5px 8px !important;
+      }
+      .page-item.active .page-link {
+        background-color: var(--color-primary) !important;
+        border-color: var(--color-primary) !important;
+      }
+
+      /* ===================== SELECT2 ===================== */
+      .select2-container--default .select2-selection--single {
+        height: 42px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 9px !important;
+        padding: 7px 13px !important;
+      }
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+        height: 40px !important;
+      }
+      .select2-container--default .select2-selection--multiple {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 9px !important;
+        min-height: 42px !important;
+        padding: 3px 8px !important;
+      }
+      .select2-container--default
+        .select2-selection--multiple
+        .select2-selection__choice {
+        background-color: var(--color-primary) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 5px !important;
+        padding: 2px 8px !important;
+        margin-top: 5px !important;
+        font-size: 0.8rem;
+      }
+      .select2-container--default
+        .select2-selection--multiple
+        .select2-selection__choice__remove {
+        color: rgba(255, 255, 255, 0.7) !important;
+        margin-right: 5px !important;
+      }
+      .select2-container--default
+        .select2-results__option--highlighted[aria-selected] {
+        background-color: var(--color-primary) !important;
+        color: #fff !important;
+      }
+      .select2-container--default
+        .select2-results__option[aria-selected="true"] {
+        background: #f1f5f9 !important;
+        color: var(--color-primary) !important;
+      }
+      .select2-dropdown {
+        border: 1.5px solid var(--card-border-color) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        z-index: 1060;
+      }
+      .select2-container--default
+        .select2-search--dropdown
+        .select2-search__field {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 7px !important;
+        padding: 7px 10px !important;
+      }
+      .select2-container--default
+        .select2-search--dropdown
+        .select2-search__field:focus {
+        outline: none !important;
+        border-color: var(--color-primary) !important;
+      }
+
+      /* ===================== FLATPICKR ===================== */
+      .flatpickr-calendar {
+        border: 1.5px solid var(--card-border-color) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+        border-radius: 12px !important;
+        font-family: "Inter", sans-serif !important;
+        padding: 5px;
+      }
+      .flatpickr-day.selected,
+      .flatpickr-day.selected:hover {
+        background: var(--color-primary) !important;
+        border-color: var(--color-primary) !important;
+        color: #fff !important;
+      }
+      .flatpickr-day.today {
+        border-color: var(--color-primary) !important;
+      }
+      .flatpickr-day:hover {
+        background: #f1f5f9 !important;
+      }
+      span.flatpickr-weekday {
+        color: var(--color-secondary) !important;
+        font-weight: 600 !important;
+      }
+
+      /* ===================== TOAST ===================== */
+      .toast-container {
+        z-index: 1060;
+      }
+      .toast {
+        border-radius: 12px !important;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+      }
+      .toast-header {
+        padding: 12px 16px !important;
+      }
+      .toast-body {
+        padding: 12px 16px !important;
+        font-size: 0.86rem;
+      }
+
+      /* ===================== OFFCANVAS (Right Panel) ===================== */
+      .offcanvas-end {
+        width: 400px !important;
+        border-left: 1px solid var(--card-border-color) !important;
+      }
+      .offcanvas-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--card-border-color);
+      }
+      .offcanvas-title {
+        font-weight: 700;
+        font-size: 1rem;
+      }
+      .offcanvas-body {
+        padding: 22px;
+        overflow-y: auto;
+      }
+      .quick-action-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .quick-action-card {
+        background: #f8fafc;
+        border: 1px solid var(--card-border-color);
+        border-radius: 11px;
+        padding: 14px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.18s;
+        text-decoration: none;
+        color: var(--text-main);
+      }
+      .quick-action-card:hover {
+        background: rgba(79, 70, 229, 0.05);
+        border-color: rgba(79, 70, 229, 0.25);
+        color: var(--color-primary);
+        transform: translateY(-2px);
+      }
+      .quick-action-card .qa-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 8px;
+        font-size: 1rem;
+      }
+      .quick-action-card .qa-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+      .activity-item {
+        display: flex;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+      .activity-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 6px;
+      }
+      .activity-text p {
+        margin: 0;
+        font-size: 0.83rem;
+        font-weight: 500;
+      }
+      .activity-text small {
+        font-size: 0.75rem;
+        color: var(--color-secondary);
+      }
+      .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.5);
+        z-index: 1035;
+        display: none;
+      }
+      body.sidebar-open .sidebar-backdrop {
+        display: block;
+      }
+
+      /* ===================== RESPONSIVE ===================== */
+      @media (max-width: 991.98px) {
+        .sidebar {
+          left: -265px;
+        }
+        body.sidebar-open .sidebar {
+          left: 0;
+        }
+        .main-wrapper,
+        body.sidebar-collapsed .main-wrapper {
+          margin-left: 0 !important;
+        }
+        .offcanvas-end {
+          width: 340px !important;
+        }
+      }
+      @media (max-width: 576px) {
+        .content-body {
+          padding: 16px;
+        }
+        .top-navbar {
+          padding: 0 16px;
+        }
+        .breadcrumb-bar {
+          padding: 10px 16px;
+        }
+        .offcanvas-end {
+          width: 100vw !important;
+        }
+        .offcanvas-trigger-btn span {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <div class="sidebar" id="sidebarContainer">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <i
+            class="fa-solid fa-layer-group text-white"
+            style="font-size: 0.9rem"
+          ></i>
+        </div>
+        <span>Office Suite</span>
+      </div>
+      <div class="sidebar-scroll">
+        <div class="sidebar-section-label">Main Menu</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item active">
+            <a href="#"
+              ><i class="fa-solid fa-chart-pie nav-icon"></i
+              ><span>Dashboard</span></a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a href="#"
+              ><i class="fa-solid fa-gauge-high nav-icon"></i
+              ><span>Analytics</span></a
+            >
+          </li>
+        </ul>
+
+        <div class="sidebar-section-label">Management</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item has-dropdown">
+            <a class="dropdown-toggle-link">
+              <i class="fa-solid fa-users nav-icon"></i>
+              <span>Employees</span>
+              <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+            <ul class="submenu">
+              <li class="sidebar-item active">
+                <a href="#"><span>All Employees</span></a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#"><span>Attendance</span></a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#"><span>Leave Requests</span></a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#"><span>Payroll</span></a>
+              </li>
+            </ul>
+          </li>
+          <li class="sidebar-item has-dropdown">
+            <a class="dropdown-toggle-link">
+              <i class="fa-solid fa-folder-open nav-icon"></i>
+              <span>Projects</span>
+              <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+            <ul class="submenu">
+              <li class="sidebar-item">
+                <a href="#"><span>Active Boards</span></a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#"><span>Archived Units</span></a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#"><span>Reports</span></a>
+              </li>
+            </ul>
+          </li>
+          <li class="sidebar-item has-dropdown">
+            <a class="dropdown-toggle-link">
+              <i class="fa-solid fa-file-invoice-dollar nav-icon"></i>
+              <span>Finance</span>
+              <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+            <ul class="submenu">
+              <li class="sidebar-item">
+                <a href="#"><span>Invoices</span></a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#"><span>Expenses</span></a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#"><span>Budgets</span></a>
+              </li>
+            </ul>
+          </li>
+          <li class="sidebar-item">
+            <a href="#"
+              ><i class="fa-solid fa-calendar-check nav-icon"></i
+              ><span>Schedule</span></a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a href="#"
+              ><i class="fa-solid fa-messages nav-icon"></i
+              ><span>Messages</span>
+              <span
+                class="badge-premium badge-danger badge-pill ms-auto"
+                style="font-size: 0.68rem; padding: 2px 7px"
+                >5</span
+              >
+            </a>
+          </li>
+        </ul>
+
+        <div class="sidebar-section-label">System</div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item has-dropdown">
+            <a class="dropdown-toggle-link">
+              <i class="fa-solid fa-shield-halved nav-icon"></i>
+              <span>Permissions</span>
+              <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+            <ul class="submenu">
+              <li class="sidebar-item">
+                <a href="#"><span>Roles</span></a>
+              </li>
+              <li class="sidebar-item">
+                <a href="#"><span>Access Control</span></a>
+              </li>
+            </ul>
+          </li>
+          <li class="sidebar-item">
+            <a href="#"
+              ><i class="fa-solid fa-sliders nav-icon"></i
+              ><span>Settings</span></a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a href="#"
+              ><i class="fa-solid fa-circle-question nav-icon"></i
+              ><span>Help & Support</span></a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ==================== MAIN WRAPPER ==================== -->
+    <div class="main-wrapper">
+      <!-- TOP NAVBAR -->
+      <nav class="top-navbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="toggle-sidebar-btn" id="sidebarToggle" type="button">
+            <i class="fa-solid fa-bars-staggered"></i>
+          </button>
+          <span
+            class="d-none d-md-inline text-muted fw-500"
+            style="font-size: 0.88rem"
+            >Core Administration Engine</span
+          >
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Right Panel Trigger -->
+          <button
+            class="offcanvas-trigger-btn"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#rightPanel"
+            aria-controls="rightPanel"
+          >
+            <i class="fa-solid fa-sliders"></i>
+            <span>Quick Panel</span>
+          </button>
+
+          <!-- Bell Notification Dropdown -->
+          <div class="dropdown">
+            <button
+              class="notif-bell-btn"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              data-bs-auto-close="outside"
+            >
+              <i class="fa-solid fa-bell"></i>
+              <span class="notif-badge"></span>
+            </button>
+            <div
+              class="dropdown-menu dropdown-menu-end notif-dropdown"
+              aria-labelledby="notifDropdown"
+            >
+              <div class="notif-dropdown-header">
+                <h6>
+                  <i
+                    class="fa-solid fa-bell me-2"
+                    style="color: var(--color-primary)"
+                  ></i
+                  >Notifications
+                </h6>
+                <div class="d-flex align-items-center gap-2">
+                  <span
+                    class="badge-premium badge-primary"
+                    style="font-size: 0.68rem"
+                    >4 New</span
+                  >
+                  <a
+                    href="#"
+                    class="text-muted"
+                    style="
+                      font-size: 0.75rem;
+                      font-weight: 600;
+                      text-decoration: none;
+                    "
+                    >Mark all read</a
+                  >
+                </div>
+              </div>
+              <a href="#" class="notif-item notif-unread">
+                <div class="notif-icon success">
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="notif-text flex-1">
+                  <p>Employee record saved successfully</p>
+                  <small>2 minutes ago</small>
+                </div>
+                <div class="notif-dot"></div>
+              </a>
+              <a href="#" class="notif-item notif-unread">
+                <div class="notif-icon danger">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="notif-text flex-1">
+                  <p>Database sync failed — check connection</p>
+                  <small>14 minutes ago</small>
+                </div>
+                <div class="notif-dot"></div>
+              </a>
+              <a href="#" class="notif-item notif-unread">
+                <div class="notif-icon warning">
+                  <i class="fa-solid fa-hard-drive"></i>
+                </div>
+                <div class="notif-text flex-1">
+                  <p>Storage at 88% — cleanup recommended</p>
+                  <small>1 hour ago</small>
+                </div>
+                <div class="notif-dot"></div>
+              </a>
+              <a href="#" class="notif-item notif-unread">
+                <div class="notif-icon info">
+                  <i class="fa-solid fa-code-branch"></i>
+                </div>
+                <div class="notif-text flex-1">
+                  <p>New deployment pipeline ready to run</p>
+                  <small>3 hours ago</small>
+                </div>
+                <div class="notif-dot"></div>
+              </a>
+              <a href="#" class="notif-item">
+                <div class="notif-icon primary">
+                  <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <div class="notif-text">
+                  <p>New hire onboarding: Alex Turner</p>
+                  <small>Yesterday, 9:30 AM</small>
+                </div>
+              </a>
+              <div class="text-center py-3 border-top">
+                <a
+                  href="#"
+                  style="
+                    font-size: 0.82rem;
+                    color: var(--color-primary);
+                    font-weight: 600;
+                    text-decoration: none;
+                  "
+                  >View all notifications
+                  <i
+                    class="fa-solid fa-arrow-right ms-1"
+                    style="font-size: 0.7rem"
+                  ></i
+                ></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Dropdown -->
+          <div class="dropdown">
+            <div
+              class="d-flex align-items-center gap-2"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="cursor: pointer"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150"
+                alt="User profile"
+                class="avatar-premium"
+              />
+              <div class="d-none d-sm-block">
+                <p
+                  class="m-0 fw-600"
+                  style="font-size: 0.82rem; line-height: 1.2"
+                >
+                  Sarah Jenkins
+                </p>
+                <small class="text-muted" style="font-size: 0.72rem"
+                  >Operations Lead</small
+                >
+              </div>
+              <i
+                class="fa-solid fa-angle-down text-muted d-none d-sm-inline"
+                style="font-size: 0.75rem"
+              ></i>
+            </div>
+            <ul
+              class="dropdown-menu dropdown-menu-end dropdown-menu-premium shadow-sm mt-2"
+            >
+              <li class="px-3 py-2 border-bottom mb-1">
+                <p class="m-0 fw-semibold text-dark" style="font-size: 0.87rem">
+                  Sarah Jenkins
+                </p>
+                <small class="text-muted" style="font-size: 0.75rem"
+                  >sarah@officesuite.io</small
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><i class="fa-regular fa-user"></i> My Profile</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><i class="fa-solid fa-gear"></i> Account Settings</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><i class="fa-solid fa-palette"></i> Appearance</a
+                >
+              </li>
+              <li><hr class="dropdown-divider my-1" /></li>
+              <li>
+                <a class="dropdown-item text-danger" href="#"
+                  ><i
+                    class="fa-solid fa-arrow-right-from-bracket text-danger"
+                  ></i>
+                  Log Out</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <!-- BREADCRUMB -->
+      <div class="breadcrumb-bar">
+        <h5>Dashboard Overview</h5>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="#"
+                ><i
+                  class="fa-solid fa-house-chimney me-1"
+                  style="font-size: 0.75rem"
+                ></i
+                >Home</a
+              >
+            </li>
+            <li class="breadcrumb-item"><a href="#">Operations Hub</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Dashboard
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <!-- ==================== CONTENT BODY ==================== -->
+      <div class="content-body">
+        <!-- STAT CARDS -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon primary">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div>
+                <div class="stat-value">1,284</div>
+                <div class="stat-label">Total Employees</div>
+                <div class="stat-delta up">
+                  <i class="fa-solid fa-arrow-trend-up"></i> +8.3% this month
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon success">
+                <i class="fa-solid fa-folder-open"></i>
+              </div>
+              <div>
+                <div class="stat-value">47</div>
+                <div class="stat-label">Active Projects</div>
+                <div class="stat-delta up">
+                  <i class="fa-solid fa-arrow-trend-up"></i> +12 launched
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon warning">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+              </div>
+              <div>
+                <div class="stat-value">$2.4M</div>
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-delta up">
+                  <i class="fa-solid fa-arrow-trend-up"></i> +19.2% YoY
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+              <div class="stat-icon info">
+                <i class="fa-solid fa-calendar-check"></i>
+              </div>
+              <div>
+                <div class="stat-value">96.4%</div>
+                <div class="stat-label">Attendance Rate</div>
+                <div class="stat-delta down">
+                  <i class="fa-solid fa-arrow-trend-down"></i> -1.2% vs last
+                  week
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CAROUSEL + COLLAPSE (2 col layout) -->
+        <div class="row g-3 mb-2">
+          <div class="col-lg-6">
+            <!-- CAROUSEL -->
+            <div class="card-premium h-100">
+              <div class="card-header">
+                <div class="card-header-title">
+                  <i class="fa-solid fa-images text-muted"></i> Announcements
+                  Carousel
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div
+                  id="announcementsCarousel"
+                  class="carousel slide carousel-premium"
+                  data-bs-ride="carousel"
+                >
+                  <div class="carousel-indicators">
+                    <button
+                      type="button"
+                      data-bs-target="#announcementsCarousel"
+                      data-bs-slide-to="0"
+                      class="active"
+                    ></button>
+                    <button
+                      type="button"
+                      data-bs-target="#announcementsCarousel"
+                      data-bs-slide-to="1"
+                    ></button>
+                    <button
+                      type="button"
+                      data-bs-target="#announcementsCarousel"
+                      data-bs-slide-to="2"
+                    ></button>
+                    <button
+                      type="button"
+                      data-bs-target="#announcementsCarousel"
+                      data-bs-slide-to="3"
+                    ></button>
+                  </div>
+                  <div class="carousel-inner">
+                    <div class="carousel-item active">
+                      <div class="carousel-slide slide-1">
+                        <div class="slide-metric">1,284</div>
+                        <h5>Employees Onboarded</h5>
+                        <p>
+                          A record-breaking quarter for recruitment — 8.3%
+                          growth achieved.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="carousel-item">
+                      <div class="carousel-slide slide-2">
+                        <div class="slide-metric">47</div>
+                        <h5>Active Projects Running</h5>
+                        <p>
+                          Cross-department collaboration at an all-time high
+                          this Q2.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="carousel-item">
+                      <div class="carousel-slide slide-3">
+                        <div class="slide-metric">$2.4M</div>
+                        <h5>Revenue Milestone Hit</h5>
+                        <p>
+                          Finance team confirms 19.2% year-over-year growth
+                          target exceeded.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="carousel-item">
+                      <div class="carousel-slide slide-4">
+                        <div class="slide-metric">96.4%</div>
+                        <h5>Attendance Excellence</h5>
+                        <p>
+                          HR reports continued strong team attendance across all
+                          divisions.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#announcementsCarousel"
+                    data-bs-slide="prev"
+                  >
+                    <span class="carousel-control-prev-icon"></span>
+                  </button>
+                  <button
+                    class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#announcementsCarousel"
+                    data-bs-slide="next"
+                  >
+                    <span class="carousel-control-next-icon"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <!-- COLLAPSE PANELS -->
+            <div class="card-premium h-100">
+              <div class="card-header">
+                <div class="card-header-title">
+                  <i class="fa-solid fa-layer-group text-muted"></i> Collapsible
+                  Sections
+                </div>
+              </div>
+              <div class="card-body d-flex flex-column gap-2">
+                <div>
+                  <button
+                    class="collapse-trigger-btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne"
+                    aria-expanded="true"
+                    aria-controls="collapseOne"
+                  >
+                    <div class="d-flex align-items-center gap-2">
+                      <i
+                        class="fa-solid fa-chart-bar"
+                        style="color: var(--color-primary)"
+                      ></i>
+                      Q2 Performance Summary
+                    </div>
+                    <i
+                      class="fa-solid fa-chevron-down"
+                      style="font-size: 0.75rem; transition: transform 0.2s"
+                    ></i>
+                  </button>
+                  <div class="collapse show" id="collapseOne">
+                    <div class="collapse-content">
+                      Revenue targets exceeded by 19.2%. The finance team
+                      attributes this growth to the new subscription model
+                      launched in April, which brought in 340 additional
+                      accounts. Operating costs remained flat.
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    class="collapse-trigger-btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo"
+                    aria-expanded="false"
+                    aria-controls="collapseTwo"
+                  >
+                    <div class="d-flex align-items-center gap-2">
+                      <i
+                        class="fa-solid fa-users"
+                        style="color: var(--color-success)"
+                      ></i>
+                      HR Recruitment Update
+                    </div>
+                    <i
+                      class="fa-solid fa-chevron-down"
+                      style="font-size: 0.75rem; transition: transform 0.2s"
+                    ></i>
+                  </button>
+                  <div class="collapse" id="collapseTwo">
+                    <div class="collapse-content">
+                      28 new hires completed onboarding in June. Engineering
+                      headcount grew by 12%, with 4 senior architects joining
+                      the infrastructure team. Retention rate stands at 94.7% —
+                      highest since 2021.
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    class="collapse-trigger-btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree"
+                    aria-expanded="false"
+                    aria-controls="collapseThree"
+                  >
+                    <div class="d-flex align-items-center gap-2">
+                      <i
+                        class="fa-solid fa-server"
+                        style="color: var(--color-warning)"
+                      ></i>
+                      Infrastructure Alerts
+                    </div>
+                    <i
+                      class="fa-solid fa-chevron-down"
+                      style="font-size: 0.75rem; transition: transform 0.2s"
+                    ></i>
+                  </button>
+                  <div class="collapse" id="collapseThree">
+                    <div class="collapse-content">
+                      Main storage partition at 88% capacity. IT recommends
+                      archiving logs older than 90 days. Scheduled maintenance
+                      window: Saturday 2–4 AM. Zero critical incidents logged
+                      this month.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BUTTONS SHOWCASE -->
+        <div class="card-premium">
+          <div class="card-header">
+            <div class="card-header-title">
+              <i class="fa-solid fa-hand-pointer text-muted"></i> Button
+              Variants
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="section-title">Filled Buttons</div>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <button class="btn-p">
+                <i class="fa-solid fa-check"></i> Primary
+              </button>
+              <button class="btn-s">
+                <i class="fa-solid fa-clock-rotate-left"></i> Secondary
+              </button>
+              <button class="btn-success2">
+                <i class="fa-solid fa-circle-check"></i> Success
+              </button>
+              <button class="btn-danger2">
+                <i class="fa-solid fa-triangle-exclamation"></i> Danger
+              </button>
+              <button class="btn-warning2">
+                <i class="fa-solid fa-star"></i> Warning
+              </button>
+              <button class="btn-info2">
+                <i class="fa-solid fa-circle-info"></i> Info
+              </button>
+            </div>
+            <div class="section-title">Outlined & Ghost</div>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <button class="btn-outline-p">
+                <i class="fa-solid fa-pencil"></i> Edit Record
+              </button>
+              <button class="btn-outline-danger">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+              <button class="btn-ghost">
+                <i class="fa-solid fa-download"></i> Export
+              </button>
+              <button class="btn-ghost">
+                <i class="fa-solid fa-print"></i> Print
+              </button>
+            </div>
+            <div class="section-title">Icon Buttons & Sizes</div>
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+              <button class="btn-icon">
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <button class="btn-icon danger">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+              <button class="btn-icon"><i class="fa-solid fa-eye"></i></button>
+              <button class="btn-icon">
+                <i class="fa-solid fa-download"></i>
+              </button>
+              <button class="btn-p btn-sm-p">
+                <i class="fa-solid fa-plus"></i> Add New
+              </button>
+              <button class="btn-s btn-sm-p">
+                <i class="fa-solid fa-filter"></i> Filter
+              </button>
+              <button class="btn-p btn-sm-p">
+                <i class="fa-solid fa-upload"></i> Import CSV
+              </button>
+            </div>
+            <div class="section-title">Toast Triggers</div>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn-success2 btn-sm-p" id="successToastBtn">
+                <i class="fa-solid fa-check"></i> Success Toast
+              </button>
+              <button class="btn-danger2 btn-sm-p" id="dangerToastBtn">
+                <i class="fa-solid fa-xmark"></i> Error Toast
+              </button>
+              <button class="btn-warning2 btn-sm-p" id="warningToastBtn">
+                <i class="fa-solid fa-triangle-exclamation"></i> Warning
+              </button>
+              <button class="btn-info2 btn-sm-p" id="infoToastBtn">
+                <i class="fa-solid fa-circle-info"></i> Info
+              </button>
+              <button class="btn-s btn-sm-p" id="secondaryToastBtn">
+                <i class="fa-solid fa-clock-rotate-left"></i> Audit Log
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BADGES SHOWCASE -->
+        <div class="card-premium">
+          <div class="card-header">
+            <div class="card-header-title">
+              <i class="fa-solid fa-tags text-muted"></i> Badge System
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="section-title">Status Badges</div>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <span class="badge-premium badge-primary"
+                ><i class="fa-solid fa-circle" style="font-size: 0.45rem"></i>
+                In Progress</span
+              >
+              <span class="badge-premium badge-success"
+                ><i class="fa-solid fa-circle" style="font-size: 0.45rem"></i>
+                Completed</span
+              >
+              <span class="badge-premium badge-danger"
+                ><i class="fa-solid fa-circle" style="font-size: 0.45rem"></i>
+                Overdue</span
+              >
+              <span class="badge-premium badge-warning"
+                ><i class="fa-solid fa-circle" style="font-size: 0.45rem"></i>
+                Pending Review</span
+              >
+              <span class="badge-premium badge-info"
+                ><i class="fa-solid fa-circle" style="font-size: 0.45rem"></i>
+                Scheduled</span
+              >
+              <span class="badge-premium badge-secondary"
+                ><i class="fa-solid fa-circle" style="font-size: 0.45rem"></i>
+                Archived</span
+              >
+              <span class="badge-premium badge-dark"
+                ><i class="fa-solid fa-circle" style="font-size: 0.45rem"></i>
+                Draft</span
+              >
+            </div>
+            <div class="section-title">Pill Badges (Counters)</div>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <span class="badge-premium badge-primary badge-pill">New 12</span>
+              <span class="badge-premium badge-success badge-pill"
+                >Active 47</span
+              >
+              <span class="badge-premium badge-danger badge-pill"
+                >Critical 3</span
+              >
+              <span class="badge-premium badge-warning badge-pill"
+                >Pending 8</span
+              >
+              <span class="badge-premium badge-info badge-pill">Syncing</span>
+              <span class="badge-premium badge-secondary badge-pill"
+                >Closed 200+</span
+              >
+            </div>
+            <div class="section-title">Dot Status Indicators</div>
+            <div class="d-flex flex-wrap gap-3">
+              <span class="badge-dot success" style="color: var(--text-main)"
+                >System Online</span
+              >
+              <span class="badge-dot danger" style="color: var(--text-main)"
+                >DB Disconnected</span
+              >
+              <span class="badge-dot warning" style="color: var(--text-main)"
+                >High Load</span
+              >
+              <span class="badge-dot info" style="color: var(--text-main)"
+                >Syncing Data</span
+              >
+              <span class="badge-dot secondary" style="color: var(--text-main)"
+                >Maintenance Mode</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCORDION -->
+        <div class="card-premium">
+          <div class="card-header">
+            <div class="card-header-title">
+              <i class="fa-solid fa-list-ul text-muted"></i> FAQ Accordion
+            </div>
+            <span class="badge-premium badge-secondary badge-pill"
+              >6 Sections</span
+            >
+          </div>
+          <div class="card-body">
+            <div class="accordion accordion-premium" id="faqAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq1"
+                    aria-expanded="true"
+                    aria-controls="faq1"
+                  >
+                    <div
+                      class="accordion-icon"
+                      style="
+                        background: rgba(79, 70, 229, 0.1);
+                        color: var(--color-primary);
+                      "
+                    >
+                      <i class="fa-solid fa-lock"></i>
+                    </div>
+                    How do I reset an employee's system access password?
+                  </button>
+                </h2>
+                <div
+                  id="faq1"
+                  class="accordion-collapse collapse show"
+                  data-bs-parent="#faqAccordion"
+                >
+                  <div class="accordion-body">
+                    Navigate to <strong>Employees → All Employees</strong>, find
+                    the record, click the action menu (⋮), and select
+                    <strong>Reset Credentials</strong>. A temporary password is
+                    emailed to the registered address. The employee must change
+                    it on first login. Admin access is required to perform this
+                    action.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq2"
+                    aria-expanded="false"
+                    aria-controls="faq2"
+                  >
+                    <div
+                      class="accordion-icon"
+                      style="
+                        background: rgba(16, 185, 129, 0.1);
+                        color: var(--color-success);
+                      "
+                    >
+                      <i class="fa-solid fa-file-export"></i>
+                    </div>
+                    How do I export employee data to a spreadsheet?
+                  </button>
+                </h2>
+                <div
+                  id="faq2"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#faqAccordion"
+                >
+                  <div class="accordion-body">
+                    Go to <strong>Employees → All Employees</strong> and use the
+                    filter panel to narrow your selection. Click
+                    <strong>Export → CSV</strong> or
+                    <strong>Export → Excel</strong> from the top-right action
+                    bar. Exports include all visible columns by default; use
+                    column visibility settings to customize the output.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq3"
+                    aria-expanded="false"
+                    aria-controls="faq3"
+                  >
+                    <div
+                      class="accordion-icon"
+                      style="
+                        background: rgba(245, 158, 11, 0.1);
+                        color: var(--color-warning);
+                      "
+                    >
+                      <i class="fa-solid fa-calendar-xmark"></i>
+                    </div>
+                    How are leave requests approved or rejected?
+                  </button>
+                </h2>
+                <div
+                  id="faq3"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#faqAccordion"
+                >
+                  <div class="accordion-body">
+                    Leave requests appear in
+                    <strong>Employees → Leave Requests</strong> with a
+                    <strong>Pending</strong> status badge. Department heads
+                    receive an email notification. They can approve or reject
+                    directly from the email link, or from the panel. All
+                    decisions are logged with timestamp and approver name for
+                    audit purposes.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq4"
+                    aria-expanded="false"
+                    aria-controls="faq4"
+                  >
+                    <div
+                      class="accordion-icon"
+                      style="
+                        background: rgba(6, 182, 212, 0.1);
+                        color: var(--color-info);
+                      "
+                    >
+                      <i class="fa-solid fa-database"></i>
+                    </div>
+                    What happens if a database sync fails?
+                  </button>
+                </h2>
+                <div
+                  id="faq4"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#faqAccordion"
+                >
+                  <div class="accordion-body">
+                    A <strong>Critical Error</strong> notification appears in
+                    the bell dropdown and an alert email is sent to system
+                    administrators. Data entered during the outage is queued
+                    locally and synced automatically once connection is
+                    restored. No data is lost during brief outages of under 30
+                    minutes.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq5"
+                    aria-expanded="false"
+                    aria-controls="faq5"
+                  >
+                    <div
+                      class="accordion-icon"
+                      style="
+                        background: rgba(239, 68, 68, 0.1);
+                        color: var(--color-danger);
+                      "
+                    >
+                      <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    How do I configure role-based permissions?
+                  </button>
+                </h2>
+                <div
+                  id="faq5"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#faqAccordion"
+                >
+                  <div class="accordion-body">
+                    Go to <strong>System → Permissions → Roles</strong>. Create
+                    a role, define module-level access (read / write / admin),
+                    and assign employees to it. Changes apply immediately
+                    without requiring a re-login. Super Admin role cannot be
+                    modified for security compliance.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq6"
+                    aria-expanded="false"
+                    aria-controls="faq6"
+                  >
+                    <div
+                      class="accordion-icon"
+                      style="
+                        background: rgba(100, 116, 139, 0.1);
+                        color: var(--color-secondary);
+                      "
+                    >
+                      <i class="fa-solid fa-hard-drive"></i>
+                    </div>
+                    How do I free up storage space?
+                  </button>
+                </h2>
+                <div
+                  id="faq6"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#faqAccordion"
+                >
+                  <div class="accordion-body">
+                    Navigate to
+                    <strong>Settings → System → Storage Manager</strong>. Use
+                    the auto-archive tool to compress logs older than 90 days.
+                    You can also delete expired audit trails and temporary
+                    export files. Bulk cleanup typically recovers 15–30% of used
+                    space.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DROPDOWNS SHOWCASE -->
+        <div class="card-premium">
+          <div class="card-header">
+            <div class="card-header-title">
+              <i class="fa-solid fa-caret-down text-muted"></i> Dropdown
+              Variants
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-3">
+              <!-- Standard dropdown -->
+              <div class="dropdown">
+                <button
+                  class="btn-p dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 7px;
+                    padding: 9px 18px;
+                    font-weight: 600;
+                    border-radius: 9px;
+                    font-size: 0.875rem;
+                    border: none;
+                    cursor: pointer;
+                    background: var(--color-primary);
+                    color: #fff;
+                  "
+                >
+                  <i class="fa-solid fa-plus"></i> Create New
+                </button>
+                <ul class="dropdown-menu dropdown-premium-menu">
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-user-plus"></i> New Employee</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-folder-plus"></i> New Project</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-file-invoice"></i> New Invoice</a
+                    >
+                  </li>
+                  <li><hr class="dropdown-divider my-1" /></li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-calendar-plus"></i> Schedule
+                      Event</a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Filter dropdown -->
+              <div class="dropdown">
+                <button
+                  class="btn-ghost dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 7px;
+                    padding: 9px 18px;
+                    font-weight: 500;
+                    border-radius: 9px;
+                    font-size: 0.875rem;
+                    cursor: pointer;
+                    background: #f1f5f9;
+                    border: 1px solid #e2e8f0;
+                    color: var(--text-main);
+                  "
+                >
+                  <i class="fa-solid fa-filter"></i> Filter Records
+                </button>
+                <ul class="dropdown-menu dropdown-premium-menu">
+                  <li>
+                    <h6
+                      class="dropdown-header"
+                      style="
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        letter-spacing: 0.06em;
+                        text-transform: uppercase;
+                        color: var(--color-secondary);
+                      "
+                    >
+                      Status
+                    </h6>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><span class="badge-premium badge-success badge-pill me-2"
+                        >●</span
+                      >
+                      Active Only</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><span
+                        class="badge-premium badge-secondary badge-pill me-2"
+                        >●</span
+                      >
+                      Archived</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><span class="badge-premium badge-warning badge-pill me-2"
+                        >●</span
+                      >
+                      Pending Review</a
+                    >
+                  </li>
+                  <li><hr class="dropdown-divider my-1" /></li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-rotate-left"></i> Clear Filters</a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Export dropdown -->
+              <div class="dropdown">
+                <button
+                  class="btn-outline-p dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 7px;
+                    padding: 9px 18px;
+                    font-weight: 600;
+                    border-radius: 9px;
+                    font-size: 0.875rem;
+                    cursor: pointer;
+                    background: transparent;
+                    border: 1.5px solid var(--color-primary);
+                    color: var(--color-primary);
+                  "
+                >
+                  <i class="fa-solid fa-download"></i> Export
+                </button>
+                <ul class="dropdown-menu dropdown-premium-menu">
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-file-csv"></i> Download as CSV</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-file-excel"></i> Download as
+                      Excel</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-file-pdf"></i> Download as PDF</a
+                    >
+                  </li>
+                  <li><hr class="dropdown-divider my-1" /></li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-print"></i> Print View</a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Sort dropdown -->
+              <div class="dropdown">
+                <button
+                  class="btn-ghost dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 7px;
+                    padding: 9px 18px;
+                    font-weight: 500;
+                    border-radius: 9px;
+                    font-size: 0.875rem;
+                    cursor: pointer;
+                    background: #f1f5f9;
+                    border: 1px solid #e2e8f0;
+                    color: var(--text-main);
+                  "
+                >
+                  <i class="fa-solid fa-arrow-up-wide-short"></i> Sort By
+                </button>
+                <ul class="dropdown-menu dropdown-premium-menu">
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-arrow-down-a-z"></i> Name A–Z</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-arrow-up-a-z"></i> Name Z–A</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-calendar-arrow-down"></i> Newest
+                      First</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-calendar-arrow-up"></i> Oldest
+                      First</a
+                    >
+                  </li>
+                  <li><hr class="dropdown-divider my-1" /></li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-dollar-sign"></i> Salary
+                      High–Low</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATA ENTRY FORM -->
+        <div class="card-premium">
+          <div class="card-header">
+            <div class="card-header-title">
+              <i class="fa-solid fa-pen-to-square text-muted"></i> Comprehensive
+              Data Entry
+            </div>
+            <span class="badge-premium badge-primary"
+              >Form Validation Ready</span
+            >
+          </div>
+          <div class="card-body">
+            <form class="row g-4">
+              <div class="col-md-4">
+                <label class="form-label">Full Name</label>
+                <div class="input-group">
+                  <span class="input-group-text border-end-0"
+                    ><i class="fa-regular fa-user text-muted"></i
+                  ></span>
+                  <input
+                    type="text"
+                    class="form-control border-start-0"
+                    placeholder="John Doe"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Access Password</label>
+                <div class="input-group">
+                  <span class="input-group-text border-end-0"
+                    ><i class="fa-solid fa-lock text-muted"></i
+                  ></span>
+                  <input
+                    type="password"
+                    class="form-control border-start-0"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Project Tags (Multiple)</label>
+                <select
+                  class="select2-multiple w-100"
+                  name="tags[]"
+                  multiple="multiple"
+                >
+                  <option value="UI" selected>UI Design</option>
+                  <option value="UX">UX Research</option>
+                  <option value="DEV" selected>Development</option>
+                  <option value="QA">Quality Assurance</option>
+                  <option value="MKT">Marketing</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Standard Date Picker</label>
+                <div class="input-group">
+                  <span class="input-group-text border-end-0"
+                    ><i class="fa-regular fa-calendar text-muted"></i
+                  ></span>
+                  <input type="date" class="form-control border-start-0" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Premium Date Picker</label>
+                <div class="input-group">
+                  <span class="input-group-text border-end-0"
+                    ><i class="fa-solid fa-calendar-days text-muted"></i
+                  ></span>
+                  <input
+                    type="text"
+                    class="form-control border-start-0 flatpickr-date"
+                    placeholder="Select joining date..."
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Profile Document (PDF/DOC)</label>
+                <input type="file" class="form-control" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Work Experience (Years)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  min="0"
+                  max="50"
+                  placeholder="0"
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label d-block">Employment Type</label>
+                <div class="d-flex gap-3 mt-2">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="empType"
+                      id="fullTime"
+                      checked
+                    /><label class="form-check-label" for="fullTime"
+                      >Full-time</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="empType"
+                      id="contract"
+                    /><label class="form-check-label" for="contract"
+                      >Contract</label
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label d-block">Notifications</label>
+                <div class="d-flex gap-3 mt-2">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="emailNote"
+                      checked
+                    /><label class="form-check-label" for="emailNote"
+                      >Email</label
+                    >
+                  </div>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="smsNote"
+                    /><label class="form-check-label" for="smsNote">SMS</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label d-block">Account Status</label>
+                <div class="form-check form-switch mt-2">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="statusSwitch"
+                    checked
+                  />
+                  <label
+                    class="form-check-label fw-500 text-success"
+                    for="statusSwitch"
+                    style="font-size: 0.875rem"
+                    >Active Member</label
+                  >
+                </div>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Internal Notes / Biography</label>
+                <textarea
+                  class="form-control"
+                  rows="4"
+                  placeholder="Briefly describe the employee's role and background..."
+                ></textarea>
+              </div>
+              <div
+                class="col-12 border-top pt-4 d-flex justify-content-end gap-2"
+              >
+                <button type="reset" class="btn-ghost">Reset Form</button>
+                <button type="submit" class="btn-p">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Employee Record
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- DATATABLE -->
+        <div class="card-premium">
+          <div class="card-header">
+            <div class="card-header-title">
+              <i class="fa-solid fa-table text-muted"></i> Active Records Engine
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn-p btn-sm-p">
+                <i class="fa-solid fa-plus"></i> Add Record
+              </button>
+              <div class="dropdown">
+                <button
+                  class="btn-ghost btn-sm-p dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 6px 12px;
+                    font-size: 0.79rem;
+                    border-radius: 7px;
+                    cursor: pointer;
+                    background: #f1f5f9;
+                    border: 1px solid #e2e8f0;
+                    color: var(--text-main);
+                  "
+                >
+                  <i class="fa-solid fa-download"></i> Export
+                </button>
+                <ul
+                  class="dropdown-menu dropdown-premium-menu dropdown-menu-end"
+                >
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-file-csv"></i> CSV</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-file-excel"></i> Excel</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#"
+                      ><i class="fa-solid fa-file-pdf"></i> PDF</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table
+                id="employeeTable"
+                class="table table-hover w-100 align-middle"
+              >
+                <thead>
+                  <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Salary</th>
+                    <th class="text-center" style="width: 80px">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong style="color: var(--color-primary)"
+                        >#EMP-8492</strong
+                      >
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div
+                          style="
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            background: linear-gradient(
+                              135deg,
+                              #4f46e5,
+                              #7c3aed
+                            );
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-size: 0.75rem;
+                            font-weight: 700;
+                          "
+                        >
+                          TN
+                        </div>
+                        Tiger Nixon
+                      </div>
+                    </td>
+                    <td>System Architect</td>
+                    <td>
+                      <i class="fa-solid fa-location-dot text-muted me-1"></i
+                      >Edinburgh
+                    </td>
+                    <td>
+                      <span class="badge-premium badge-success">Active</span>
+                    </td>
+                    <td>$320,800</td>
+                    <td class="text-center">
+                      <div class="dropdown">
+                        <button
+                          class="btn-action-trigger"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul
+                          class="dropdown-menu dropdown-menu-end dropdown-premium-menu mt-1"
+                        >
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-eye"></i> View Profile</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-pen-to-square"></i> Edit
+                              Record</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-solid fa-print"></i> Print Doc</a
+                            >
+                          </li>
+                          <li><hr class="dropdown-divider my-1" /></li>
+                          <li>
+                            <a class="dropdown-item text-danger" href="#"
+                              ><i
+                                class="fa-regular fa-trash-can text-danger"
+                              ></i>
+                              Delete</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong style="color: var(--color-primary)"
+                        >#EMP-2941</strong
+                      >
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div
+                          style="
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            background: linear-gradient(
+                              135deg,
+                              #06b6d4,
+                              #0891b2
+                            );
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-size: 0.75rem;
+                            font-weight: 700;
+                          "
+                        >
+                          GW
+                        </div>
+                        Garrett Winters
+                      </div>
+                    </td>
+                    <td>Accountant</td>
+                    <td>
+                      <i class="fa-solid fa-location-dot text-muted me-1"></i
+                      >Tokyo
+                    </td>
+                    <td>
+                      <span class="badge-premium badge-success">Active</span>
+                    </td>
+                    <td>$170,750</td>
+                    <td class="text-center">
+                      <div class="dropdown">
+                        <button
+                          class="btn-action-trigger"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul
+                          class="dropdown-menu dropdown-menu-end dropdown-premium-menu mt-1"
+                        >
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-eye"></i> View Profile</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-pen-to-square"></i> Edit
+                              Record</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-solid fa-print"></i> Print Doc</a
+                            >
+                          </li>
+                          <li><hr class="dropdown-divider my-1" /></li>
+                          <li>
+                            <a class="dropdown-item text-danger" href="#"
+                              ><i
+                                class="fa-regular fa-trash-can text-danger"
+                              ></i>
+                              Delete</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong style="color: var(--color-primary)"
+                        >#EMP-1073</strong
+                      >
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div
+                          style="
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            background: linear-gradient(
+                              135deg,
+                              #10b981,
+                              #059669
+                            );
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-size: 0.75rem;
+                            font-weight: 700;
+                          "
+                        >
+                          AC
+                        </div>
+                        Ashton Cox
+                      </div>
+                    </td>
+                    <td>Junior Technical Author</td>
+                    <td>
+                      <i class="fa-solid fa-location-dot text-muted me-1"></i
+                      >San Francisco
+                    </td>
+                    <td>
+                      <span class="badge-premium badge-warning">On Leave</span>
+                    </td>
+                    <td>$86,000</td>
+                    <td class="text-center">
+                      <div class="dropdown">
+                        <button
+                          class="btn-action-trigger"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul
+                          class="dropdown-menu dropdown-menu-end dropdown-premium-menu mt-1"
+                        >
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-eye"></i> View Profile</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-pen-to-square"></i> Edit
+                              Record</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-solid fa-print"></i> Print Doc</a
+                            >
+                          </li>
+                          <li><hr class="dropdown-divider my-1" /></li>
+                          <li>
+                            <a class="dropdown-item text-danger" href="#"
+                              ><i
+                                class="fa-regular fa-trash-can text-danger"
+                              ></i>
+                              Delete</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong style="color: var(--color-primary)"
+                        >#EMP-5319</strong
+                      >
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div
+                          style="
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            background: linear-gradient(
+                              135deg,
+                              #ef4444,
+                              #dc2626
+                            );
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-size: 0.75rem;
+                            font-weight: 700;
+                          "
+                        >
+                          CK
+                        </div>
+                        Cedric Kelly
+                      </div>
+                    </td>
+                    <td>Senior Javascript Developer</td>
+                    <td>
+                      <i class="fa-solid fa-location-dot text-muted me-1"></i
+                      >Edinburgh
+                    </td>
+                    <td>
+                      <span class="badge-premium badge-danger">Inactive</span>
+                    </td>
+                    <td>$433,060</td>
+                    <td class="text-center">
+                      <div class="dropdown">
+                        <button
+                          class="btn-action-trigger"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul
+                          class="dropdown-menu dropdown-menu-end dropdown-premium-menu mt-1"
+                        >
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-eye"></i> View Profile</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-pen-to-square"></i> Edit
+                              Record</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-solid fa-print"></i> Print Doc</a
+                            >
+                          </li>
+                          <li><hr class="dropdown-divider my-1" /></li>
+                          <li>
+                            <a class="dropdown-item text-danger" href="#"
+                              ><i
+                                class="fa-regular fa-trash-can text-danger"
+                              ></i>
+                              Delete</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong style="color: var(--color-primary)"
+                        >#EMP-7408</strong
+                      >
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div
+                          style="
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            background: linear-gradient(
+                              135deg,
+                              #f59e0b,
+                              #d97706
+                            );
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #fff;
+                            font-size: 0.75rem;
+                            font-weight: 700;
+                          "
+                        >
+                          AC
+                        </div>
+                        Airi Satou
+                      </div>
+                    </td>
+                    <td>Accountant</td>
+                    <td>
+                      <i class="fa-solid fa-location-dot text-muted me-1"></i
+                      >Tokyo
+                    </td>
+                    <td>
+                      <span class="badge-premium badge-success">Active</span>
+                    </td>
+                    <td>$162,700</td>
+                    <td class="text-center">
+                      <div class="dropdown">
+                        <button
+                          class="btn-action-trigger"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <ul
+                          class="dropdown-menu dropdown-menu-end dropdown-premium-menu mt-1"
+                        >
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-eye"></i> View Profile</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-regular fa-pen-to-square"></i> Edit
+                              Record</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="#"
+                              ><i class="fa-solid fa-print"></i> Print Doc</a
+                            >
+                          </li>
+                          <li><hr class="dropdown-divider my-1" /></li>
+                          <li>
+                            <a class="dropdown-item text-danger" href="#"
+                              ><i
+                                class="fa-regular fa-trash-can text-danger"
+                              ></i>
+                              Delete</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== RIGHT OFFCANVAS PANEL ==================== -->
+    <div
+      class="offcanvas offcanvas-end"
+      tabindex="-1"
+      id="rightPanel"
+      aria-labelledby="rightPanelLabel"
+    >
+      <div class="offcanvas-header">
+        <div class="d-flex align-items-center gap-2">
+          <div
+            style="
+              width: 32px;
+              height: 32px;
+              border-radius: 9px;
+              background: linear-gradient(
+                135deg,
+                var(--color-primary),
+                #7c3aed
+              );
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <i
+              class="fa-solid fa-sliders text-white"
+              style="font-size: 0.8rem"
+            ></i>
+          </div>
+          <h5 class="offcanvas-title" id="rightPanelLabel">Quick Panel</h5>
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <p class="text-muted mb-3" style="font-size: 0.82rem">
+          Access frequently used actions and system info at a glance.
+        </p>
+
+        <div class="section-title">Quick Actions</div>
+        <div class="quick-action-grid">
+          <a href="#" class="quick-action-card">
+            <div
+              class="qa-icon"
+              style="
+                background: rgba(79, 70, 229, 0.1);
+                color: var(--color-primary);
+              "
+            >
+              <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <div class="qa-label">Add Employee</div>
+          </a>
+          <a href="#" class="quick-action-card">
+            <div
+              class="qa-icon"
+              style="
+                background: rgba(16, 185, 129, 0.1);
+                color: var(--color-success);
+              "
+            >
+              <i class="fa-solid fa-folder-plus"></i>
+            </div>
+            <div class="qa-label">New Project</div>
+          </a>
+          <a href="#" class="quick-action-card">
+            <div
+              class="qa-icon"
+              style="
+                background: rgba(245, 158, 11, 0.1);
+                color: var(--color-warning);
+              "
+            >
+              <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <div class="qa-label">New Invoice</div>
+          </a>
+          <a href="#" class="quick-action-card">
+            <div
+              class="qa-icon"
+              style="
+                background: rgba(6, 182, 212, 0.1);
+                color: var(--color-info);
+              "
+            >
+              <i class="fa-solid fa-calendar-plus"></i>
+            </div>
+            <div class="qa-label">Schedule</div>
+          </a>
+          <a href="#" class="quick-action-card">
+            <div
+              class="qa-icon"
+              style="
+                background: rgba(239, 68, 68, 0.1);
+                color: var(--color-danger);
+              "
+            >
+              <i class="fa-solid fa-download"></i>
+            </div>
+            <div class="qa-label">Export Data</div>
+          </a>
+          <a href="#" class="quick-action-card">
+            <div
+              class="qa-icon"
+              style="
+                background: rgba(100, 116, 139, 0.1);
+                color: var(--color-secondary);
+              "
+            >
+              <i class="fa-solid fa-gear"></i>
+            </div>
+            <div class="qa-label">Settings</div>
+          </a>
+        </div>
+
+        <div class="section-title mt-3">System Status</div>
+        <div class="d-flex flex-column gap-2 mb-4">
+          <div
+            class="d-flex justify-content-between align-items-center p-3 rounded-3"
+            style="
+              background: #f8fafc;
+              border: 1px solid var(--card-border-color);
+            "
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i
+                class="fa-solid fa-database"
+                style="color: var(--color-success)"
+              ></i
+              ><span style="font-size: 0.83rem; font-weight: 500"
+                >Database</span
+              >
+            </div>
+            <span
+              class="badge-dot success"
+              style="font-size: 0.78rem; color: var(--text-main)"
+              >Online</span
+            >
+          </div>
+          <div
+            class="d-flex justify-content-between align-items-center p-3 rounded-3"
+            style="
+              background: #f8fafc;
+              border: 1px solid var(--card-border-color);
+            "
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i
+                class="fa-solid fa-hard-drive"
+                style="color: var(--color-warning)"
+              ></i
+              ><span style="font-size: 0.83rem; font-weight: 500">Storage</span>
+            </div>
+            <span
+              class="badge-dot warning"
+              style="font-size: 0.78rem; color: var(--text-main)"
+              >88% Used</span
+            >
+          </div>
+          <div
+            class="d-flex justify-content-between align-items-center p-3 rounded-3"
+            style="
+              background: #f8fafc;
+              border: 1px solid var(--card-border-color);
+            "
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i
+                class="fa-solid fa-shield-check"
+                style="color: var(--color-success)"
+              ></i
+              ><span style="font-size: 0.83rem; font-weight: 500"
+                >Security</span
+              >
+            </div>
+            <span
+              class="badge-dot success"
+              style="font-size: 0.78rem; color: var(--text-main)"
+              >All Clear</span
+            >
+          </div>
+          <div
+            class="d-flex justify-content-between align-items-center p-3 rounded-3"
+            style="
+              background: #f8fafc;
+              border: 1px solid var(--card-border-color);
+            "
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i
+                class="fa-solid fa-code-branch"
+                style="color: var(--color-info)"
+              ></i
+              ><span style="font-size: 0.83rem; font-weight: 500">Version</span>
+            </div>
+            <span
+              style="
+                font-size: 0.78rem;
+                font-weight: 600;
+                color: var(--text-main);
+              "
+              >v4.2.1 Stable</span
+            >
+          </div>
+        </div>
+
+        <div class="section-title">Recent Activity</div>
+        <div>
+          <div class="activity-item">
+            <div
+              class="activity-dot"
+              style="background: var(--color-success)"
+            ></div>
+            <div class="activity-text">
+              <p>Tiger Nixon's record was updated</p>
+              <small>2 minutes ago by Sarah Jenkins</small>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div
+              class="activity-dot"
+              style="background: var(--color-primary)"
+            ></div>
+            <div class="activity-text">
+              <p>New project "Atlas Q3" created</p>
+              <small>34 minutes ago by Dev Team</small>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div
+              class="activity-dot"
+              style="background: var(--color-warning)"
+            ></div>
+            <div class="activity-text">
+              <p>Storage warning threshold reached</p>
+              <small>1 hour ago · System</small>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div
+              class="activity-dot"
+              style="background: var(--color-info)"
+            ></div>
+            <div class="activity-text">
+              <p>Leave request from Ashton Cox approved</p>
+              <small>2 hours ago by HR Lead</small>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div
+              class="activity-dot"
+              style="background: var(--color-danger)"
+            ></div>
+            <div class="activity-text">
+              <p>Payroll sync failed — retrying</p>
+              <small>3 hours ago · Finance</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TOASTS ==================== -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      <div
+        id="successToast"
+        class="toast border-0 rounded-3 shadow"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div
+          class="toast-header border-0 text-white"
+          style="background: var(--color-success); border-radius: 12px 12px 0 0"
+        >
+          <div
+            class="d-flex align-items-center gap-2 w-100 justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-circle-check fs-5"></i
+              ><strong>System Success</strong>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <small class="text-white-50">Just now</small
+              ><button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="toast"
+              ></button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="toast-body bg-white text-dark"
+          style="
+            border: 1px solid var(--card-border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+          "
+        >
+          Employee record saved successfully to the database.
+        </div>
+      </div>
+      <div
+        id="dangerToast"
+        class="toast border-0 rounded-3 shadow"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div
+          class="toast-header border-0 text-white"
+          style="background: var(--color-danger); border-radius: 12px 12px 0 0"
+        >
+          <div
+            class="d-flex align-items-center gap-2 w-100 justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-circle-xmark fs-5"></i
+              ><strong>Critical Error</strong>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <small class="text-white-50">1m ago</small
+              ><button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="toast"
+              ></button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="toast-body bg-white text-dark"
+          style="
+            border: 1px solid var(--card-border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+          "
+        >
+          Database sync failed. Please check your connection and retry.
+        </div>
+      </div>
+      <div
+        id="warningToast"
+        class="toast border-0 rounded-3 shadow"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div
+          class="toast-header border-0 text-white"
+          style="background: var(--color-warning); border-radius: 12px 12px 0 0"
+        >
+          <div
+            class="d-flex align-items-center gap-2 w-100 justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-triangle-exclamation fs-5"></i
+              ><strong>Resource Warning</strong>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <small class="text-white-50">5m ago</small
+              ><button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="toast"
+              ></button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="toast-body bg-white text-dark"
+          style="
+            border: 1px solid var(--card-border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+          "
+        >
+          Storage at 88% — consider archiving old logs to free up space.
+        </div>
+      </div>
+      <div
+        id="infoToast"
+        class="toast border-0 rounded-3 shadow"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div
+          class="toast-header border-0 text-white"
+          style="background: var(--color-info); border-radius: 12px 12px 0 0"
+        >
+          <div
+            class="d-flex align-items-center gap-2 w-100 justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-circle-info fs-5"></i
+              ><strong>Notice Hub</strong>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <small class="text-white-50">10m ago</small
+              ><button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="toast"
+              ></button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="toast-body bg-white text-dark"
+          style="
+            border: 1px solid var(--card-border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+          "
+        >
+          New deployment pipeline is ready for staging review.
+        </div>
+      </div>
+      <div
+        id="secondaryToast"
+        class="toast border-0 rounded-3 shadow"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div
+          class="toast-header border-0 text-white"
+          style="
+            background: var(--color-secondary);
+            border-radius: 12px 12px 0 0;
+          "
+        >
+          <div
+            class="d-flex align-items-center gap-2 w-100 justify-content-between"
+          >
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left fs-5"></i
+              ><strong>Process Audit</strong>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <small class="text-white-50">1h ago</small
+              ><button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="toast"
+              ></button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="toast-body bg-white text-dark"
+          style="
+            border: 1px solid var(--card-border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+          "
+        >
+          Background audit log compilation completed. Data tables updated.
+        </div>
+      </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+      $(document).ready(function () {
+        // 1. Sidebar Toggle
+        $("#sidebarToggle").on("click", function () {
+          if ($(window).width() >= 992) {
+            $("body").toggleClass("sidebar-collapsed");
+          } else {
+            $("body").toggleClass("sidebar-open");
+          }
+        });
+        $("#sidebarBackdrop").on("click", function () {
+          $("body").removeClass("sidebar-open");
+        });
+
+        // 2. Sidebar Submenus
+        $(".has-dropdown > .dropdown-toggle-link").on("click", function (e) {
+          e.preventDefault();
+          if (
+            $("body").hasClass("sidebar-collapsed") &&
+            $(window).width() >= 992
+          )
+            return;
+          var parent = $(this).parent(".sidebar-item");
+          parent.find(".submenu").slideToggle(220);
+          parent.toggleClass("open");
+          parent
+            .siblings(".has-dropdown")
+            .removeClass("open")
+            .find(".submenu")
+            .slideUp(220);
+        });
+
+        // 3. Select2
+        $(".select2-multiple").select2({
+          placeholder: "Select tags...",
+          allowClear: true,
+        });
+
+        // 4. DataTable
+        $("#employeeTable").DataTable({
+          pageLength: 5,
+          lengthMenu: [5, 10, 25, 50],
+          language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search records...",
+          },
+        });
+
+        // 5. Toasts
+        const toasts = {
+          success: new bootstrap.Toast(document.getElementById("successToast")),
+          danger: new bootstrap.Toast(document.getElementById("dangerToast")),
+          warning: new bootstrap.Toast(document.getElementById("warningToast")),
+          info: new bootstrap.Toast(document.getElementById("infoToast")),
+          secondary: new bootstrap.Toast(
+            document.getElementById("secondaryToast"),
+          ),
+        };
+        $("#successToastBtn").click(() => toasts.success.show());
+        $("#dangerToastBtn").click(() => toasts.danger.show());
+        $("#warningToastBtn").click(() => toasts.warning.show());
+        $("#infoToastBtn").click(() => toasts.info.show());
+        $("#secondaryToastBtn").click(() => toasts.secondary.show());
+      });
+
+      // 6. Flatpickr
+      flatpickr(".flatpickr-date", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "F j, Y",
+        allowInput: false,
+        disableMobile: "true",
+      });
+    </script>
+  </body>
+</html>
