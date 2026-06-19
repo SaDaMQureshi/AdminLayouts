@@ -1,0 +1,3590 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus — Admin Panel</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink-900: #0a0f1e;
+        --ink-800: #111827;
+        --ink-700: #1f2937;
+        --ink-500: #374151;
+        --ink-400: #6b7280;
+        --ink-300: #9ca3af;
+        --ink-200: #e5e7eb;
+        --ink-100: #f3f4f6;
+        --ink-50: #f9fafb;
+        --indigo: #6366f1;
+        --indigo-dark: #4f46e5;
+        --indigo-glow: rgba(99, 102, 241, 0.25);
+        --cyan: #22d3ee;
+        --rose: #f43f5e;
+        --emerald: #10b981;
+        --amber: #f59e0b;
+        --violet: #8b5cf6;
+        --canvas: #f0f2f8;
+        --surface: #ffffff;
+        --surface2: #f8f9ff;
+        --radius-sm: 6px;
+        --radius-md: 12px;
+        --radius-lg: 18px;
+        --shadow-lift: 0 4px 16px rgba(10, 15, 30, 0.07);
+        --shadow-float: 0 12px 40px rgba(10, 15, 30, 0.12);
+        --trans: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--canvas);
+        font-family: "Inter", sans-serif;
+        color: var(--ink-500);
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Sora", sans-serif;
+        color: var(--ink-900);
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--ink-200);
+        border-radius: 99px;
+      }
+
+      /* NAV */
+      .nx-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        height: 64px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        padding: 0 1.5rem;
+      }
+      .nx-brand {
+        font-family: "Sora", sans-serif;
+        font-weight: 800;
+        font-size: 1.3rem;
+        letter-spacing: -0.03em;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+      }
+      .nx-brand-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--indigo);
+        border-radius: 50%;
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 7px rgba(99, 102, 241, 0);
+        }
+      }
+      .nx-nav-link {
+        font-family: "Sora", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--ink-400);
+        padding: 0.4rem 0.85rem;
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        transition: var(--trans);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        white-space: nowrap;
+      }
+      .nx-nav-link:hover,
+      .nx-nav-link.active {
+        color: var(--indigo);
+        background: rgba(99, 102, 241, 0.08);
+      }
+      .nx-nav-link.active {
+        font-weight: 600;
+      }
+      .nx-clock {
+        background: var(--ink-900);
+        color: #fff;
+        font-family: "Sora", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        padding: 0.35rem 0.9rem;
+        border-radius: 99px;
+      }
+      .nx-icon-btn {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--ink-200);
+        background: var(--surface);
+        color: var(--ink-500);
+        cursor: pointer;
+        transition: var(--trans);
+        font-size: 1rem;
+        position: relative;
+        text-decoration: none;
+      }
+      .nx-icon-btn:hover {
+        border-color: var(--indigo);
+        color: var(--indigo);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+      }
+      .nx-badge-dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: var(--rose);
+        border-radius: 50%;
+        border: 1.5px solid #fff;
+      }
+      .nx-avatar-pill {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.3rem 0.9rem 0.3rem 0.3rem;
+        border-radius: 99px;
+        background: var(--surface);
+        border: 1px solid var(--ink-200);
+        text-decoration: none;
+        transition: var(--trans);
+        cursor: pointer;
+      }
+      .nx-avatar-pill:hover {
+        border-color: var(--indigo);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+      }
+      .nx-avatar-img {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* CANVAS */
+      .nx-canvas {
+        padding: 2rem 2rem 4rem;
+        max-width: 1440px;
+        margin: 0 auto;
+      }
+      .nx-section-label {
+        font-family: "Sora", sans-serif;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--indigo);
+        margin-bottom: 0.3rem;
+      }
+      .nx-section-title {
+        font-family: "Sora", sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--ink-900);
+        margin: 0;
+      }
+
+      /* STAT CARDS */
+      .nx-stat {
+        background: var(--surface);
+        border: 1px solid var(--ink-200);
+        border-radius: var(--radius-lg);
+        padding: 1.4rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: var(--trans);
+        cursor: default;
+      }
+      .nx-stat::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        padding: 1.5px;
+        background: linear-gradient(
+          135deg,
+          transparent 40%,
+          var(--stat-accent, var(--indigo)) 100%
+        );
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .nx-stat:hover::before {
+        opacity: 1;
+      }
+      .nx-stat:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-float);
+      }
+      .nx-stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+      }
+      .nx-stat-value {
+        font-family: "Sora", sans-serif;
+        font-size: 1.7rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: var(--ink-900);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+      }
+      .nx-stat-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--ink-400);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .nx-stat-delta {
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        margin-top: 0.6rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 99px;
+      }
+      .nx-delta-up {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--emerald);
+      }
+      .nx-delta-down {
+        background: rgba(244, 63, 94, 0.1);
+        color: var(--rose);
+      }
+      .nx-stat--indigo {
+        --stat-accent: var(--indigo);
+      }
+      .nx-stat--cyan {
+        --stat-accent: var(--cyan);
+      }
+      .nx-stat--emerald {
+        --stat-accent: var(--emerald);
+      }
+      .nx-stat--amber {
+        --stat-accent: var(--amber);
+      }
+
+      /* CARD */
+      .nx-card {
+        background: var(--surface);
+        border: 1px solid var(--ink-200);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        transition: var(--trans);
+        box-shadow: var(--shadow-lift);
+      }
+      .nx-card:hover {
+        box-shadow: var(--shadow-float);
+      }
+      .nx-card-head {
+        padding: 1.1rem 1.5rem;
+        border-bottom: 1px solid var(--ink-100);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .nx-card-title {
+        font-family: "Sora", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--ink-900);
+        margin: 0;
+      }
+      .nx-card-body {
+        padding: 1.5rem;
+      }
+
+      /* ACTIVITY */
+      .nx-activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        padding: 0.75rem 1.5rem;
+        border-bottom: 1px solid var(--ink-100);
+        transition: var(--trans);
+      }
+      .nx-activity-item:last-child {
+        border-bottom: none;
+      }
+      .nx-activity-item:hover {
+        background: var(--surface2);
+      }
+      .nx-activity-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+      .nx-activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+      .nx-activity-text {
+        font-size: 0.82rem;
+        color: var(--ink-500);
+        line-height: 1.5;
+      }
+      .nx-activity-text strong {
+        color: var(--ink-900);
+        font-weight: 600;
+      }
+      .nx-activity-time {
+        font-size: 0.7rem;
+        color: var(--ink-300);
+        margin-top: 0.15rem;
+      }
+
+      /* PROGRESS */
+      .nx-progress {
+        height: 6px;
+        background: var(--ink-100);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+      .nx-progress-fill {
+        height: 100%;
+        border-radius: 99px;
+        transition: width 0.8s ease;
+      }
+
+      /* CAROUSEL */
+      .nx-carousel {
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        position: relative;
+        background: var(--ink-900);
+        min-height: 220px;
+      }
+      .nx-carousel-slide {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+        min-height: 220px;
+      }
+      .nx-carousel-slide.active {
+        display: block;
+      }
+      .nx-carousel-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(
+          to top,
+          rgba(10, 15, 30, 0.75) 0%,
+          transparent 100%
+        );
+        padding: 1.5rem;
+        color: #fff;
+        pointer-events: none;
+      }
+      .nx-carousel-label {
+        font-family: "Sora", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+      .nx-carousel-sub {
+        font-size: 0.78rem;
+        opacity: 0.75;
+      }
+      .nx-carousel-dots {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 5px;
+      }
+      .nx-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transition: var(--trans);
+        cursor: pointer;
+      }
+      .nx-dot.active {
+        background: #fff;
+        width: 18px;
+        border-radius: 99px;
+      }
+
+      /* IMAGE GRID */
+      .nx-img-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: 120px 120px;
+        gap: 0.5rem;
+      }
+      .nx-img-tile {
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+      }
+      .nx-img-tile img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.4s ease;
+      }
+      .nx-img-tile:hover img {
+        transform: scale(1.06);
+      }
+      .nx-img-tile-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(10, 15, 30, 0);
+        transition: background 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nx-img-tile:hover .nx-img-tile-overlay {
+        background: rgba(10, 15, 30, 0.35);
+      }
+      .nx-img-tile-overlay i {
+        color: #fff;
+        font-size: 1.4rem;
+        opacity: 0;
+        transform: scale(0.7);
+        transition: var(--trans);
+      }
+      .nx-img-tile:hover .nx-img-tile-overlay i {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .nx-img-tile--a {
+        grid-column: span 7;
+        grid-row: span 2;
+      }
+      .nx-img-tile--b {
+        grid-column: span 5;
+      }
+      .nx-img-tile--c {
+        grid-column: span 3;
+      }
+      .nx-img-tile--d {
+        grid-column: span 2;
+      }
+
+      /* QUICK LINKS */
+      .nx-quick-link {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.85rem 1rem;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        color: var(--ink-500);
+        border: 1px solid var(--ink-200);
+        transition: var(--trans);
+        background: var(--surface);
+      }
+      .nx-quick-link:hover {
+        border-color: var(--indigo);
+        color: var(--indigo);
+        background: rgba(99, 102, 241, 0.04);
+        transform: translateX(4px);
+        box-shadow: var(--shadow-lift);
+      }
+      .nx-quick-link-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+      }
+      .nx-quick-link-label {
+        font-size: 0.83rem;
+        font-weight: 600;
+        font-family: "Sora", sans-serif;
+      }
+      .nx-quick-link-sub {
+        font-size: 0.7rem;
+        color: var(--ink-300);
+        margin-top: 0.05rem;
+      }
+      .nx-quick-link-arrow {
+        margin-left: auto;
+        font-size: 0.75rem;
+        opacity: 0.4;
+        transition: var(--trans);
+      }
+      .nx-quick-link:hover .nx-quick-link-arrow {
+        opacity: 1;
+        transform: translateX(3px);
+      }
+
+      /* CALENDAR */
+      .nx-cal-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 3px;
+        text-align: center;
+      }
+      .nx-cal-day-hdr {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ink-300);
+        padding: 0.3rem 0;
+      }
+      .nx-cal-day {
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 0.4rem 0;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: var(--trans);
+        color: var(--ink-500);
+      }
+      .nx-cal-day:hover {
+        background: var(--ink-100);
+      }
+      .nx-cal-day.today {
+        background: var(--indigo);
+        color: #fff;
+        font-weight: 700;
+      }
+      .nx-cal-day.has-event {
+        position: relative;
+      }
+      .nx-cal-day.has-event::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--cyan);
+      }
+
+      /* DONUT */
+      .nx-donut-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nx-donut-center {
+        position: absolute;
+        text-align: center;
+      }
+      .nx-donut-val {
+        font-family: "Sora", sans-serif;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--ink-900);
+        line-height: 1;
+      }
+      .nx-donut-lbl {
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink-400);
+      }
+      .nx-legend-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      /* FORM */
+      .nx-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--ink-400);
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 0.4rem;
+      }
+      .nx-input,
+      .nx-select {
+        width: 100%;
+        border: 1px solid var(--ink-200);
+        border-radius: var(--radius-md);
+        padding: 0.6rem 0.875rem;
+        font-family: "Inter", sans-serif;
+        font-size: 0.875rem;
+        color: var(--ink-900);
+        background: var(--surface);
+        transition: var(--trans);
+        outline: none;
+        appearance: none;
+      }
+      .nx-input::placeholder {
+        color: var(--ink-300);
+      }
+      .nx-input:focus,
+      .nx-select:focus {
+        border-color: var(--indigo);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+      }
+      .nx-input-icon-wrap {
+        position: relative;
+      }
+      .nx-input-icon-wrap .nx-input {
+        padding-left: 2.5rem;
+      }
+      .nx-input-icon {
+        position: absolute;
+        left: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--ink-300);
+        font-size: 0.9rem;
+        pointer-events: none;
+      }
+      .nx-textarea {
+        width: 100%;
+        border: 1px solid var(--ink-200);
+        border-radius: var(--radius-md);
+        padding: 0.75rem 0.875rem;
+        font-family: "Inter", sans-serif;
+        font-size: 0.875rem;
+        color: var(--ink-900);
+        background: var(--surface);
+        transition: var(--trans);
+        outline: none;
+        resize: vertical;
+        min-height: 90px;
+      }
+      .nx-textarea:focus {
+        border-color: var(--indigo);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+      }
+
+      /* SELECT2 */
+      .select2-container--default .select2-selection--single,
+      .select2-container--default .select2-selection--multiple {
+        border: 1px solid var(--ink-200) !important;
+        border-radius: var(--radius-md) !important;
+        padding: 0.38rem 0.875rem !important;
+        height: auto !important;
+        background: var(--surface) !important;
+        font-family: "Inter", sans-serif;
+        font-size: 0.875rem;
+      }
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+        height: 38px !important;
+      }
+      .select2-container {
+        width: 100% !important;
+      }
+      .select2-container--default.select2-container--focus
+        .select2-selection--multiple,
+      .select2-container--default.select2-container--open
+        .select2-selection--single {
+        border-color: var(--indigo) !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+      }
+      .select2-dropdown {
+        border-radius: var(--radius-md) !important;
+        border-color: var(--ink-200) !important;
+        box-shadow: var(--shadow-float) !important;
+      }
+
+      /* BUTTONS */
+      .nx-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        font-family: "Sora", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border: none;
+        border-radius: var(--radius-md);
+        padding: 0.55rem 1.2rem;
+        cursor: pointer;
+        transition: var(--trans);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .nx-btn--primary {
+        background: var(--indigo);
+        color: #fff;
+      }
+      .nx-btn--primary:hover {
+        background: var(--indigo-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+        color: #fff;
+      }
+      .nx-btn--ghost {
+        background: transparent;
+        color: var(--ink-500);
+        border: 1px solid var(--ink-200);
+      }
+      .nx-btn--ghost:hover {
+        border-color: var(--indigo);
+        color: var(--indigo);
+        background: rgba(99, 102, 241, 0.05);
+      }
+      .nx-btn--danger {
+        background: var(--rose);
+        color: #fff;
+      }
+      .nx-btn--danger:hover {
+        background: #e11d48;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(244, 63, 94, 0.35);
+      }
+      .nx-btn--success {
+        background: var(--emerald);
+        color: #fff;
+      }
+      .nx-btn--success:hover {
+        background: #059669;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+      }
+      .nx-btn--amber {
+        background: var(--amber);
+        color: var(--ink-900);
+      }
+      .nx-btn--amber:hover {
+        background: #d97706;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+      }
+      .nx-btn--sm {
+        padding: 0.35rem 0.85rem;
+        font-size: 0.75rem;
+      }
+      .nx-btn--icon {
+        padding: 0.55rem;
+        width: 38px;
+        height: 38px;
+      }
+
+      /* BADGE */
+      .nx-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        font-family: "Sora", sans-serif;
+        letter-spacing: 0.03em;
+        padding: 0.2rem 0.65rem;
+        border-radius: 99px;
+      }
+      .nx-badge--indigo {
+        background: rgba(99, 102, 241, 0.1);
+        color: var(--indigo);
+      }
+      .nx-badge--emerald {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--emerald);
+      }
+      .nx-badge--rose {
+        background: rgba(244, 63, 94, 0.1);
+        color: var(--rose);
+      }
+      .nx-badge--amber {
+        background: rgba(245, 158, 11, 0.12);
+        color: #b45309;
+      }
+      .nx-badge--cyan {
+        background: rgba(34, 211, 238, 0.12);
+        color: #0e7490;
+      }
+      .nx-badge--violet {
+        background: rgba(139, 92, 246, 0.12);
+        color: var(--violet);
+      }
+      .nx-badge--dot::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+        display: inline-block;
+      }
+
+      /* TABLE */
+      .nx-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .nx-table th {
+        font-family: "Sora", sans-serif;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--ink-400);
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--ink-100);
+        white-space: nowrap;
+      }
+      .nx-table td {
+        font-size: 0.82rem;
+        border-bottom: 1px solid var(--ink-100);
+        color: var(--ink-500);
+        vertical-align: middle;
+        padding: 1rem 1.25rem;
+      }
+      /* Select2: use primary (indigo) for hovered/keyboard highlighted options */
+      .select2-container--default .select2-results__option--highlighted,
+      .select2-container--default .select2-results__option:hover {
+        background: var(--indigo) !important;
+        color: #fff !important;
+      }
+
+      /* Dropdown submenu support */
+      .nx-dropdown-menu li {
+        position: relative;
+      }
+      .nx-dropdown-submenu {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 100%;
+        margin-left: 8px;
+        min-width: 180px;
+        border: 1px solid var(--ink-200);
+        background: var(--surface);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-float);
+        padding: 0.35rem;
+        z-index: 9999;
+      }
+      .nx-dropdown-item.has-submenu > a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .nx-dropdown-item.has-submenu:hover > .nx-dropdown-submenu {
+        display: block;
+      }
+
+      /* Toast variants */
+      .nx-toast--danger {
+        background: linear-gradient(135deg, #ff355e, #e11d48) !important;
+        color: #fff;
+        border: none !important;
+      }
+      .nx-toast--warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        color: #1b1b1b;
+        border: none !important;
+      }
+      .nx-toast--info {
+        background: linear-gradient(
+          135deg,
+          var(--indigo),
+          var(--cyan)
+        ) !important;
+        color: #fff;
+        border: none !important;
+      }
+      .nx-toast--danger .toast-body,
+      .nx-toast--warning .toast-body,
+      .nx-toast--info .toast-body {
+        color: inherit !important;
+      }
+      .nx-table tr:last-child td {
+        border-bottom: none;
+      }
+      .nx-table tr:hover td {
+        background: var(--surface2);
+      }
+      .nx-table-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      /* OFFCANVAS */
+      .nx-offcanvas {
+        max-width: 360px;
+        background: var(--surface) !important;
+      }
+      .nx-todo-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--surface2);
+        border: 1px solid var(--ink-100);
+        border-radius: var(--radius-md);
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        transition: var(--trans);
+      }
+      .nx-todo-item:hover {
+        border-color: var(--ink-200);
+        box-shadow: var(--shadow-lift);
+      }
+      .nx-todo-text {
+        font-size: 0.82rem;
+        font-weight: 500;
+        flex: 1;
+        color: var(--ink-700);
+      }
+      .nx-todo-text.done {
+        text-decoration: line-through;
+        color: var(--ink-300);
+      }
+      .nx-todo-del {
+        color: var(--ink-300);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: var(--trans);
+        padding: 2px 4px;
+      }
+      .nx-todo-del:hover {
+        color: var(--rose);
+      }
+      .nx-custom-check {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        border: 1.5px solid var(--ink-200);
+        appearance: none;
+        cursor: pointer;
+        position: relative;
+        flex-shrink: 0;
+        transition: var(--trans);
+        background: #fff;
+      }
+      .nx-custom-check:checked {
+        background: var(--indigo);
+        border-color: var(--indigo);
+      }
+      .nx-custom-check:checked::after {
+        content: "\2713";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 700;
+      }
+      .nx-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        justify-content: center;
+      }
+      .nx-switch-input {
+        position: relative;
+        width: 46px;
+        height: 24px;
+        border-radius: 999px;
+        background: var(--ink-200);
+        border: 1px solid var(--ink-200);
+        cursor: pointer;
+        transition: background 0.25s ease, border-color 0.25s ease;
+        flex-shrink: 0;
+      }
+      .nx-switch-input::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(10, 15, 30, 0.08);
+        transition: transform 0.25s ease;
+      }
+      .nx-switch-control {
+        opacity: 0;
+        position: absolute;
+        width: 0;
+        height: 0;
+      }
+      .nx-switch-control:checked + .nx-switch-input {
+        background: var(--indigo);
+        border-color: var(--indigo);
+      }
+      .nx-switch-control:checked + .nx-switch-input::after {
+        transform: translateX(20px);
+      }
+
+      /* Custom Radio Button Styling */
+      .nx-radio {
+        appearance: none !important;
+        width: 22px !important;
+        height: 22px !important;
+        border: 2px solid var(--ink-200) !important;
+        border-radius: 50% !important;
+        cursor: pointer !important;
+        position: relative !important;
+        flex-shrink: 0 !important;
+        transition: var(--trans) !important;
+        background: #fff !important;
+        margin: 0 !important;
+      }
+      .nx-radio:hover {
+        border-color: var(--indigo) !important;
+      }
+      .nx-radio:checked {
+        border-color: var(--indigo) !important;
+        background: #fff !important;
+      }
+      .nx-radio:checked::after {
+        content: "" !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 12px !important;
+        height: 12px !important;
+        border-radius: 50% !important;
+        background: var(--indigo) !important;
+      }
+
+      /* TOAST */
+      .nx-toast {
+        background: var(--ink-900) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: var(--radius-md) !important;
+        box-shadow: var(--shadow-float) !important;
+        min-width: 300px;
+      }
+      .nx-toast .toast-header {
+        background: transparent !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        color: #fff !important;
+      }
+      .nx-toast .toast-body {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 0.82rem;
+        padding: 0.875rem 1rem !important;
+      }
+
+      /* DROPDOWN */
+      .nx-dropdown-menu {
+        border: 1px solid var(--ink-200) !important;
+        border-radius: var(--radius-lg) !important;
+        box-shadow: var(--shadow-float) !important;
+        padding: 0.5rem !important;
+        min-width: 200px;
+      }
+      .nx-dropdown-item {
+        border-radius: var(--radius-sm);
+        font-size: 0.82rem;
+        font-weight: 500;
+        padding: 0.5rem 0.75rem;
+        color: var(--ink-500);
+        transition: var(--trans);
+      }
+      .nx-dropdown-item:hover {
+        background: var(--surface2);
+        color: var(--indigo);
+      }
+
+      /* MOBILE NAV */
+      .nx-mobile-link {
+        font-family: "Sora", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--ink-500);
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.65rem 0.85rem;
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        transition: var(--trans);
+      }
+      .nx-mobile-link:hover,
+      .nx-mobile-link.active {
+        background: rgba(99, 102, 241, 0.08);
+        color: var(--indigo);
+      }
+      .nx-mobile-link.active {
+        font-weight: 700;
+      }
+
+      /* DT overrides */
+      .dataTables_wrapper .dataTables_filter input {
+        border: 1px solid var(--ink-200) !important;
+        border-radius: var(--radius-md) !important;
+        padding: 0.35rem 0.75rem !important;
+        font-family: "Inter", sans-serif !important;
+        font-size: 0.82rem !important;
+        outline: none !important;
+      }
+      .dataTables_wrapper .dataTables_filter input:focus {
+        border-color: var(--indigo) !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+      }
+      /* Override bootstrap pagination background */
+      .dataTables_wrapper .dataTables_paginate {
+        background: transparent !important;
+      }
+      .page-link {
+        background: none !important;
+        color: var(--indigo) !important;
+        border: none !important;
+      }
+      .page-link:hover {
+        background: var(--indigo) !important;
+        color: white !important;
+      }
+      
+      /* Modern pill style for pagination + spacing: outline buttons + primary-filled prev/next */
+      .dataTables_wrapper .dataTables_paginate {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        align-items: center;
+        padding: 12px 0;
+      }
+      .dataTables_wrapper .dataTables_paginate .paginate_button {
+        min-width: 40px;
+        height: 40px;
+        padding: 0 1rem !important;
+        border: 2px solid var(--ink-200) !important;
+        background: var(--surface) !important;
+        box-shadow: 0 2px 4px rgba(10, 15, 30, 0.08) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border-radius: var(--radius-md) !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        font-family: "Sora", sans-serif !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        letter-spacing: -0.01em !important;
+      }
+      .dataTables_wrapper .dataTables_paginate .paginate_button:not(.current) {
+        color: var(--ink-700) !important;
+      }
+      .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: var(--indigo) !important;
+        color: #fff !important;
+        border-color: var(--indigo) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3) !important;
+      }
+      /* Current page uses filled primary style - MUST come after general button rule */
+      .dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.previous):not(.next),
+      .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: #6366f1 !important;
+        color: #ffffff !important;
+        border-color: #6366f1 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35) !important;
+        transform: scale(1.05) !important;
+      }
+      .dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.previous):not(.next)[style*="color"],
+      .dataTables_wrapper .dataTables_paginate .paginate_button.current[style*="color"] {
+        color: #ffffff !important;
+      }
+      .dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.previous):not(.next):hover,
+      .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #4f46e5 !important;
+        border-color: #4f46e5 !important;
+        transform: scale(1.05) translateY(-2px) !important;
+      }
+      /* Prev / Next are primary-filled only */
+      .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+      .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+        background: var(--indigo) !important;
+        color: #fff !important;
+        border-color: var(--indigo) !important;
+        padding: 0 1.1rem !important;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+        font-size: 1rem !important;
+      }
+      .dataTables_wrapper .dataTables_paginate .paginate_button.previous:hover,
+      .dataTables_wrapper .dataTables_paginate .paginate_button.next:hover {
+        background: var(--indigo-dark) !important;
+        border-color: var(--indigo-dark) !important;
+        color: #fff !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4) !important;
+      }
+      .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+      .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+        background: var(--ink-100) !important;
+        color: var(--ink-300) !important;
+        border-color: var(--ink-200) !important;
+        cursor: not-allowed !important;
+        transform: none !important;
+        box-shadow: none !important;
+        opacity: 0.6 !important;
+      }
+      /* Ensure table area has breathing room */
+      .table-responsive { padding-bottom: 0.75rem; }
+
+      @media (max-width: 768px) {
+        .nx-canvas {
+          padding: 1rem 1rem 3rem;
+        }
+        .nx-img-tile--a {
+          grid-column: span 12;
+        }
+        .nx-img-tile--b,
+        .nx-img-tile--c,
+        .nx-img-tile--d {
+          grid-column: span 6;
+        }
+        .nx-img-grid {
+          grid-template-rows: 120px auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- TOPNAV -->
+    <nav class="nx-nav d-flex align-items-center">
+      <button
+        class="nx-icon-btn border-0 me-3 d-lg-none"
+        style="background: transparent"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mobileNavDrawer"
+      >
+        <i class="bi bi-list" style="font-size: 1.2rem"></i>
+      </button>
+      <a class="nx-brand me-5" href="#">
+        <div
+          style="
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--indigo), var(--cyan));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <i
+            class="bi bi-grid-1x2-fill text-white"
+            style="font-size: 0.9rem"
+          ></i>
+        </div>
+        <span
+          style="
+            background: linear-gradient(90deg, var(--ink-900), var(--indigo));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          "
+          >Nexus</span
+        >
+        <span class="nx-brand-dot"></span>
+      </a>
+      <div class="d-none d-lg-flex align-items-center gap-1 me-auto">
+        <a href="#" class="nx-nav-link active"
+          ><i class="bi bi-speedometer2"></i> Overview</a
+        >
+        <a href="#form-section" class="nx-nav-link"
+          ><i class="bi bi-ui-checks"></i> Forms</a
+        >
+        <a href="#media-section" class="nx-nav-link"
+          ><i class="bi bi-images"></i> Media</a
+        >
+        <div class="dropdown">
+          <a
+            href="#"
+            class="nx-nav-link dropdown-toggle"
+            data-bs-toggle="dropdown"
+          >
+            <i class="bi bi-layout-wtf"></i> Widgets
+          </a>
+          <ul class="dropdown-menu nx-dropdown-menu">
+            <li>
+              <a class="dropdown-item nx-dropdown-item" href="#widgets-section"
+                >Overview</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item nx-dropdown-item" href="#widgets-section"
+                >Charts</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item nx-dropdown-item" href="#widgets-section"
+                >Controls</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item nx-dropdown-item" href="#widgets-section"
+                >Integrations</a
+              >
+            </li>
+          </ul>
+        </div>
+        <a href="#datatable-section" class="nx-nav-link"
+          ><i class="bi bi-table"></i> Records</a
+        >
+      </div>
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <span id="liveClock" class="nx-clock d-none d-md-inline-block"></span>
+        <a href="#" class="nx-icon-btn" title="Search"
+          ><i class="bi bi-search"></i
+        ></a>
+        <a href="#" class="nx-icon-btn position-relative" title="Notifications"
+          ><i class="bi bi-bell"></i><span class="nx-badge-dot"></span
+        ></a>
+        <button
+          class="nx-icon-btn d-flex align-items-center gap-1 px-3"
+          style="width: auto"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#todoDrawer"
+        >
+          <i class="bi bi-check2-square"></i>
+          <span
+            class="d-none d-sm-inline"
+            style="
+              font-size: 0.78rem;
+              font-family: &quot;Sora&quot;, sans-serif;
+              font-weight: 600;
+            "
+            >Tasks</span
+          >
+        </button>
+        <div class="dropdown">
+          <a
+            class="nx-avatar-pill dropdown-toggle"
+            href="#"
+            data-bs-toggle="dropdown"
+            style="text-decoration: none"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80"
+              alt="Jane"
+              class="nx-avatar-img"
+            />
+            <span
+              class="d-none d-sm-inline"
+              style="
+                font-family: &quot;Sora&quot;, sans-serif;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: var(--ink-900);
+              "
+              >Jane Doe</span
+            >
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end nx-dropdown-menu">
+            <li>
+              <div
+                style="
+                  padding: 0.6rem 0.75rem 0.4rem;
+                  border-bottom: 1px solid var(--ink-100);
+                  margin-bottom: 0.4rem;
+                "
+              >
+                <p
+                  class="mb-0"
+                  style="
+                    font-family: &quot;Sora&quot;, sans-serif;
+                    font-weight: 700;
+                    font-size: 0.85rem;
+                  "
+                >
+                  Jane Doe
+                </p>
+                <p
+                  class="mb-0"
+                  style="font-size: 0.72rem; color: var(--ink-300)"
+                >
+                  jane.doe@nexus.io
+                </p>
+              </div>
+            </li>
+            <li>
+              <a class="dropdown-item nx-dropdown-item" href="#"
+                ><i class="bi bi-person me-2"></i>My Profile</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item nx-dropdown-item" href="#"
+                ><i class="bi bi-gear me-2"></i>Settings</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item nx-dropdown-item" href="#"
+                ><i class="bi bi-credit-card me-2"></i>Billing</a
+              >
+            </li>
+            <li><hr class="dropdown-divider my-1" /></li>
+            <li>
+              <a
+                class="dropdown-item nx-dropdown-item"
+                href="#"
+                style="color: var(--rose)"
+                ><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MOBILE DRAWER -->
+    <div
+      class="offcanvas offcanvas-start"
+      tabindex="-1"
+      id="mobileNavDrawer"
+      style="max-width: 270px; background: var(--surface)"
+    >
+      <div
+        class="offcanvas-header"
+        style="border-bottom: 1px solid var(--ink-100)"
+      >
+        <div class="d-flex align-items-center gap-2">
+          <div
+            style="
+              width: 28px;
+              height: 28px;
+              background: linear-gradient(135deg, var(--indigo), var(--cyan));
+              border-radius: 7px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <i
+              class="bi bi-grid-1x2-fill text-white"
+              style="font-size: 0.75rem"
+            ></i>
+          </div>
+          <span
+            style="
+              font-family: &quot;Sora&quot;, sans-serif;
+              font-weight: 800;
+              font-size: 1rem;
+            "
+            >Nexus Admin</span
+          >
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body p-3">
+        <div class="d-flex flex-column gap-1">
+          <a href="#" class="nx-mobile-link active" data-bs-dismiss="offcanvas"
+            ><i class="bi bi-speedometer2"></i> Overview</a
+          >
+          <a
+            href="#form-section"
+            class="nx-mobile-link"
+            data-bs-dismiss="offcanvas"
+            ><i class="bi bi-ui-checks"></i> Forms</a
+          >
+          <a
+            href="#media-section"
+            class="nx-mobile-link"
+            data-bs-dismiss="offcanvas"
+            ><i class="bi bi-images"></i> Media</a
+          >
+          <a
+            href="#"
+            class="nx-mobile-link"
+            data-bs-toggle="collapse"
+            data-bs-target="#mobileWidgetsSub"
+            aria-expanded="false"
+            aria-controls="mobileWidgetsSub"
+            ><i class="bi bi-layout-wtf"></i> Widgets
+            <i class="bi bi-chevron-down ms-auto"></i
+          ></a>
+          <div class="collapse" id="mobileWidgetsSub">
+            <a
+              href="#widgets-section"
+              class="nx-mobile-link ms-3"
+              data-bs-dismiss="offcanvas"
+              >Overview</a
+            >
+            <a
+              href="#widgets-section"
+              class="nx-mobile-link ms-3"
+              data-bs-dismiss="offcanvas"
+              >Charts</a
+            >
+            <a
+              href="#widgets-section"
+              class="nx-mobile-link ms-3"
+              data-bs-dismiss="offcanvas"
+              >Controls</a
+            >
+          </div>
+          <a
+            href="#datatable-section"
+            class="nx-mobile-link"
+            data-bs-dismiss="offcanvas"
+            ><i class="bi bi-table"></i> Records</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CANVAS -->
+    <main class="container-fluid p-4">
+      <!-- PAGE HEADER -->
+      <div
+        class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3"
+      >
+        <div>
+          <p class="nx-section-label mb-1">Thursday, June 18 2026</p>
+          <h1
+            class="mb-0"
+            style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em"
+          >
+            Good morning, Jane 👋
+          </h1>
+        </div>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+          <div class="nx-stat nx-stat--indigo">
+            <div
+              class="nx-stat-icon"
+              style="background: rgba(99, 102, 241, 0.1); color: var(--indigo)"
+            >
+              <i class="bi bi-currency-dollar"></i>
+            </div>
+            <div class="nx-stat-value">$48.2K</div>
+            <div class="nx-stat-label">Total Revenue</div>
+            <div class="nx-stat-delta nx-delta-up">
+              <i class="bi bi-arrow-up-right"></i>+12.4%
+            </div>
+            <svg
+              viewBox="0 0 80 28"
+              style="width: 100%; height: 28px; opacity: 0.45; margin-top: 8px"
+            >
+              <polyline
+                points="0,20 12,16 24,18 36,8 48,12 60,4 72,6 80,2"
+                fill="none"
+                stroke="var(--indigo)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="nx-stat nx-stat--emerald">
+            <div
+              class="nx-stat-icon"
+              style="background: rgba(16, 185, 129, 0.1); color: var(--emerald)"
+            >
+              <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="nx-stat-value">2,841</div>
+            <div class="nx-stat-label">Active Users</div>
+            <div class="nx-stat-delta nx-delta-up">
+              <i class="bi bi-arrow-up-right"></i>+8.1%
+            </div>
+            <svg
+              viewBox="0 0 80 28"
+              style="width: 100%; height: 28px; opacity: 0.45; margin-top: 8px"
+            >
+              <polyline
+                points="0,22 12,18 24,20 36,12 48,14 60,8 72,10 80,4"
+                fill="none"
+                stroke="var(--emerald)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="nx-stat nx-stat--amber">
+            <div
+              class="nx-stat-icon"
+              style="background: rgba(245, 158, 11, 0.12); color: var(--amber)"
+            >
+              <i class="bi bi-lightning-charge-fill"></i>
+            </div>
+            <div class="nx-stat-value">94.2%</div>
+            <div class="nx-stat-label">Task Velocity</div>
+            <div class="nx-stat-delta nx-delta-down">
+              <i class="bi bi-arrow-down-right"></i>-2.3%
+            </div>
+            <svg
+              viewBox="0 0 80 28"
+              style="width: 100%; height: 28px; opacity: 0.45; margin-top: 8px"
+            >
+              <polyline
+                points="0,4 12,8 24,6 36,14 48,10 60,16 72,14 80,20"
+                fill="none"
+                stroke="var(--amber)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="nx-stat nx-stat--cyan">
+            <div
+              class="nx-stat-icon"
+              style="background: rgba(34, 211, 238, 0.1); color: var(--cyan)"
+            >
+              <i class="bi bi-server"></i>
+            </div>
+            <div class="nx-stat-value">99.9%</div>
+            <div class="nx-stat-label">Uptime SLA</div>
+            <div class="nx-stat-delta nx-delta-up">
+              <i class="bi bi-arrow-up-right"></i>+0.2%
+            </div>
+            <svg
+              viewBox="0 0 80 28"
+              style="width: 100%; height: 28px; opacity: 0.45; margin-top: 8px"
+            >
+              <polyline
+                points="0,12 12,10 24,11 36,9 48,10 60,8 72,9 80,6"
+                fill="none"
+                stroke="var(--cyan)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY + GOALS -->
+      <div class="row g-3 mb-4">
+        <div class="col-lg-12">
+          <div class="nx-card h-100">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i class="bi bi-activity me-2" style="color: var(--indigo)"></i
+                >Recent Activity
+              </h2>
+              <a href="#" class="nx-btn nx-btn--ghost nx-btn--sm">View All</a>
+            </div>
+            <div style="padding: 0.25rem 0">
+              <div class="nx-activity-item">
+                <img
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80"
+                  alt=""
+                  class="nx-activity-avatar"
+                />
+                <div style="flex: 1">
+                  <div class="nx-activity-text">
+                    <strong>Marcus Chen</strong> submitted Q2 financial report
+                    for review
+                  </div>
+                  <div class="nx-activity-time">2 min ago · Finance</div>
+                </div>
+                <span class="nx-badge nx-badge--indigo nx-badge--dot"
+                  >Review</span
+                >
+              </div>
+              <div class="nx-activity-item">
+                <div
+                  class="nx-activity-icon"
+                  style="
+                    background: rgba(16, 185, 129, 0.1);
+                    color: var(--emerald);
+                  "
+                >
+                  <i class="bi bi-cloud-check-fill"></i>
+                </div>
+                <div style="flex: 1">
+                  <div class="nx-activity-text">
+                    Database backup completed — <strong>3.2 GB</strong> archived
+                  </div>
+                  <div class="nx-activity-time">18 min ago · System</div>
+                </div>
+                <span class="nx-badge nx-badge--emerald nx-badge--dot"
+                  >Done</span
+                >
+              </div>
+              <div class="nx-activity-item">
+                <img
+                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=80&h=80&q=80"
+                  alt=""
+                  class="nx-activity-avatar"
+                />
+                <div style="flex: 1">
+                  <div class="nx-activity-text">
+                    <strong>Priya Sharma</strong> onboarded to Engineering
+                    workspace
+                  </div>
+                  <div class="nx-activity-time">1 hour ago · HR</div>
+                </div>
+                <span class="nx-badge nx-badge--cyan nx-badge--dot">New</span>
+              </div>
+              <div class="nx-activity-item">
+                <div
+                  class="nx-activity-icon"
+                  style="background: rgba(244, 63, 94, 0.1); color: var(--rose)"
+                >
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div style="flex: 1">
+                  <div class="nx-activity-text">
+                    API rate limit threshold reached on
+                    <strong>Prod Server #4</strong>
+                  </div>
+                  <div class="nx-activity-time">
+                    2 hours ago · Infrastructure
+                  </div>
+                </div>
+                <span class="nx-badge nx-badge--rose nx-badge--dot">Alert</span>
+              </div>
+              <div class="nx-activity-item">
+                <img
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80"
+                  alt=""
+                  class="nx-activity-avatar"
+                />
+                <div style="flex: 1">
+                  <div class="nx-activity-text">
+                    <strong>James Wei</strong> updated pricing model for
+                    Enterprise tier
+                  </div>
+                  <div class="nx-activity-time">4 hours ago · Sales</div>
+                </div>
+                <span class="nx-badge nx-badge--amber nx-badge--dot"
+                  >Update</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEDIA SECTION -->
+      <div id="media-section" class="mb-2 mt-2">
+        <p class="nx-section-label">Media Library</p>
+        <h2 class="nx-section-title mb-3">Visual Assets & Banner Rotator</h2>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-7">
+          <div class="nx-card overflow-hidden">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i
+                  class="bi bi-play-circle me-2"
+                  style="color: var(--indigo)"
+                ></i
+                >Featured Banners
+              </h2>
+              <div class="d-flex gap-2">
+                <button class="nx-btn nx-btn--ghost nx-btn--sm" id="nxPrev">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="nx-btn nx-btn--ghost nx-btn--sm" id="nxNext">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+            <div style="position: relative">
+              <div id="nxCarousel" style="position: relative; overflow: hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&h=280&q=80"
+                  class="nx-carousel-slide active"
+                  alt="s1"
+                />
+                <img
+                  src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&h=280&q=80"
+                  class="nx-carousel-slide"
+                  alt="s2"
+                />
+                <img
+                  src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=900&h=280&q=80"
+                  class="nx-carousel-slide"
+                  alt="s3"
+                />
+                <div class="nx-carousel-overlay">
+                  <div class="nx-carousel-label" id="nxSlideLabel">
+                    Open-Plan Workspace Alpha
+                  </div>
+                  <div class="nx-carousel-sub" id="nxSlideSub">
+                    Facility Management · Floor 3, Block A
+                  </div>
+                </div>
+                <div class="nx-carousel-dots" id="nxDots">
+                  <div class="nx-dot active"></div>
+                  <div class="nx-dot"></div>
+                  <div class="nx-dot"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="nx-card h-100">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i
+                  class="bi bi-grid-3x3-gap-fill me-2"
+                  style="color: var(--indigo)"
+                ></i
+                >Media Grid
+              </h2>
+              <a href="#" class="nx-btn nx-btn--ghost nx-btn--sm"
+                ><i class="bi bi-upload me-1"></i>Upload</a
+              >
+            </div>
+            <div class="nx-card-body">
+              <div class="nx-img-grid">
+                <div class="nx-img-tile nx-img-tile--a">
+                  <img
+                    src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=500&q=80"
+                    alt=""
+                  />
+                  <div class="nx-img-tile-overlay">
+                    <i class="bi bi-zoom-in"></i>
+                  </div>
+                </div>
+                <div class="nx-img-tile nx-img-tile--b">
+                  <img
+                    src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80"
+                    alt=""
+                  />
+                  <div class="nx-img-tile-overlay">
+                    <i class="bi bi-zoom-in"></i>
+                  </div>
+                </div>
+                <div class="nx-img-tile nx-img-tile--c">
+                  <img
+                    src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=300&q=80"
+                    alt=""
+                  />
+                  <div class="nx-img-tile-overlay">
+                    <i class="bi bi-zoom-in"></i>
+                  </div>
+                </div>
+                <div class="nx-img-tile nx-img-tile--d">
+                  <img
+                    src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=200&q=80"
+                    alt=""
+                  />
+                  <div class="nx-img-tile-overlay">
+                    <i class="bi bi-plus-lg"></i>
+                  </div>
+                </div>
+              </div>
+              <p
+                class="mt-3 mb-0"
+                style="font-size: 0.72rem; color: var(--ink-300)"
+              >
+                4 files · 12.4 MB used ·
+                <a href="#" style="color: var(--indigo)">Manage library →</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WIDGETS SECTION -->
+      <div id="widgets-section" class="mb-2 mt-2">
+        <p class="nx-section-label">Widgets & Tools</p>
+        <h2 class="nx-section-title mb-3">Quick Access & Controls</h2>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-4">
+          <div class="nx-card h-100">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i
+                  class="bi bi-lightning-fill me-2"
+                  style="color: var(--indigo)"
+                ></i
+                >Quick Access
+              </h2>
+            </div>
+            <div class="nx-card-body d-flex flex-column gap-2">
+              <a href="#" class="nx-quick-link">
+                <div
+                  class="nx-quick-link-icon"
+                  style="
+                    background: rgba(99, 102, 241, 0.1);
+                    color: var(--indigo);
+                  "
+                >
+                  <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                  <div class="nx-quick-link-label">Team Management</div>
+                  <div class="nx-quick-link-sub">18 active members</div>
+                </div>
+                <i class="bi bi-arrow-right nx-quick-link-arrow"></i>
+              </a>
+              <a href="#" class="nx-quick-link">
+                <div
+                  class="nx-quick-link-icon"
+                  style="
+                    background: rgba(16, 185, 129, 0.1);
+                    color: var(--emerald);
+                  "
+                >
+                  <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <div>
+                  <div class="nx-quick-link-label">Analytics Dashboard</div>
+                  <div class="nx-quick-link-sub">Last 30 days</div>
+                </div>
+                <i class="bi bi-arrow-right nx-quick-link-arrow"></i>
+              </a>
+              <a href="#" class="nx-quick-link">
+                <div
+                  class="nx-quick-link-icon"
+                  style="
+                    background: rgba(245, 158, 11, 0.12);
+                    color: var(--amber);
+                  "
+                >
+                  <i class="bi bi-file-earmark-text-fill"></i>
+                </div>
+                <div>
+                  <div class="nx-quick-link-label">Document Center</div>
+                  <div class="nx-quick-link-sub">243 files stored</div>
+                </div>
+                <i class="bi bi-arrow-right nx-quick-link-arrow"></i>
+              </a>
+              <a href="#" class="nx-quick-link">
+                <div
+                  class="nx-quick-link-icon"
+                  style="
+                    background: rgba(34, 211, 238, 0.1);
+                    color: var(--cyan);
+                  "
+                >
+                  <i class="bi bi-shield-fill-check"></i>
+                </div>
+                <div>
+                  <div class="nx-quick-link-label">Security Center</div>
+                  <div class="nx-quick-link-sub">All systems normal</div>
+                </div>
+                <i class="bi bi-arrow-right nx-quick-link-arrow"></i>
+              </a>
+              <a href="#" class="nx-quick-link">
+                <div
+                  class="nx-quick-link-icon"
+                  style="
+                    background: rgba(139, 92, 246, 0.1);
+                    color: var(--violet);
+                  "
+                >
+                  <i class="bi bi-plug-fill"></i>
+                </div>
+                <div>
+                  <div class="nx-quick-link-label">Integrations</div>
+                  <div class="nx-quick-link-sub">7 connected apps</div>
+                </div>
+                <i class="bi bi-arrow-right nx-quick-link-arrow"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="nx-card h-100">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i
+                  class="bi bi-calendar-week me-2"
+                  style="color: var(--indigo)"
+                ></i
+                >June 2026
+              </h2>
+            </div>
+            <div class="nx-card-body">
+              <div class="nx-cal-grid mb-1">
+                <div class="nx-cal-day-hdr">Su</div>
+                <div class="nx-cal-day-hdr">Mo</div>
+                <div class="nx-cal-day-hdr">Tu</div>
+                <div class="nx-cal-day-hdr">We</div>
+                <div class="nx-cal-day-hdr">Th</div>
+                <div class="nx-cal-day-hdr">Fr</div>
+                <div class="nx-cal-day-hdr">Sa</div>
+                <div class="nx-cal-day">1</div>
+                <div class="nx-cal-day">2</div>
+                <div class="nx-cal-day">3</div>
+                <div class="nx-cal-day">4</div>
+                <div class="nx-cal-day">5</div>
+                <div class="nx-cal-day">6</div>
+                <div class="nx-cal-day">7</div>
+                <div class="nx-cal-day">8</div>
+                <div class="nx-cal-day">9</div>
+                <div class="nx-cal-day">10</div>
+                <div class="nx-cal-day">11</div>
+                <div class="nx-cal-day">12</div>
+                <div class="nx-cal-day">13</div>
+                <div class="nx-cal-day">14</div>
+                <div class="nx-cal-day">15</div>
+                <div class="nx-cal-day">16</div>
+                <div class="nx-cal-day">17</div>
+                <div class="nx-cal-day today">18</div>
+                <div class="nx-cal-day">19</div>
+                <div class="nx-cal-day">20</div>
+                <div class="nx-cal-day">21</div>
+                <div class="nx-cal-day">22</div>
+                <div class="nx-cal-day">23</div>
+                <div class="nx-cal-day">24</div>
+                <div class="nx-cal-day">25</div>
+                <div class="nx-cal-day">26</div>
+                <div class="nx-cal-day">27</div>
+                <div class="nx-cal-day">28</div>
+                <div class="nx-cal-day">29</div>
+                <div class="nx-cal-day">30</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="nx-card mb-3">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i class="bi bi-tag-fill me-2" style="color: var(--indigo)"></i
+                >Status Badges
+              </h2>
+            </div>
+            <div class="nx-card-body d-flex flex-wrap gap-2">
+              <span class="nx-badge nx-badge--indigo nx-badge--dot"
+                >Active</span
+              >
+              <span class="nx-badge nx-badge--emerald nx-badge--dot"
+                >Complete</span
+              >
+              <span class="nx-badge nx-badge--rose nx-badge--dot"
+                >Critical</span
+              >
+              <span class="nx-badge nx-badge--amber nx-badge--dot"
+                >Pending</span
+              >
+              <span class="nx-badge nx-badge--cyan nx-badge--dot">Syncing</span>
+              <span class="nx-badge nx-badge--violet nx-badge--dot">Beta</span>
+            </div>
+          </div>
+          <div class="nx-card">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i class="bi bi-bell-fill me-2" style="color: var(--indigo)"></i
+                >Notifications
+              </h2>
+              <div class="d-flex align-items-center gap-2">
+                <button
+                  class="nx-btn nx-btn--primary nx-btn--sm"
+                  id="fireToastBtn"
+                >
+                  <i class="bi bi-send me-1"></i>Send Test
+                </button>
+                <button
+                  class="nx-btn nx-btn--info nx-btn--sm"
+                  id="fireToastInfoBtn"
+                  style="
+                    background: transparent;
+                    border: 1px solid var(--ink-200);
+                  "
+                >
+                  Info
+                </button>
+                <button
+                  class="nx-btn nx-btn--warning nx-btn--sm"
+                  id="fireToastWarnBtn"
+                  style="
+                    background: transparent;
+                    border: 1px solid var(--ink-200);
+                  "
+                >
+                  Warning
+                </button>
+                <button
+                  class="nx-btn nx-btn-danger nx-btn--sm"
+                  id="fireToastDangerBtn"
+                  style="
+                    background: transparent;
+                    border: 1px solid var(--ink-200);
+                  "
+                >
+                  Danger
+                </button>
+              </div>
+            </div>
+            <div class="nx-card-body d-flex flex-column gap-2">
+              <div
+                class="d-flex align-items-start gap-3 p-3 rounded-3"
+                style="
+                  background: rgba(99, 102, 241, 0.05);
+                  border: 1px solid rgba(99, 102, 241, 0.1);
+                "
+              >
+                <div
+                  style="
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 8px;
+                    background: rgba(99, 102, 241, 0.1);
+                    color: var(--indigo);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    font-size: 0.85rem;
+                  "
+                >
+                  <i class="bi bi-info-circle-fill"></i>
+                </div>
+                <div>
+                  <p
+                    class="mb-0"
+                    style="
+                      font-size: 0.78rem;
+                      font-weight: 600;
+                      color: var(--ink-900);
+                    "
+                  >
+                    System Update v3.4 available
+                  </p>
+                  <p
+                    class="mb-0"
+                    style="font-size: 0.7rem; color: var(--ink-300)"
+                  >
+                    Schedule in next maintenance window
+                  </p>
+                </div>
+              </div>
+              <div
+                class="d-flex align-items-start gap-3 p-3 rounded-3"
+                style="
+                  background: rgba(244, 63, 94, 0.05);
+                  border: 1px solid rgba(244, 63, 94, 0.1);
+                "
+              >
+                <div
+                  style="
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 8px;
+                    background: rgba(244, 63, 94, 0.1);
+                    color: var(--rose);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    font-size: 0.85rem;
+                  "
+                >
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div>
+                  <p
+                    class="mb-0"
+                    style="
+                      font-size: 0.78rem;
+                      font-weight: 600;
+                      color: var(--ink-900);
+                    "
+                  >
+                    Disk usage at 89% on Node-07
+                  </p>
+                  <p
+                    class="mb-0"
+                    style="font-size: 0.7rem; color: var(--ink-300)"
+                  >
+                    Immediate cleanup recommended
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUTTONS + DROPDOWNS -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <div class="nx-card h-100">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i
+                  class="bi bi-cursor-fill me-2"
+                  style="color: var(--indigo)"
+                ></i
+                >Button System
+              </h2>
+            </div>
+            <div class="nx-card-body d-flex flex-column gap-4">
+              <div>
+                <p class="nx-section-label mb-2">Filled</p>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="nx-btn nx-btn--primary">
+                    <i class="bi bi-check-lg"></i> Primary
+                  </button>
+                  <button class="nx-btn nx-btn--success">
+                    <i class="bi bi-cloud-check"></i> Confirm
+                  </button>
+                  <button class="nx-btn nx-btn--danger">
+                    <i class="bi bi-trash3"></i> Delete
+                  </button>
+                  <button class="nx-btn nx-btn--amber">
+                    <i class="bi bi-star-fill"></i> Upgrade
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="nx-section-label mb-2">Ghost</p>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="nx-btn nx-btn--ghost">
+                    <i class="bi bi-download"></i> Export
+                  </button>
+                  <button class="nx-btn nx-btn--ghost">
+                    <i class="bi bi-share"></i> Share
+                  </button>
+                  <button class="nx-btn nx-btn--ghost">
+                    <i class="bi bi-pencil"></i> Edit
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="nx-section-label mb-2">Icon Only</p>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="nx-btn nx-btn--primary nx-btn--icon">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                  <button class="nx-btn nx-btn--ghost nx-btn--icon">
+                    <i class="bi bi-search"></i>
+                  </button>
+                  <button class="nx-btn nx-btn--ghost nx-btn--icon">
+                    <i class="bi bi-bell"></i>
+                  </button>
+                  <button class="nx-btn nx-btn--danger nx-btn--icon">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="nx-card h-100">
+            <div class="nx-card-head">
+              <h2 class="nx-card-title">
+                <i
+                  class="bi bi-menu-button me-2"
+                  style="color: var(--indigo)"
+                ></i
+                >Dropdowns & Links
+              </h2>
+            </div>
+            <div class="nx-card-body d-flex flex-column gap-4">
+              <div>
+                <p class="nx-section-label mb-2">Action Dropdowns</p>
+                <div class="d-flex gap-2 flex-wrap">
+                  <div class="dropdown">
+                    <button
+                      class="nx-btn nx-btn--primary dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                    >
+                      <i class="bi bi-gear-fill"></i> Actions
+                    </button>
+                    <ul class="dropdown-menu nx-dropdown-menu">
+                      <li>
+                        <a class="dropdown-item nx-dropdown-item" href="#"
+                          ><i class="bi bi-pencil me-2"></i>Edit Record</a
+                        >
+                      </li>
+                      <li>
+                        <a class="dropdown-item nx-dropdown-item" href="#"
+                          ><i class="bi bi-files me-2"></i>Duplicate</a
+                        >
+                      </li>
+                      <li class="nx-dropdown-item has-submenu">
+                        <a class="dropdown-item nx-dropdown-item" href="#">
+                          <span><i class="bi bi-download me-2"></i>Export</span>
+                          <i class="bi bi-chevron-right"></i>
+                        </a>
+                        <ul class="nx-dropdown-submenu">
+                          <li>
+                            <a class="dropdown-item nx-dropdown-item" href="#"
+                              >Export CSV</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item nx-dropdown-item" href="#"
+                              >Export XLSX</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item nx-dropdown-item" href="#"
+                              >Export PDF</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li><hr class="dropdown-divider my-1" /></li>
+                      <li>
+                        <a
+                          class="dropdown-item nx-dropdown-item"
+                          href="#"
+                          style="color: var(--rose)"
+                          ><i class="bi bi-trash3 me-2"></i>Delete</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="dropdown">
+                    <button
+                      class="nx-btn nx-btn--ghost dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                    >
+                      <i class="bi bi-filter"></i> Filter
+                    </button>
+                    <ul class="dropdown-menu nx-dropdown-menu">
+                      <li>
+                        <a class="dropdown-item nx-dropdown-item" href="#"
+                          >All Status</a
+                        >
+                      </li>
+                      <li>
+                        <a class="dropdown-item nx-dropdown-item" href="#"
+                          >Active Only</a
+                        >
+                      </li>
+                      <li>
+                        <a class="dropdown-item nx-dropdown-item" href="#"
+                          >Archived</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p class="nx-section-label mb-2">Navigation Links</p>
+                <div class="d-flex flex-column gap-3">
+                  <a
+                    href="#"
+                    class="d-flex align-items-center gap-2"
+                    style="
+                      font-size: 0.83rem;
+                      color: var(--indigo);
+                      text-decoration: none;
+                      font-weight: 600;
+                      font-family: &quot;Sora&quot;, sans-serif;
+                      transition: var(--trans);
+                    "
+                  >
+                    View full analytics report <i class="bi bi-arrow-right"></i>
+                  </a>
+                  <a
+                    href="#"
+                    style="
+                      font-size: 0.83rem;
+                      color: var(--ink-400);
+                      text-decoration: none;
+                      font-weight: 500;
+                      font-family: &quot;Sora&quot;, sans-serif;
+                    "
+                  >
+                    <i class="bi bi-external-link me-1"></i>Open in new tab
+                  </a>
+                  <a
+                    href="#"
+                    style="
+                      font-size: 0.83rem;
+                      color: var(--rose);
+                      text-decoration: none;
+                      font-weight: 500;
+                      font-family: &quot;Sora&quot;, sans-serif;
+                    "
+                  >
+                    <i class="bi bi-trash3 me-1"></i>Delete workspace
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORMS SECTION -->
+      <div id="form-section" class="mb-2 mt-2">
+        <p class="nx-section-label">Data Entry</p>
+        <h2 class="nx-section-title mb-3">Form Inputs & Controls</h2>
+      </div>
+
+      <div class="nx-card mb-4">
+        <div class="nx-card-head">
+          <h2 class="nx-card-title">
+            <i
+              class="bi bi-ui-checks-grid me-2"
+              style="color: var(--indigo)"
+            ></i
+            >New Employee Record
+          </h2>
+          <div class="d-flex gap-2">
+            <button class="nx-btn nx-btn--ghost nx-btn--sm">Discard</button>
+            <button class="nx-btn nx-btn--primary nx-btn--sm">
+              <i class="bi bi-check-lg me-1"></i>Save
+            </button>
+          </div>
+        </div>
+        <div class="nx-card-body">
+          <form onsubmit="return false;" class="row g-4">
+            <div class="col-md-4">
+              <label class="nx-label">Full Name</label>
+              <div class="nx-input-icon-wrap">
+                <i class="nx-input-icon bi bi-person"></i
+                ><input
+                  type="text"
+                  class="nx-input"
+                  placeholder="e.g. Marcus Chen"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Email Address</label>
+              <div class="nx-input-icon-wrap">
+                <i class="nx-input-icon bi bi-envelope"></i
+                ><input
+                  type="email"
+                  class="nx-input"
+                  placeholder="name@company.io"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Start Date</label>
+              <div class="nx-input-icon-wrap">
+                <i class="nx-input-icon bi bi-calendar3"></i
+                ><input
+                  type="text"
+                  id="flatpickr-date"
+                  class="nx-input"
+                  placeholder="YYYY-MM-DD"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Department</label>
+              <select class="nx-select">
+                <option value="" disabled selected>Select…</option>
+                <option>Engineering</option>
+                <option>Design</option>
+                <option>Sales</option>
+                <option>Operations</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Role (Select2)</label>
+              <select class="select2-single">
+                <option value="sa">Senior Architect</option>
+                <option value="pm">Product Manager</option>
+                <option value="fe">Frontend Engineer</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Skills (Multi)</label>
+              <select class="select2-multi" multiple="multiple">
+                <option selected>Python</option>
+                <option>React</option>
+                <option selected>SQL</option>
+                <option>DevOps</option>
+                <option>Figma</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Salary</label>
+              <div class="nx-input-icon-wrap">
+                <i class="nx-input-icon bi bi-currency-dollar"></i
+                ><input type="number" class="nx-input" placeholder="0.00" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Employment Type</label>
+              <div class="d-flex gap-3 align-items-center">
+                <label class="nx-label" style="font-size:0.82rem; font-weight:500; color:var(--ink-700); margin-bottom:0; display:flex; align-items:center; gap:0.5rem;">
+                  <input type="radio" name="employmentType" value="full" class="nx-radio" checked /> Full-time
+                </label>
+                <label class="nx-label" style="font-size:0.82rem; font-weight:500; color:var(--ink-700); margin-bottom:0; display:flex; align-items:center; gap:0.5rem;">
+                  <input type="radio" name="employmentType" value="part" class="nx-radio" /> Part-time
+                </label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Profile Photo</label>
+              <input
+                type="file"
+                class="nx-input"
+                style="padding: 0.45rem 0.875rem"
+              />
+            </div>
+            <div class="col-md-4">
+              <label class="nx-label">Notifications</label>
+              <div class="d-flex align-items-center justify-content-center">
+                <label class="nx-switch" for="notifications-toggle">
+                  <input type="checkbox" id="notifications-toggle" class="nx-switch-control" checked />
+                  <span class="nx-switch-input"></span>
+                  <span style="font-size:0.82rem; font-weight:600; color:var(--ink-700);">Enabled</span>
+                </label>
+              </div>
+            </div>
+            <div
+              class="col-md-4 d-flex align-items-center gap-4"
+              style="padding-top: 1.5rem"
+            >
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 0.5rem;
+                  cursor: pointer;
+                "
+              >
+                <input type="checkbox" class="nx-custom-check" checked />
+                <span
+                  style="
+                    font-size: 0.82rem;
+                    font-weight: 600;
+                    color: var(--ink-700);
+                  "
+                  >Send invite</span
+                >
+              </label>
+              <label
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 0.5rem;
+                  cursor: pointer;
+                "
+              >
+                <input type="checkbox" class="nx-custom-check" />
+                <span
+                  style="
+                    font-size: 0.82rem;
+                    font-weight: 600;
+                    color: var(--ink-700);
+                  "
+                  >Admin access</span
+                >
+              </label>
+            </div>
+            <div class="col-12">
+              <label class="nx-label">Notes</label>
+              <textarea
+                class="nx-textarea"
+                placeholder="Additional context or onboarding notes…"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- DATATABLE -->
+      <div id="datatable-section" class="mb-2 mt-2">
+        <p class="nx-section-label">Employee Directory</p>
+        <h2 class="nx-section-title mb-3">Records Database</h2>
+      </div>
+
+      <div class="nx-card mb-4">
+        <div class="nx-card-head">
+          <h2 class="nx-card-title">
+            <i class="bi bi-people-fill me-2" style="color: var(--indigo)"></i
+            >All Staff Records
+          </h2>
+          <div class="d-flex gap-2">
+            <button class="nx-btn nx-btn--ghost nx-btn--sm">
+              <i class="bi bi-download me-1"></i>CSV
+            </button>
+            <button class="nx-btn nx-btn--primary nx-btn--sm">
+              <i class="bi bi-plus-lg me-1"></i>Add Staff
+            </button>
+          </div>
+        </div>
+        <div class="nx-card-body">
+          <div class="table-responsive">
+            <table id="mainDataTable" class="nx-table w-100">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Employee</th>
+                  <th>Department</th>
+                  <th>Status</th>
+                  <th>Start Date</th>
+                  <th class="text-end">Salary</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td
+                    style="
+                      font-family: &quot;Sora&quot;, sans-serif;
+                      font-size: 0.72rem;
+                      font-weight: 700;
+                      color: var(--ink-300);
+                    "
+                  >
+                    #EMP-001
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <img
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=60&h=60&q=80"
+                        alt=""
+                        class="nx-table-avatar"
+                      />
+                      <div>
+                        <div
+                          style="
+                            font-weight: 600;
+                            color: var(--ink-900);
+                            font-size: 0.82rem;
+                          "
+                        >
+                          Marcus Chen
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--ink-300)">
+                          marcus@nexus.io
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Engineering</td>
+                  <td>
+                    <span class="nx-badge nx-badge--emerald nx-badge--dot"
+                      >Active</span
+                    >
+                  </td>
+                  <td style="color: var(--ink-400)">2022/03/14</td>
+                  <td
+                    class="text-end"
+                    style="
+                      font-weight: 700;
+                      color: var(--ink-900);
+                      font-family: &quot;Sora&quot;, sans-serif;
+                    "
+                  >
+                    $148,000
+                  </td>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <button
+                        class="nx-btn nx-btn--ghost dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul
+                        class="dropdown-menu dropdown-menu-end nx-dropdown-menu"
+                      >
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-pencil me-2"></i>Edit</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-printer me-2"></i>Print</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-eye me-2"></i>View</a
+                          >
+                        </li>
+                        <li><hr class="dropdown-divider my-1" /></li>
+                        <li>
+                          <a
+                            class="dropdown-item nx-dropdown-item"
+                            href="#"
+                            style="color: var(--rose)"
+                            ><i class="bi bi-trash3 me-2"></i>Delete</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="
+                      font-family: &quot;Sora&quot;, sans-serif;
+                      font-size: 0.72rem;
+                      font-weight: 700;
+                      color: var(--ink-300);
+                    "
+                  >
+                    #EMP-002
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <img
+                        src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=60&h=60&q=80"
+                        alt=""
+                        class="nx-table-avatar"
+                      />
+                      <div>
+                        <div
+                          style="
+                            font-weight: 600;
+                            color: var(--ink-900);
+                            font-size: 0.82rem;
+                          "
+                        >
+                          Priya Sharma
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--ink-300)">
+                          priya@nexus.io
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Design</td>
+                  <td>
+                    <span class="nx-badge nx-badge--cyan nx-badge--dot"
+                      >Onboarding</span
+                    >
+                  </td>
+                  <td style="color: var(--ink-400)">2026/06/10</td>
+                  <td
+                    class="text-end"
+                    style="
+                      font-weight: 700;
+                      color: var(--ink-900);
+                      font-family: &quot;Sora&quot;, sans-serif;
+                    "
+                  >
+                    $112,500
+                  </td>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <button
+                        class="nx-btn nx-btn--ghost dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul
+                        class="dropdown-menu dropdown-menu-end nx-dropdown-menu"
+                      >
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-pencil me-2"></i>Edit</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-printer me-2"></i>Print</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-eye me-2"></i>View</a
+                          >
+                        </li>
+                        <li><hr class="dropdown-divider my-1" /></li>
+                        <li>
+                          <a
+                            class="dropdown-item nx-dropdown-item"
+                            href="#"
+                            style="color: var(--rose)"
+                            ><i class="bi bi-trash3 me-2"></i>Delete</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="
+                      font-family: &quot;Sora&quot;, sans-serif;
+                      font-size: 0.72rem;
+                      font-weight: 700;
+                      color: var(--ink-300);
+                    "
+                  >
+                    #EMP-003
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <img
+                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=60&h=60&q=80"
+                        alt=""
+                        class="nx-table-avatar"
+                      />
+                      <div>
+                        <div
+                          style="
+                            font-weight: 600;
+                            color: var(--ink-900);
+                            font-size: 0.82rem;
+                          "
+                        >
+                          James Wei
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--ink-300)">
+                          james@nexus.io
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Sales</td>
+                  <td>
+                    <span class="nx-badge nx-badge--emerald nx-badge--dot"
+                      >Active</span
+                    >
+                  </td>
+                  <td style="color: var(--ink-400)">2020/11/01</td>
+                  <td
+                    class="text-end"
+                    style="
+                      font-weight: 700;
+                      color: var(--ink-900);
+                      font-family: &quot;Sora&quot;, sans-serif;
+                    "
+                  >
+                    $210,000
+                  </td>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <button
+                        class="nx-btn nx-btn--ghost dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul
+                        class="dropdown-menu dropdown-menu-end nx-dropdown-menu"
+                      >
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-pencil me-2"></i>Edit</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-printer me-2"></i>Print</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-eye me-2"></i>View</a
+                          >
+                        </li>
+                        <li><hr class="dropdown-divider my-1" /></li>
+                        <li>
+                          <a
+                            class="dropdown-item nx-dropdown-item"
+                            href="#"
+                            style="color: var(--rose)"
+                            ><i class="bi bi-trash3 me-2"></i>Delete</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="
+                      font-family: &quot;Sora&quot;, sans-serif;
+                      font-size: 0.72rem;
+                      font-weight: 700;
+                      color: var(--ink-300);
+                    "
+                  >
+                    #EMP-004
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <img
+                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=60&h=60&q=80"
+                        alt=""
+                        class="nx-table-avatar"
+                      />
+                      <div>
+                        <div
+                          style="
+                            font-weight: 600;
+                            color: var(--ink-900);
+                            font-size: 0.82rem;
+                          "
+                        >
+                          Jane Doe
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--ink-300)">
+                          jane@nexus.io
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Operations</td>
+                  <td>
+                    <span class="nx-badge nx-badge--indigo nx-badge--dot"
+                      >Admin</span
+                    >
+                  </td>
+                  <td style="color: var(--ink-400)">2019/04/22</td>
+                  <td
+                    class="text-end"
+                    style="
+                      font-weight: 700;
+                      color: var(--ink-900);
+                      font-family: &quot;Sora&quot;, sans-serif;
+                    "
+                  >
+                    $320,800
+                  </td>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <button
+                        class="nx-btn nx-btn--ghost dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul
+                        class="dropdown-menu dropdown-menu-end nx-dropdown-menu"
+                      >
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-pencil me-2"></i>Edit</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-printer me-2"></i>Print</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-eye me-2"></i>View</a
+                          >
+                        </li>
+                        <li><hr class="dropdown-divider my-1" /></li>
+                        <li>
+                          <a
+                            class="dropdown-item nx-dropdown-item"
+                            href="#"
+                            style="color: var(--rose)"
+                            ><i class="bi bi-trash3 me-2"></i>Delete</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td
+                    style="
+                      font-family: &quot;Sora&quot;, sans-serif;
+                      font-size: 0.72rem;
+                      font-weight: 700;
+                      color: var(--ink-300);
+                    "
+                  >
+                    #EMP-005
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <div
+                        style="
+                          width: 30px;
+                          height: 30px;
+                          border-radius: 50%;
+                          background: linear-gradient(
+                            135deg,
+                            var(--violet),
+                            var(--indigo)
+                          );
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          color: #fff;
+                          font-size: 0.7rem;
+                          font-weight: 700;
+                          flex-shrink: 0;
+                        "
+                      >
+                        TN
+                      </div>
+                      <div>
+                        <div
+                          style="
+                            font-weight: 600;
+                            color: var(--ink-900);
+                            font-size: 0.82rem;
+                          "
+                        >
+                          Tiger Nixon
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--ink-300)">
+                          tiger@nexus.io
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Architecture</td>
+                  <td>
+                    <span class="nx-badge nx-badge--amber nx-badge--dot"
+                      >Review</span
+                    >
+                  </td>
+                  <td style="color: var(--ink-400)">2011/04/25</td>
+                  <td
+                    class="text-end"
+                    style="
+                      font-weight: 700;
+                      color: var(--ink-900);
+                      font-family: &quot;Sora&quot;, sans-serif;
+                    "
+                  >
+                    $320,800
+                  </td>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <button
+                        class="nx-btn nx-btn--ghost dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul
+                        class="dropdown-menu dropdown-menu-end nx-dropdown-menu"
+                      >
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-pencil me-2"></i>Edit</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-printer me-2"></i>Print</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item nx-dropdown-item" href="#"
+                            ><i class="bi bi-eye me-2"></i>View</a
+                          >
+                        </li>
+                        <li><hr class="dropdown-divider my-1" /></li>
+                        <li>
+                          <a
+                            class="dropdown-item nx-dropdown-item"
+                            href="#"
+                            style="color: var(--rose)"
+                            ><i class="bi bi-trash3 me-2"></i>Delete</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- TODO OFFCANVAS -->
+    <div
+      class="offcanvas offcanvas-end nx-offcanvas"
+      tabindex="-1"
+      id="todoDrawer"
+    >
+      <div
+        class="offcanvas-header"
+        style="border-bottom: 1px solid var(--ink-100); padding: 1.25rem 1.5rem"
+      >
+        <h5
+          style="
+            font-family: &quot;Sora&quot;, sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0;
+          "
+        >
+          <i class="bi bi-check2-all me-2" style="color: var(--indigo)"></i>Task
+          Register
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+        ></button>
+      </div>
+      <div class="offcanvas-body p-4" style="background: var(--canvas)">
+        <div class="d-flex gap-2 mb-4">
+          <input
+            type="text"
+            id="todoInput"
+            class="nx-input"
+            placeholder="Add a new task…"
+            style="flex: 1"
+          />
+          <button class="nx-btn nx-btn--primary nx-btn--icon" id="addTodoBtn">
+            <i class="bi bi-plus-lg"></i>
+          </button>
+        </div>
+        <ul class="list-unstyled mb-0" id="todoList"></ul>
+        <p
+          id="todoEmpty"
+          class="text-center mt-4"
+          style="font-size: 0.8rem; color: var(--ink-300)"
+        >
+          No tasks yet. Add one above!
+        </p>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-4">
+      <div
+        id="nexusToast"
+        class="toast nx-toast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <div
+            style="
+              width: 22px;
+              height: 22px;
+              background: linear-gradient(135deg, var(--indigo), var(--cyan));
+              border-radius: 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 0.6rem;
+            "
+          >
+            <i class="bi bi-cpu text-white" style="font-size: 0.65rem"></i>
+          </div>
+          <strong class="me-auto">Nexus System</strong>
+          <small style="opacity: 0.5">Just now</small>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="toast"
+          ></button>
+        </div>
+        <div class="toast-body">All processes synced successfully.</div>
+      </div>
+
+      <div
+        id="nexusToastInfo"
+        class="toast nx-toast nx-toast--info mt-3"
+        role="alert"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <div
+            style="
+              width: 22px;
+              height: 22px;
+              background: rgba(255, 255, 255, 0.15);
+              border-radius: 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 0.6rem;
+            "
+          >
+            <i
+              class="bi bi-info-circle text-white"
+              style="font-size: 0.65rem"
+            ></i>
+          </div>
+          <strong class="me-auto">Info</strong>
+          <small style="opacity: 0.5">Now</small>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="toast"
+          ></button>
+        </div>
+        <div class="toast-body">Informational message.</div>
+      </div>
+
+      <div
+        id="nexusToastWarn"
+        class="toast nx-toast nx-toast--warning mt-3"
+        role="alert"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <div
+            style="
+              width: 22px;
+              height: 22px;
+              background: rgba(0, 0, 0, 0.06);
+              border-radius: 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 0.6rem;
+            "
+          >
+            <i
+              class="bi bi-exclamation-triangle-fill"
+              style="font-size: 0.65rem"
+            ></i>
+          </div>
+          <strong class="me-auto">Warning</strong>
+          <small style="opacity: 0.5">Now</small>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+          ></button>
+        </div>
+        <div class="toast-body">Please check your settings.</div>
+      </div>
+
+      <div
+        id="nexusToastDanger"
+        class="toast nx-toast nx-toast--danger mt-3"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <div
+            style="
+              width: 22px;
+              height: 22px;
+              background: rgba(255, 255, 255, 0.15);
+              border-radius: 5px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 0.6rem;
+            "
+          >
+            <i
+              class="bi bi-exclamation-octagon-fill text-white"
+              style="font-size: 0.65rem"
+            ></i>
+          </div>
+          <strong class="me-auto">Danger</strong>
+          <small style="opacity: 0.5">Now</small>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="toast"
+          ></button>
+        </div>
+        <div class="toast-body">Action required immediately.</div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $(".select2-single").select2({ width: "100%" });
+        $(".select2-multi").select2({
+          placeholder: "Select...",
+          width: "100%",
+        });
+        flatpickr("#flatpickr-date", { dateFormat: "Y-m-d" });
+        $("#mainDataTable").DataTable({
+          pageLength: 5,
+          lengthMenu: [5, 10, 25,50,100],
+          pagingType: "simple_numbers",
+          language: {
+            searchPlaceholder: "Search employees…",
+            search: "",
+            paginate: {
+              previous: '<i class="bi bi-chevron-left"></i>',
+              next: '<i class="bi bi-chevron-right"></i>'
+            }
+          },
+          columnDefs: [{ targets: -1, orderable: false, searchable: false }],
+          drawCallback: function() {
+            fixCurrentPageButton();
+          }
+        });
+
+        // Force current page button styling
+        function fixCurrentPageButton() {
+          const currentBtns = document.querySelectorAll('.dataTables_wrapper .dataTables_paginate .paginate_button.current');
+          currentBtns.forEach(btn => {
+            btn.style.color = '#ffffff';
+            btn.style.background = '#6366f1';
+            btn.style.borderColor = '#6366f1';
+            // Force override inline styles
+            btn.setAttribute('style', 'color: #ffffff !important; background: #6366f1 !important; border-color: #6366f1 !important;');
+          });
+        }
+        
+        // Use MutationObserver to catch any style changes
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.target.classList && mutation.target.classList.contains('current')) {
+              mutation.target.setAttribute('style', 'color: #ffffff !important; background: #6366f1 !important; border-color: #6366f1 !important;');
+            }
+          });
+        });
+        
+        // Observe the pagination container
+        const paginateContainer = document.querySelector('.dataTables_wrapper .dataTables_paginate');
+        if (paginateContainer) {
+          observer.observe(paginateContainer, { 
+            subtree: true, 
+            attributes: true, 
+            attributeFilter: ['style', 'class'] 
+          });
+        }
+        
+        // Initial fix and continuous monitoring
+        setTimeout(fixCurrentPageButton, 100);
+        setInterval(fixCurrentPageButton, 200);
+
+        // Clock
+        function tick() {
+          const d = new Date(),
+            days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+          document.getElementById("liveClock").textContent =
+            days[d.getDay()] +
+            " " +
+            String(d.getDate()).padStart(2, "0") +
+            "." +
+            String(d.getMonth() + 1).padStart(2, "0") +
+            "." +
+            String(d.getFullYear()).slice(-2) +
+            "  " +
+            d.toLocaleTimeString();
+        }
+        setInterval(tick, 1000);
+        tick();
+
+        // Carousel
+        const slides = document.querySelectorAll(".nx-carousel-slide");
+        const dots = document.querySelectorAll(".nx-dot");
+        const labels = [
+          "Open-Plan Workspace Alpha",
+          "Executive Tower — Block C",
+          "Innovation Hub Floor 12",
+        ];
+        const subs = [
+          "Facility Mgmt · Floor 3, Block A",
+          "Architecture · Exterior View",
+          "Engineering · Wing B",
+        ];
+        let cur = 0;
+        function goTo(n) {
+          slides[cur].classList.remove("active");
+          dots[cur].classList.remove("active");
+          cur = (n + slides.length) % slides.length;
+          slides[cur].classList.add("active");
+          dots[cur].classList.add("active");
+          document.getElementById("nxSlideLabel").textContent = labels[cur];
+          document.getElementById("nxSlideSub").textContent = subs[cur];
+        }
+        document
+          .getElementById("nxNext")
+          .addEventListener("click", () => goTo(cur + 1));
+        document
+          .getElementById("nxPrev")
+          .addEventListener("click", () => goTo(cur - 1));
+        dots.forEach((d, i) => d.addEventListener("click", () => goTo(i)));
+        setInterval(() => goTo(cur + 1), 5000);
+
+        // Toasts: main + variants
+        const toastEl = document.getElementById("nexusToast");
+        const toast = new bootstrap.Toast(toastEl);
+        const toastInfoEl = document.getElementById("nexusToastInfo");
+        const toastWarnEl = document.getElementById("nexusToastWarn");
+        const toastDangerEl = document.getElementById("nexusToastDanger");
+        const toastInfo = new bootstrap.Toast(toastInfoEl);
+        const toastWarn = new bootstrap.Toast(toastWarnEl);
+        const toastDanger = new bootstrap.Toast(toastDangerEl);
+
+        document
+          .getElementById("fireToastBtn")
+          .addEventListener("click", () => toast.show());
+        document
+          .getElementById("fireToastInfoBtn")
+          .addEventListener("click", () => toastInfo.show());
+        document
+          .getElementById("fireToastWarnBtn")
+          .addEventListener("click", () => toastWarn.show());
+        document
+          .getElementById("fireToastDangerBtn")
+          .addEventListener("click", () => toastDanger.show());
+
+        // Todo
+        function writeCookie(name, val, days = 7) {
+          const e = new Date();
+          e.setTime(e.getTime() + days * 86400000);
+          document.cookie =
+            name +
+            "=" +
+            encodeURIComponent(val) +
+            "; expires=" +
+            e.toUTCString() +
+            "; path=/";
+        }
+        function readCookie(name) {
+          const m = document.cookie
+            .split(";")
+            .find((c) => c.trim().startsWith(name + "="));
+          return m ? decodeURIComponent(m.trim().slice(name.length + 1)) : null;
+        }
+        let tasks = JSON.parse(readCookie("nx_tasks") || "[]");
+        function renderTodos() {
+          const list = document.getElementById("todoList"),
+            empty = document.getElementById("todoEmpty");
+          list.innerHTML = "";
+          tasks.forEach((t, i) => {
+            const li = document.createElement("li");
+            li.className = "nx-todo-item";
+            li.innerHTML = `<input type="checkbox" class="nx-custom-check" data-i="${i}" ${t.done ? "checked" : ""}><span class="nx-todo-text${t.done ? " done" : ""}">${t.text}</span><button class="nx-todo-del" data-i="${i}"><i class="bi bi-x-lg"></i></button>`;
+            list.appendChild(li);
+          });
+          empty.style.display = tasks.length ? "none" : "block";
+          writeCookie("nx_tasks", JSON.stringify(tasks));
+        }
+        document.getElementById("addTodoBtn").addEventListener("click", () => {
+          const v = document.getElementById("todoInput").value.trim();
+          if (!v) return;
+          tasks.push({ text: v, done: false });
+          document.getElementById("todoInput").value = "";
+          renderTodos();
+        });
+        document
+          .getElementById("todoInput")
+          .addEventListener("keydown", (e) => {
+            if (e.key === "Enter")
+              document.getElementById("addTodoBtn").click();
+          });
+        document.getElementById("todoList").addEventListener("change", (e) => {
+          if (e.target.classList.contains("nx-custom-check")) {
+            tasks[+e.target.dataset.i].done = e.target.checked;
+            renderTodos();
+          }
+        });
+        document.getElementById("todoList").addEventListener("click", (e) => {
+          const b = e.target.closest(".nx-todo-del");
+          if (b) {
+            tasks.splice(+b.dataset.i, 1);
+            renderTodos();
+          }
+        });
+        renderTodos();
+      });
+    </script>
+  </body>
+</html>
