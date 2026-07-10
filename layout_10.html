@@ -1,0 +1,3616 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sadam Qureshi — Liquid Glass Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <!-- DataTables -->
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
+  <!-- Custom styles -->
+  <!-- FUTURE CUSTOMIZATION: All CSS variables are defined in :root - modify colors, spacing, and effects there -->
+  <style>
+    /* ==========================================================================
+   LIQUID GLASS ADMIN — style.css
+   Token-driven glassmorphism theme. Every color, radius, blur, shadow and
+   spacing value is derived from the CSS variables in :root. Change the
+   theme by editing only this block.
+   ========================================================================== */
+
+    :root {
+      /* ---- Brand palette (professional office theme) ---- */
+      --color-primary: #2563eb;
+      /* professional blue — primary actions */
+      --color-secondary: #64748b;
+      /* neutral gray — secondary accents */
+      --color-accent: #0d9488;
+      /* teal — signature accent */
+      --color-success: #16a34a;
+      --color-danger: #dc2626;
+      --color-warning: #d97706;
+      --color-info: #0891b2;
+
+      /* ---- Surfaces (professional dark gray theme) ---- */
+      --bg-void: #1e293b;
+      --bg-deep: #334155;
+      --bg-surface: #475569;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-bg-strong: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-strong: rgba(255, 255, 255, 0.12);
+      --glass-highlight: rgba(255, 255, 255, 0.25);
+
+      /* ---- Text ---- */
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+
+      /* ---- Typography ---- */
+      --font-display: "Outfit", "Inter", sans-serif;
+      --font-body: "Inter", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+      --fs-base: 0.9375rem;
+
+      /* ---- Radius / spacing / motion ---- */
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-pill: 999px;
+      --transition-speed: 220ms;
+      --transition-curve: cubic-bezier(0.22, 1, 0.36, 1);
+
+      /* ---- Shadow / blur ---- */
+      --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.45);
+      --shadow-glass-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
+      --blur-strength: 22px;
+
+      /* ---- Gradients (simplified) ---- */
+      --gradient-primary: linear-gradient(135deg,
+          var(--color-primary),
+          var(--color-accent));
+      --gradient-aurora: linear-gradient(120deg,
+          var(--color-secondary),
+          var(--color-primary) 50%,
+          var(--color-accent));
+    }
+
+    /* ==========================================================================
+   Reset & base
+   FUTURE CUSTOMIZATION: Modify base styles for typography, selection, and scrollbars here
+   ========================================================================== */
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: var(--fs-base);
+      background: var(--bg-void);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .font-display {
+      font-family: var(--font-display);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .text-muted-glass {
+      color: var(--text-secondary) !important;
+    }
+
+    .font-mono {
+      font-family: var(--font-mono);
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    ::selection {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* Visible keyboard focus */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid var(--color-secondary);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--glass-border-strong);
+      border-radius: var(--radius-pill);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-primary);
+    }
+
+    /* ==========================================================================
+   Aurora backdrop — the signature liquid-glass atmosphere
+   FUTURE CUSTOMIZATION: Adjust blob positions, colors, and animation speeds for different effects
+   ========================================================================== */
+    .aurora-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: radial-gradient(ellipse at top,
+          var(--bg-deep),
+          var(--bg-void) 70%);
+    }
+
+    .aurora-blob {
+      position: absolute;
+      width: 42vw;
+      height: 42vw;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.5;
+      will-change: transform;
+    }
+
+    .aurora-blob.b1 {
+      background: var(--color-primary);
+      top: -10%;
+      left: -8%;
+      animation: drift1 26s var(--transition-curve) infinite alternate;
+    }
+
+    .aurora-blob.b2 {
+      background: var(--color-secondary);
+      top: 30%;
+      right: -12%;
+      animation: drift2 32s var(--transition-curve) infinite alternate;
+    }
+
+    .aurora-blob.b3 {
+      background: var(--color-accent);
+      bottom: -15%;
+      left: 20%;
+      animation: drift3 30s var(--transition-curve) infinite alternate;
+    }
+
+    @keyframes drift1 {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+
+      to {
+        transform: translate(8vw, 6vh) scale(1.15);
+      }
+    }
+
+    @keyframes drift2 {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+
+      to {
+        transform: translate(-6vw, 10vh) scale(0.9);
+      }
+    }
+
+    @keyframes drift3 {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+
+      to {
+        transform: translate(5vw, -8vh) scale(1.1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .aurora-blob {
+        animation: none !important;
+      }
+
+      * {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    /* ==========================================================================
+   Glass surface utility
+   FUTURE CUSTOMIZATION: Modify blur strength, border opacity, and shadow intensity here
+   ========================================================================== */
+    .glass {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(var(--blur-strength)) saturate(160%);
+      -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(160%);
+      box-shadow: var(--shadow-glass);
+      border-radius: var(--radius-lg);
+      position: relative;
+    }
+
+    .glass::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(160deg,
+          var(--glass-highlight),
+          transparent 40%);
+      opacity: 0.25;
+      pointer-events: none;
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .glass-strong {
+      background: var(--glass-bg-strong);
+      border-color: var(--glass-border-strong);
+    }
+
+    /* ==========================================================================
+   Layout shell
+   FUTURE CUSTOMIZATION: Adjust sidebar width, padding, and responsive breakpoints here
+   ========================================================================== */
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---- Sidebar ---- */
+    .sidebar {
+      width: 268px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      margin: 14px 0 14px 14px;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transition:
+        width var(--transition-speed) var(--transition-curve),
+        padding var(--transition-speed) var(--transition-curve);
+      z-index: 1030;
+    }
+
+    .sidebar.collapsed {
+      width: 84px;
+      padding: 18px 10px;
+    }
+
+    .sidebar.collapsed .sidebar-label,
+    .sidebar.collapsed .sidebar-brand-text,
+    .sidebar.collapsed .menu-caret {
+      display: none;
+    }
+
+    .sidebar.collapsed .nav-link-custom {
+      justify-content: center;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 8px 14px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .sidebar-brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 6px 18px rgba(108, 99, 255, 0.45);
+    }
+
+    .sidebar-brand-text {
+      line-height: 1.15;
+    }
+
+    .sidebar-brand-text .brand-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .sidebar-brand-text .brand-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* FUTURE CUSTOMIZATION: Sidebar user profile section - currently hidden, uncomment to display */
+    /* .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+    }
+
+    .sidebar-user img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .sidebar-user-info .name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .sidebar-user-info .role {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    } */
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 2px;
+    }
+
+    .sidebar-nav .nav-section-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin: 14px 10px 8px;
+    }
+
+    .nav-item-custom {
+      position: relative;
+      margin-bottom: 3px;
+    }
+
+    .nav-link-custom {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.87rem;
+      font-weight: 500;
+      transition:
+        color var(--transition-speed) var(--transition-curve),
+        background var(--transition-speed);
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+    }
+
+    .nav-link-custom i.menu-icon {
+      font-size: 1.05rem;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .menu-caret {
+      margin-left: auto;
+      font-size: 0.7rem;
+      transition: transform var(--transition-speed) var(--transition-curve);
+    }
+
+    .nav-item-custom.open>.nav-link-custom .menu-caret {
+      transform: rotate(90deg);
+    }
+
+    .nav-link-custom:hover {
+      color: var(--text-primary);
+      background: var(--glass-bg-strong);
+    }
+
+    .nav-item-custom.active>.nav-link-custom {
+      color: #fff;
+      background: var(--gradient-primary);
+      box-shadow: 0 6px 18px rgba(108, 99, 255, 0.35);
+    }
+
+    .submenu {
+      list-style: none;
+      margin: 2px 0 4px 18px;
+      padding-left: 14px;
+      border-left: 1px dashed var(--glass-border-strong);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-speed) var(--transition-curve);
+    }
+
+    .nav-item-custom.open>.submenu {
+      max-height: 600px;
+    }
+
+    .submenu .nav-link-custom {
+      padding: 8px 10px;
+      font-size: 0.82rem;
+    }
+
+    .submenu .submenu {
+      margin-left: 10px;
+    }
+
+    /* FUTURE CUSTOMIZATION: Sidebar footer mini - currently unused, uncomment if needed */
+    /* .sidebar-footer-mini {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding-top: 10px;
+      border-top: 1px solid var(--glass-border);
+    } */
+
+    /* ---- Main column ---- */
+    .main-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 14px 0;
+      gap: 14px;
+    }
+
+    /* ---- Navbar ---- */
+    .topbar {
+      position: sticky;
+      top: 14px;
+      z-index: 1020;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 10px 16px;
+      border-radius: var(--radius-lg);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .sidebar-toggle-btn,
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition:
+        background var(--transition-speed),
+        transform var(--transition-speed);
+      flex-shrink: 0;
+    }
+
+    .sidebar-toggle-btn:hover,
+    .icon-btn:hover {
+      background: var(--glass-bg-strong);
+      transform: translateY(-1px);
+    }
+
+    .page-title-block {
+      min-width: 0;
+    }
+
+    .page-title-block h1 {
+      font-size: 1.15rem;
+      margin: 0;
+    }
+
+    .breadcrumb-custom {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .breadcrumb-custom a {
+      color: var(--text-primary);
+    }
+
+    .breadcrumb-custom a:hover {
+      color: var(--color-secondary);
+    }
+
+    .breadcrumb-custom .breadcrumb-item.active {
+      color: var(--text-primary);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-dot {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: #fff;
+      font-size: 0.62rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-deep);
+      padding: 0 3px;
+    }
+
+    .profile-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+    }
+
+    .profile-trigger img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .profile-trigger .p-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+
+    .profile-trigger .p-role {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+      display: inline-block;
+      margin-right: 4px;
+      box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.25);
+    }
+
+    /* ---- Content area ---- */
+    .content-area {
+      padding: 4px 2px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .section-block {
+      scroll-margin-top: 90px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .section-heading h2 {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .section-heading .section-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+   Cards
+   FUTURE CUSTOMIZATION: Modify card padding, hover effects, and header/footer styles here
+   ========================================================================== */
+    .custom-card {
+      padding: 20px;
+      transition:
+        transform var(--transition-speed) var(--transition-curve),
+        box-shadow var(--transition-speed);
+      overflow: visible;
+    }
+
+    .custom-card:hover {
+      box-shadow: var(--shadow-glass-lg);
+    }
+
+    .custom-card .card-header-custom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .custom-card .card-header-custom h3 {
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .custom-card .card-footer-custom {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--glass-border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Stat cards */
+    .stat-card {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: default;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .stat-card .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-trend {
+      font-size: 0.72rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      width: fit-content;
+    }
+
+    .stat-trend.up {
+      color: var(--color-success);
+      background: rgba(52, 211, 153, 0.12);
+    }
+
+    .stat-trend.down {
+      color: var(--color-danger);
+      background: rgba(251, 113, 133, 0.12);
+    }
+
+    /* ---- Clock card ---- */
+    .clock-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .clock-ring-wrap {
+      position: relative;
+      width: 168px;
+      height: 168px;
+    }
+
+    .clock-ring-wrap svg {
+      transform: rotate(-90deg);
+    }
+
+    .clock-ring-bg {
+      fill: none;
+      stroke: var(--glass-border);
+      stroke-width: 5;
+    }
+
+    .clock-ring-progress {
+      fill: none;
+      stroke: url(#clockGradient);
+      stroke-width: 5;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    .clock-face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clock-digital {
+      font-family: var(--font-mono);
+      font-size: 1.55rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .clock-seconds {
+      color: var(--color-secondary);
+    }
+
+    .clock-date {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .clock-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .clock-meta b {
+      color: var(--text-primary);
+      display: block;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+    }
+
+    /* ---- Chart containers ---- */
+    .chart-card {
+      padding: 18px;
+    }
+
+    .chart-card canvas {
+      max-height: 260px;
+    }
+
+    /* ==========================================================================
+   Buttons
+   FUTURE CUSTOMIZATION: Adjust button sizes, colors, hover effects, and transitions here
+   ========================================================================== */
+    .custom-btn-primary,
+    .custom-btn-secondary,
+    .custom-btn-outline,
+    .custom-btn-ghost {
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      transition:
+        transform var(--transition-speed) var(--transition-curve),
+        box-shadow var(--transition-speed);
+    }
+
+    .custom-btn-primary {
+      background: var(--gradient-primary);
+      color: #fff;
+    }
+
+    .custom-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(108, 99, 255, 0.4);
+      color: #fff;
+    }
+
+    .custom-btn-secondary {
+      background: var(--glass-bg-strong);
+      border-color: var(--glass-border-strong);
+      color: var(--text-primary);
+    }
+
+    .custom-btn-secondary:hover {
+      background: var(--glass-bg);
+      color: var(--text-primary);
+    }
+
+    .custom-btn-outline {
+      background: transparent;
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .custom-btn-outline:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    .custom-btn-ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--text-secondary);
+    }
+
+    .custom-btn-ghost:hover {
+      background: var(--glass-bg);
+      color: var(--text-primary);
+    }
+
+    .icon-btn-group .btn {
+      border-radius: var(--radius-sm) !important;
+    }
+
+    /* ==========================================================================
+   Forms
+   FUTURE CUSTOMIZATION: Modify input styles, focus states, and validation appearance here
+   ========================================================================== */
+    .custom-input,
+    .custom-select,
+    .form-select.custom-select,
+    textarea.custom-input {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border-strong);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      padding: 10px 14px;
+    }
+
+    .custom-input:focus,
+    .custom-select:focus {
+      background: var(--glass-bg-strong);
+      border-color: var(--color-primary);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25);
+    }
+
+    .custom-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .custom-input:focus::placeholder {
+      color: var(--text-muted);
+    }
+
+    .custom-input:disabled,
+    .custom-input[readonly] {
+      opacity: 0.55;
+    }
+
+    .form-label-custom {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .form-check-input.custom-check {
+      background-color: var(--glass-bg);
+      border-color: var(--glass-border-strong);
+    }
+
+    .form-check-input.custom-check:checked {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .form-check-input.custom-check:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 0.25rem rgba(108, 99, 255, 0.25);
+    }
+
+    .form-check-input.custom-check[type="radio"]:checked {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23ffffff'/%3e%3c/svg%3e");
+    }
+
+    .form-check-input.custom-check[type="checkbox"]:checked {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+    }
+
+    .form-switch .form-check-input.custom-switch {
+      width: 2.4em;
+      background-color: var(--glass-bg);
+      border-color: var(--glass-border-strong);
+    }
+
+    .form-switch .form-check-input.custom-switch:checked {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e");
+    }
+
+    .form-switch .form-check-input.custom-switch:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 0.25rem rgba(108, 99, 255, 0.25);
+    }
+
+    .custom-range::-webkit-slider-thumb {
+      background: var(--color-primary);
+    }
+
+    .custom-range {
+      accent-color: var(--color-primary);
+    }
+
+    .dropzone-custom {
+      border: 1.5px dashed var(--glass-border-strong);
+      border-radius: var(--radius-md);
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      transition:
+        border-color var(--transition-speed),
+        background var(--transition-speed);
+      cursor: pointer;
+    }
+
+    .dropzone-custom.dragover {
+      border-color: var(--color-secondary);
+      background: rgba(34, 211, 238, 0.06);
+      color: var(--text-primary);
+    }
+
+    .input-group-text.custom-input-group-text {
+      background: var(--glass-bg-strong);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+    }
+
+    .form-floating.custom-floating>.custom-input~label {
+      color: var(--text-secondary);
+      padding: 10px 14px;
+    }
+
+    .form-floating.custom-floating>.custom-input:focus~label,
+    .form-floating.custom-floating>.custom-input:not(:placeholder-shown)~label {
+      color: var(--color-primary);
+      transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+
+    .form-floating.custom-floating>.custom-input {
+      padding: 14px 14px;
+    }
+
+    .form-floating.custom-floating>.custom-input::placeholder {
+      color: transparent;
+    }
+
+    .form-floating.custom-floating>.custom-input:focus::placeholder {
+      color: var(--text-muted);
+    }
+
+    .is-valid.custom-input {
+      border-color: var(--color-success);
+    }
+
+    .is-invalid.custom-input {
+      border-color: var(--color-danger);
+    }
+
+    /* ==========================================================================
+   Select2 Custom Theme
+   FUTURE CUSTOMIZATION: Adjust Select2 dropdown styling to match theme changes
+   ========================================================================== */
+    .select2-container--default .select2-selection--single,
+    .select2-container--default .select2-selection--multiple {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      min-height: 42px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: var(--text-primary);
+      padding: 6px 14px;
+      line-height: 28px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+      color: var(--text-secondary);
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 40px;
+      right: 14px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: var(--text-secondary) transparent transparent transparent;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.25);
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+      padding: 4px 8px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+      background: var(--glass-bg-strong);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 4px 10px;
+      margin: 2px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+      color: var(--text-secondary);
+      margin-right: 6px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+      color: var(--color-danger);
+    }
+
+    .select2-dropdown {
+      background: var(--bg-surface);
+      border: 1px solid var(--glass-border-strong);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-glass-lg);
+      color: var(--text-primary);
+    }
+
+    .select2-container--default .select2-results__option {
+      padding: 10px 14px;
+      color: var(--text-secondary);
+    }
+
+    .select2-container--default .select2-results__option--highlighted {
+      background: var(--glass-bg-strong);
+      color: var(--text-primary);
+    }
+
+    .select2-container--default .select2-results__option[aria-selected="true"] {
+      background: rgba(108, 99, 255, 0.15);
+      color: var(--color-primary);
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 8px 12px;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field::placeholder {
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+   Table
+   FUTURE CUSTOMIZATION: Modify table cell padding, borders, and hover effects here
+   ========================================================================== */
+    .custom-table-wrap {
+      overflow: hidden;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    /* FUTURE CUSTOMIZATION: DataTables overflow controls - adjust if table layout issues occur */
+    .dataTables_wrapper,
+    #dataTable_wrapper,
+    #dataTable {
+      overflow: hidden !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    table.custom-table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      color: var(--text-secondary);
+      font-size: 0.84rem;
+    }
+
+    table.custom-table thead th {
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: #fff;
+      font-weight: 600;
+      padding: 0 14px 8px;
+      border: none;
+      background: transparent;
+    }
+
+    /* FUTURE CUSTOMIZATION: Table row hover effects - modify rgba values for different hover intensity */
+    table.custom-table tbody tr,
+    .dataTables_wrapper table.custom-table tbody tr,
+    table.dataTable tbody tr {
+      background: transparent !important;
+      transition: background var(--transition-speed);
+      color: #fff;
+    }
+
+    table.custom-table tbody tr:hover,
+    .dataTables_wrapper table.custom-table tbody tr:hover,
+    table.dataTable tbody tr:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    table.custom-table tbody td {
+      padding: 10px 12px;
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      background: transparent !important;
+    }
+
+    /* FUTURE CUSTOMIZATION: DataTables stripe classes - currently disabled for transparent theme */
+    table.dataTable tbody tr.odd,
+    table.dataTable tbody tr.even,
+    table.dataTable tbody tr,
+    .dataTables_wrapper table tbody tr.odd,
+    .dataTables_wrapper table tbody tr.even,
+    .dataTables_wrapper table tbody tr,
+    #dataTable tbody tr.odd,
+    #dataTable tbody tr.even,
+    #dataTable tbody tr {
+      background: transparent !important;
+    }
+
+    table.dataTable tbody tr.odd:hover,
+    table.dataTable tbody tr.even:hover,
+    table.dataTable tbody tr:hover,
+    .dataTables_wrapper table tbody tr.odd:hover,
+    .dataTables_wrapper table tbody tr.even:hover,
+    .dataTables_wrapper table tbody tr:hover,
+    #dataTable tbody tr.odd:hover,
+    #dataTable tbody tr.even:hover,
+    #dataTable tbody tr:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    table.custom-table tbody td:first-child {
+      border-left: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    }
+
+    table.custom-table tbody td:last-child {
+      border-right: 1px solid var(--glass-border);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .table-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 8px;
+    }
+
+    .custom-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .custom-badge.bg-success-glass {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--color-success);
+    }
+
+    .custom-badge.bg-danger-glass {
+      background: rgba(251, 113, 133, 0.15);
+      color: var(--color-danger);
+    }
+
+    .custom-badge.bg-warning-glass {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--color-warning);
+    }
+
+    .custom-badge.bg-info-glass {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--color-info);
+    }
+
+    .custom-badge.bg-primary-glass {
+      background: rgba(108, 99, 255, 0.18);
+      color: #b5aeff;
+    }
+
+    /* FUTURE CUSTOMIZATION: DataTables input styling - change border-color from #ffffff to var(--glass-border-strong) for consistency */
+    .dataTables_wrapper .dataTables_filter input,
+    .dataTables_wrapper .dataTables_length select {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border-strong);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+    }
+
+    .dataTables_wrapper .dataTables_filter input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .dataTables_wrapper .dataTables_info {
+      color: var(--text-primary);
+      font-size: 0.85rem;
+    }
+
+    .dataTables_wrapper .dataTables_length label,
+    .dataTables_wrapper .dataTables_filter label {
+      color: var(--text-primary);
+      font-size: 0.85rem;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+      font-size: 0.85rem;
+    }
+
+    /* FUTURE CUSTOMIZATION: DataTables pagination styling - change border-color from #ffffff to var(--glass-border-strong) */
+    .dataTables_wrapper .pagination .page-link {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border-strong);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      margin: 0 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    .dataTables_wrapper .pagination .page-link:hover {
+      background: var(--glass-bg-strong);
+      border-color: var(--glass-border-strong);
+      color: var(--text-primary);
+    }
+
+    .dataTables_wrapper .pagination .page-item.active .page-link {
+      background: var(--gradient-primary);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .dataTables_wrapper .pagination .page-item.disabled .page-link {
+      background: var(--glass-bg);
+      border-color: var(--glass-border-strong);
+      color: var(--text-primary);
+      opacity: 0.4;
+    }
+
+    /* ==========================================================================
+   Dropdowns / Popovers / Tooltips / Modals / Offcanvas
+   FUTURE CUSTOMIZATION: Adjust overlay backdrop blur, borders, and shadows here
+   ========================================================================== */
+    .dropdown-menu.custom-dropdown {
+      background: var(--bg-surface);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(var(--blur-strength));
+      -webkit-backdrop-filter: blur(var(--blur-strength));
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-glass-lg);
+      padding: 8px;
+      min-width: 260px;
+    }
+
+    .dropdown-menu.custom-dropdown .dropdown-item {
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      padding: 8px 10px;
+    }
+
+    .dropdown-menu.custom-dropdown .dropdown-item:hover {
+      background: var(--glass-bg-strong);
+      color: var(--text-primary);
+    }
+
+    .dropdown-menu.custom-dropdown .fw-semibold {
+      color: var(--text-primary) !important;
+    }
+
+    .dropdown-menu.custom-dropdown .dropdown-header {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .dropdown-menu.custom-dropdown .dropdown-divider {
+      border-color: var(--glass-border);
+    }
+
+    .notif-item {
+      display: flex;
+      gap: 10px;
+      padding: 9px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .notif-item:hover {
+      background: var(--glass-bg-strong);
+    }
+
+    .notif-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+
+    .notif-text {
+      font-size: 0.78rem;
+      line-height: 1.3;
+      color: var(--text-secondary);
+    }
+
+    .notif-text strong {
+      color: var(--text-primary);
+    }
+
+    .notif-time {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .modal-content.custom-modal {
+      background: var(--bg-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(var(--blur-strength));
+      -webkit-backdrop-filter: blur(var(--blur-strength));
+    }
+
+    .modal-header,
+    .modal-footer {
+      border-color: var(--glass-border);
+    }
+
+    .modal-backdrop.show {
+      opacity: 0.7;
+    }
+
+    .offcanvas.custom-offcanvas {
+      background: var(--bg-surface);
+      border-left: 1px solid var(--glass-border);
+      backdrop-filter: blur(var(--blur-strength));
+      -webkit-backdrop-filter: blur(var(--blur-strength));
+    }
+
+    .offcanvas.custom-offcanvas .brand-name {
+      color: var(--text-primary);
+    }
+
+    .offcanvas-header {
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .popover.custom-popover {
+      background: var(--bg-surface);
+      border: 1px solid var(--glass-border);
+    }
+
+    .popover.custom-popover .popover-body {
+      color: var(--text-secondary);
+    }
+
+    .popover.custom-popover .popover-header {
+      background: var(--glass-bg-strong);
+      color: var(--text-primary);
+      border-color: var(--glass-border);
+    }
+
+    .bs-popover-auto[data-popper-placement^="top"] .popover-arrow::before,
+    .bs-popover-top .popover-arrow::before {
+      border-top-color: var(--glass-border);
+    }
+
+    .tooltip.custom-tooltip .tooltip-inner {
+      background: var(--bg-surface);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      font-size: 0.75rem;
+    }
+
+    /* ==========================================================================
+   Alerts / Toasts / Progress / Badges-pills
+   FUTURE CUSTOMIZATION: Modify alert colors, progress bar styles, and badge variants here
+   ========================================================================== */
+    .alert.custom-alert {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      color: var(--text-primary);
+    }
+
+    .alert.custom-alert.alert-success {
+      border-color: rgba(52, 211, 153, 0.35);
+    }
+
+    .alert.custom-alert.alert-danger {
+      border-color: rgba(251, 113, 133, 0.35);
+    }
+
+    .alert.custom-alert.alert-warning {
+      border-color: rgba(251, 191, 36, 0.35);
+    }
+
+    .alert.custom-alert.alert-info {
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .toast.custom-toast {
+      background: var(--bg-surface);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .progress.custom-progress {
+      background: var(--glass-bg);
+      border-radius: var(--radius-pill);
+      height: 8px;
+    }
+
+    .progress-bar.custom-progress-bar {
+      background: var(--gradient-primary);
+    }
+
+    .pill-nav .nav-link.custom-pill {
+      border-radius: var(--radius-pill);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      padding: 7px 16px;
+    }
+
+    .pill-nav .nav-link.custom-pill.active {
+      background: var(--gradient-primary);
+      color: #fff;
+    }
+
+    .nav-tabs.custom-tabs {
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav-tabs.custom-tabs .nav-link {
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .nav-tabs.custom-tabs .nav-link.active {
+      background: var(--glass-bg-strong);
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--color-primary);
+    }
+
+    .accordion.custom-accordion .accordion-item {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md) !important;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .accordion.custom-accordion .accordion-button {
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 0.87rem;
+      font-weight: 600;
+    }
+
+    .accordion.custom-accordion .accordion-button:not(.collapsed) {
+      background: var(--glass-bg-strong);
+      color: var(--color-secondary);
+      box-shadow: none;
+    }
+
+    .accordion.custom-accordion .accordion-body {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .accordion-button::after {
+      filter: invert(1) brightness(2);
+    }
+
+    .breadcrumb.custom-breadcrumb {
+      background: transparent;
+      margin: 0;
+    }
+
+    .list-group.custom-list-group .list-group-item {
+      background: var(--glass-bg);
+      border-color: var(--glass-border);
+      color: var(--text-secondary);
+    }
+
+    .list-group.custom-list-group .list-group-item:hover {
+      background: var(--glass-bg-strong);
+    }
+
+    .spinner-border.custom-spinner,
+    .spinner-grow.custom-spinner {
+      color: var(--color-primary);
+    }
+
+    .pagination .page-link.custom-page-link {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+    }
+
+    .pagination .page-item.active .page-link.custom-page-link {
+      background: var(--gradient-primary);
+      border-color: transparent;
+    }
+
+    /* ==========================================================================
+   Extra UI components
+   FUTURE CUSTOMIZATION: Adjust avatar groups, timelines, pricing cards, and other components here
+   ========================================================================== */
+    .avatar-group {
+      display: flex;
+    }
+
+    .avatar-group img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-surface);
+      margin-left: -10px;
+      object-fit: cover;
+    }
+
+    .avatar-group img:first-child {
+      margin-left: 0;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .status-indicator .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .rating-stars i {
+      color: var(--color-warning);
+      font-size: 0.95rem;
+    }
+
+    .pricing-card {
+      text-align: center;
+      padding: 26px 20px;
+    }
+
+    .pricing-card .price {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+
+    .pricing-card .price span {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+    }
+
+    .pricing-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pricing-card.featured {
+      border: 1px solid var(--color-primary);
+      box-shadow:
+        0 0 0 1px rgba(108, 99, 255, 0.3),
+        var(--shadow-glass-lg);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 26px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--glass-border-strong);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -22px;
+      top: 3px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.2);
+    }
+
+    .timeline-item .t-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .timeline-item .t-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .timeline-item .t-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .activity-feed .feed-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--glass-border);
+    }
+
+    .activity-feed .feed-item:last-child {
+      border-bottom: none;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 2.4rem;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    .skeleton {
+      border-radius: var(--radius-sm);
+      background: linear-gradient(90deg,
+          var(--glass-bg) 25%,
+          var(--glass-bg-strong) 37%,
+          var(--glass-bg) 63%);
+      background-size: 400% 100%;
+      animation: skeleton-loading 1.6s ease infinite;
+    }
+
+    @keyframes skeleton-loading {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0 50%;
+      }
+    }
+
+    .kanban-col {
+      min-width: 240px;
+    }
+
+    .kanban-card {
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: grab;
+    }
+
+    .kanban-card:active {
+      cursor: grabbing;
+    }
+
+    .social-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      transition:
+        transform var(--transition-speed),
+        background var(--transition-speed);
+    }
+
+    .social-btn:hover {
+      transform: translateY(-2px);
+      background: var(--gradient-primary);
+      color: #fff;
+    }
+
+    .code-block-card pre {
+      background: var(--bg-void);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--color-secondary);
+      overflow-x: auto;
+      margin: 0;
+      border: 1px solid var(--glass-border);
+    }
+
+    /* FUTURE CUSTOMIZATION: Scrollable card body - adjust max-height as needed */
+    .scrollable-card-body {
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    /* FUTURE CUSTOMIZATION: Todo item styling - adjust padding, gaps, or colors as needed */
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      margin-bottom: 8px;
+    }
+
+    .todo-item.completed .todo-text {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .todo-text {
+      flex: 1;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Footer */
+    .app-footer {
+      padding: 18px 20px;
+      margin: 6px 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================================================
+   Responsive
+   FUTURE CUSTOMIZATION: Add or modify breakpoints for different screen sizes here
+   ========================================================================== */
+    @media (max-width: 991.98px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main-col {
+        padding: 12px;
+      }
+
+      .page-title-block h1 {
+        font-size: 1rem;
+      }
+
+      .profile-trigger .p-name,
+      .profile-trigger .p-role {
+        display: none;
+      }
+    }
+
+    .offcanvas-sidebar .offcanvas-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0;
+    }
+
+    @media (max-width: 575.98px) {
+      .topbar {
+        padding: 8px 10px;
+      }
+
+      .stat-value {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============================== AURORA BACKDROP ============================== -->
+  <div class="aurora-backdrop" aria-hidden="true">
+    <div class="aurora-blob b1"></div>
+    <div class="aurora-blob b2"></div>
+    <div class="aurora-blob b3"></div>
+  </div>
+
+  <div class="app-shell">
+    <!-- ============================== SIDEBAR (desktop) ============================== -->
+    <aside class="sidebar glass" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-mark">A</div>
+        <div class="sidebar-brand-text">
+          <div class="brand-name">Sadam Qureshi</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Primary">
+        <div class="nav-section-label">Menu</div>
+        <ul class="list-unstyled m-0" id="sidebarMenu">
+          <li class="nav-item-custom active">
+            <a href="index.html" class="nav-link-custom">
+              <i class="bi bi-grid-1x2-fill menu-icon" style="color: var(--text-primary);"></i>
+              <span class="sidebar-label">Dashboard</span>
+            </a>
+          </li>
+
+          <li class="nav-item-custom">
+            <a href="#" class="nav-link-custom" data-toggle-submenu>
+              <i class="bi bi-people-fill menu-icon"></i>
+              <span class="sidebar-label">Users</span>
+              <i class="bi bi-chevron-right menu-caret"></i>
+            </a>
+            <ul class="submenu">
+              <li class="nav-item-custom">
+                <a href="users-all.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">All Users</span></a>
+              </li>
+              <li class="nav-item-custom">
+                <a href="users-add.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">Add User</span></a>
+              </li>
+              <li class="nav-item-custom">
+                <a href="users-roles.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">Roles</span></a>
+              </li>
+              <li class="nav-item-custom">
+                <a href="users-permissions.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">Permissions</span></a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item-custom">
+            <a href="#" class="nav-link-custom" data-toggle-submenu>
+              <i class="bi bi-box-seam-fill menu-icon"></i>
+              <span class="sidebar-label">Products</span>
+              <i class="bi bi-chevron-right menu-caret"></i>
+            </a>
+            <ul class="submenu">
+              <li class="nav-item-custom">
+                <a href="products-all.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">All Products</span></a>
+              </li>
+              <li class="nav-item-custom">
+                <a href="products-categories.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">Categories</span></a>
+              </li>
+              <li class="nav-item-custom">
+                <a href="products-brands.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">Brands</span></a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item-custom">
+            <a href="#" class="nav-link-custom" data-toggle-submenu>
+              <i class="bi bi-receipt menu-icon"></i>
+              <span class="sidebar-label">Orders</span>
+              <i class="bi bi-chevron-right menu-caret"></i>
+            </a>
+            <ul class="submenu">
+              <li class="nav-item-custom">
+                <a href="orders-pending.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">Pending</span></a>
+              </li>
+              <li class="nav-item-custom">
+                <a href="orders-completed.html" class="nav-link-custom"><i class="bi bi-dot menu-icon"></i><span
+                    class="sidebar-label">Completed</span></a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item-custom">
+            <a href="reports.html" class="nav-link-custom">
+              <i class="bi bi-bar-chart-line-fill menu-icon"></i>
+              <span class="sidebar-label">Reports</span>
+            </a>
+          </li>
+
+          <li class="nav-item-custom">
+            <a href="settings.html" class="nav-link-custom">
+              <i class="bi bi-gear-fill menu-icon"></i>
+              <span class="sidebar-label">Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- ============================== MAIN COLUMN ============================== -->
+    <div class="main-col">
+      <!-- ============================== NAVBAR ============================== -->
+      <header class="topbar glass">
+        <div class="topbar-left">
+          <button class="sidebar-toggle-btn custom-btn-ghost d-none d-lg-block" id="sidebarToggleBtn"
+            aria-label="Toggle sidebar" aria-controls="sidebar" aria-expanded="true">
+            <i class="bi bi-list fs-5"></i>
+          </button>
+          <button class="sidebar-toggle-btn custom-btn-ghost d-lg-none" id="mobileSidebarBtn" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasSidebar" aria-label="Open menu">
+            <i class="bi bi-grid fs-5"></i>
+          </button>
+          <div class="page-title-block">
+            <h1>Dashboard Overview</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb breadcrumb-custom">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Dashboard
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Search -->
+          <button class="icon-btn d-none d-sm-flex" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip"
+            title="Search" id="searchBtn">
+            <i class="bi bi-search"></i>
+          </button>
+
+          <!-- Notifications -->
+          <div class="dropdown position-relative">
+            <button class="icon-btn position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+              aria-label="Notifications">
+              <i class="bi bi-bell"></i>
+              <span class="badge-dot" id="notifCount">5</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end custom-dropdown p-2">
+              <div class="d-flex align-items-center justify-content-between px-2 pb-2">
+                <span class="dropdown-header p-0">Notifications</span>
+                <button class="btn btn-sm custom-btn-ghost p-0" id="markAllReadBtn" style="font-size: 0.7rem">
+                  Mark all as read
+                </button>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background: var(--color-success)">
+                  <i class="bi bi-check-lg"></i>
+                </div>
+                <div class="notif-text">
+                  Order <strong>#4821</strong> was marked as completed.
+                  <div class="notif-time">2 minutes ago</div>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background: var(--color-primary)">
+                  <i class="bi bi-person-plus"></i>
+                </div>
+                <div class="notif-text">
+                  New user <strong>Liam Chen</strong> just signed up.
+                  <div class="notif-time">18 minutes ago</div>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background: var(--color-warning)">
+                  <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div class="notif-text">
+                  Inventory for <strong>Aurora Lamp</strong> is running low.
+                  <div class="notif-time">1 hour ago</div>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background: var(--color-info)">
+                  <i class="bi bi-chat-dots"></i>
+                </div>
+                <div class="notif-text">
+                  You have 3 new comments on Report Q3.
+                  <div class="notif-time">3 hours ago</div>
+                </div>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background: var(--color-accent)">
+                  <i class="bi bi-star"></i>
+                </div>
+                <div class="notif-text">
+                  Your plan was upgraded to Pro.
+                  <div class="notif-time">Yesterday</div>
+                </div>
+              </div>
+              <hr class="dropdown-divider" />
+              <a href="#" class="dropdown-item text-center">View all notifications</a>
+            </div>
+          </div>
+
+          <!-- To-do -->
+          <button class="icon-btn" data-bs-toggle="offcanvas" data-bs-target="#todoOffcanvas"
+            aria-label="Open to-do list">
+            <i class="bi bi-check2-square"></i>
+          </button>
+
+          <!-- Profile -->
+          <div class="dropdown">
+            <button class="profile-trigger" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="https://i.pravatar.cc/80?img=47" alt="Amelia Voss" />
+              <span class="d-none d-md-block text-start">
+                <span class="p-name d-block">Amelia Voss</span>
+                <span class="p-role"><span class="status-dot"></span>Online</span>
+              </span>
+              <i class="bi bi-chevron-down small"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end custom-dropdown p-2">
+              <div class="d-flex align-items-center gap-2 px-2 pb-2 mb-1"
+                style="border-bottom: 1px solid var(--glass-border)">
+                <img src="https://i.pravatar.cc/80?img=47" class="rounded-circle" width="46" height="46"
+                  alt="Amelia Voss" />
+                <div>
+                  <div class="fw-semibold" style="font-size: 0.85rem">
+                    Amelia Voss
+                  </div>
+                  <div class="text-muted-glass" style="font-size: 0.72rem">
+                    Product Administrator
+                  </div>
+                  <div class="text-muted-glass" style="font-size: 0.7rem">
+                    <span class="status-dot"></span>Online
+                  </div>
+                </div>
+              </div>
+              <a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>My Profile</a>
+              <a class="dropdown-item" href="#"><i class="bi bi-sliders me-2"></i>Account Settings</a>
+              <a class="dropdown-item" href="#"><i class="bi bi-key me-2"></i>Change Password</a>
+              <a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Activity Log</a>
+              <hr class="dropdown-divider" />
+              <a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============================== CONTENT ============================== -->
+      <main class="content-area">
+        <!-- ---------- Stats Cards ---------- -->
+        <section class="section-block" id="stats">
+          <div class="row g-3">
+            <div class="col-6 col-md-4 col-xl-2">
+              <div class="glass custom-card stat-card">
+                <div class="stat-top">
+                  <div class="stat-icon" style="background: var(--color-primary)">
+                    <i class="bi bi-people-fill"></i>
+                  </div>
+                </div>
+                <div class="stat-value" id="statUsers">0</div>
+                <div class="stat-label">Total Users</div>
+                <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>12.4%</span>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+              <div class="glass custom-card stat-card">
+                <div class="stat-top">
+                  <div class="stat-icon" style="background: var(--color-success)">
+                    <i class="bi bi-currency-dollar"></i>
+                  </div>
+                </div>
+                <div class="stat-value" id="statRevenue">$0</div>
+                <div class="stat-label">Revenue</div>
+                <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>8.1%</span>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+              <div class="glass custom-card stat-card">
+                <div class="stat-top">
+                  <div class="stat-icon" style="background: var(--color-secondary)">
+                    <i class="bi bi-bag-check-fill"></i>
+                  </div>
+                </div>
+                <div class="stat-value" id="statOrders">0</div>
+                <div class="stat-label">Orders</div>
+                <span class="stat-trend down"><i class="bi bi-arrow-down-short"></i>2.3%</span>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+              <div class="glass custom-card stat-card">
+                <div class="stat-top">
+                  <div class="stat-icon" style="background: var(--color-accent)">
+                    <i class="bi bi-box-seam"></i>
+                  </div>
+                </div>
+                <div class="stat-value" id="statProducts">0</div>
+                <div class="stat-label">Products</div>
+                <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>5.7%</span>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+              <div class="glass custom-card stat-card">
+                <div class="stat-top">
+                  <div class="stat-icon" style="background: var(--color-info)">
+                    <i class="bi bi-eye-fill"></i>
+                  </div>
+                </div>
+                <div class="stat-value" id="statVisitors">0</div>
+                <div class="stat-label">Visitors</div>
+                <span class="stat-trend up"><i class="bi bi-arrow-up-short"></i>19.2%</span>
+              </div>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+              <div class="glass custom-card stat-card">
+                <div class="stat-top">
+                  <div class="stat-icon" style="background: var(--color-warning)">
+                    <i class="bi bi-hourglass-split"></i>
+                  </div>
+                </div>
+                <div class="stat-value" id="statPending">0</div>
+                <div class="stat-label">Pending Tasks</div>
+                <span class="stat-trend down"><i class="bi bi-arrow-down-short"></i>4.0%</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- Clock ---------- -->
+        <section class="section-block" id="overview">
+          <div class="row g-3">
+            <div class="col-xl-3">
+              <div class="glass custom-card clock-card h-100">
+                <div class="clock-ring-wrap">
+                  <svg viewBox="0 0 100 100" width="168" height="168">
+                    <defs>
+                      <linearGradient id="clockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#22D3EE" />
+                        <stop offset="100%" stop-color="#6C63FF" />
+                      </linearGradient>
+                    </defs>
+                    <circle class="clock-ring-bg" cx="50" cy="50" r="45"></circle>
+                    <circle class="clock-ring-progress" id="clockRing" cx="50" cy="50" r="45" stroke-dasharray="282.7"
+                      stroke-dashoffset="282.7"></circle>
+                  </svg>
+                  <div class="clock-face">
+                    <div class="clock-digital">
+                      <span id="clockTime">--:--</span><span class="clock-seconds" id="clockSeconds">:--</span>
+                    </div>
+                    <div class="clock-date" id="clockDate">Loading…</div>
+                  </div>
+                </div>
+                <div class="clock-meta">
+                  <div><b id="clockDay">--</b>Day</div>
+                  <div><b id="clockMonth">--</b>Month</div>
+                  <div><b id="clockYear">--</b>Year</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- Data Table ---------- -->
+        <section class="section-block" id="data-table">
+          <div class="section-heading">
+            <h2>Customer Records</h2>
+            <div class="d-flex gap-2">
+              <button class="btn custom-btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>New Record
+              </button>
+            </div>
+          </div>
+          <div class="glass custom-card">
+            <div class="custom-table-wrap">
+              <table class="custom-table table" id="dataTable" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th>
+                      <input type="checkbox" class="form-check-input custom-check" id="selectAllRows" />
+                    </th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="dataTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- Forms Showcase ---------- -->
+        <section class="section-block" id="forms">
+          <div class="section-heading">
+            <h2>Forms Showcase</h2>
+            <span class="section-sub">Every input type, styled through custom CSS classes only</span>
+          </div>
+          <div class="glass custom-card">
+            <form id="formsShowcase" novalidate>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label-custom">Text</label><input type="text" class="form-control custom-input"
+                    placeholder="Jane Doe" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Password</label><input type="password"
+                    class="form-control custom-input" placeholder="••••••••" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Email</label><input type="email" class="form-control custom-input"
+                    placeholder="jane@company.com" />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label-custom">Number</label><input type="number" class="form-control custom-input"
+                    placeholder="42" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Telephone</label><input type="tel" class="form-control custom-input"
+                    placeholder="+1 555 0102" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Date</label><input type="date" class="form-control custom-input" />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label-custom">Time</label><input type="time" class="form-control custom-input" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Month</label><input type="month" class="form-control custom-input" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Week</label><input type="week" class="form-control custom-input" />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label-custom">Datetime-local</label><input type="datetime-local"
+                    class="form-control custom-input" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Color</label><input type="color"
+                    class="form-control custom-input form-control-color" value="#6C63FF" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Range</label><input type="range" class="form-range custom-range"
+                    min="0" max="100" value="60" />
+                </div>
+
+                <div class="col-md-8">
+                  <label class="form-label-custom">Textarea</label><textarea class="form-control custom-input" rows="3"
+                    placeholder="Write a note…"></textarea>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Search</label><input type="search" class="form-control custom-input"
+                    placeholder="Search records…" />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label-custom">File Upload</label><input type="file"
+                    class="form-control custom-input" id="fileUploadSingle" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label-custom">Multiple File Upload</label><input type="file"
+                    class="form-control custom-input" multiple />
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label-custom">Drag &amp; Drop Upload</label>
+                  <div class="dropzone-custom" id="dropzone">
+                    <i class="bi bi-cloud-arrow-up fs-3 d-block mb-1"></i>
+                    Drag files here or click to browse
+                    <input type="file" id="dropzoneInput" class="d-none" multiple />
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label-custom">URL</label><input type="url" class="form-control custom-input"
+                    placeholder="https://example.com" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Select</label>
+                  <select class="form-select custom-select">
+                    <option>Design</option>
+                    <option>Engineering</option>
+                    <option>Marketing</option>
+                    <option>Sales</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <input type="hidden" value="hidden-value" />
+                  <label class="form-label-custom">Select2 (single)</label>
+                  <select class="form-select custom-select select2-single">
+                    <option>Pakistan</option>
+                    <option>United States</option>
+                    <option>United Kingdom</option>
+                    <option>Germany</option>
+                    <option>Japan</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label-custom">Select2 (multiple)</label>
+                  <select class="form-select custom-select select2-multi" multiple>
+                    <option>UI Design</option>
+                    <option>Frontend</option>
+                    <option>Backend</option>
+                    <option>DevOps</option>
+                    <option>QA</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label-custom">Input Group</label>
+                  <div class="input-group">
+                    <span class="input-group-text custom-input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                    <input type="text" class="form-control custom-input" placeholder="0.00" />
+                    <span class="input-group-text custom-input-group-text">USD</span>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label-custom">Validation example</label>
+                  <input type="text" class="form-control custom-input is-invalid" value="jane@" />
+                  <div class="invalid-feedback">
+                    Please enter a valid email address.
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label-custom">Valid example</label>
+                  <input type="text" class="form-control custom-input is-valid" value="Jane Doe" />
+                  <div class="valid-feedback">Looks good!</div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label-custom">Disabled</label><input type="text" class="form-control custom-input"
+                    value="Locked field" disabled />
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label-custom">Readonly</label><input type="text" class="form-control custom-input"
+                    value="Read only" readonly />
+                </div>
+
+                <div class="col-md-3 d-flex flex-column justify-content-end gap-2">
+                  <div class="form-check">
+                    <input class="form-check-input custom-check" type="checkbox" id="check1" checked />
+                    <label class="form-check-label form-label-custom mb-0" for="check1">Checkbox</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input custom-check" type="radio" name="radioGroup" id="radio1" checked />
+                    <label class="form-check-label form-label-custom mb-0" for="radio1">Radio option A</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input custom-check" type="radio" name="radioGroup" id="radio2" />
+                    <label class="form-check-label form-label-custom mb-0" for="radio2">Radio option B</label>
+                  </div>
+                </div>
+                <div class="col-md-3 d-flex flex-column justify-content-end gap-2">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input custom-switch" type="checkbox" id="switch1" checked />
+                    <label class="form-check-label form-label-custom mb-0" for="switch1">Email alerts</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input custom-switch" type="checkbox" id="switch2" />
+                    <label class="form-check-label form-label-custom mb-0" for="switch2">Dark data export</label>
+                  </div>
+                </div>
+
+                <div class="col-12 d-flex gap-2 pt-2">
+                  <button type="submit" class="btn custom-btn-primary">
+                    Submit
+                  </button>
+                  <button type="reset" class="btn custom-btn-secondary">
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ---------- UI Components ---------- -->
+        <section class="section-block" id="components">
+          <div class="section-heading">
+            <h2>UI Component Library</h2>
+            <span class="section-sub">Reusable pieces for every admin screen</span>
+          </div>
+
+          <div class="row g-3">
+            <!-- Profile / user / image / info cards -->
+            <div class="col-md-3">
+              <div class="glass custom-card text-center">
+                <img src="https://i.pravatar.cc/100?img=12" class="rounded-circle mb-2" width="72" height="72"
+                  alt="Profile" />
+                <div class="fw-semibold">Noah Ahmed</div>
+                <div class="text-muted-glass" style="font-size: 0.78rem">
+                  UX Designer
+                </div>
+                <div class="rating-stars mt-2">
+                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                    class="bi bi-star-fill"></i><i class="bi bi-star"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="glass custom-card">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <img src="https://i.pravatar.cc/60?img=8" class="rounded-circle" width="42" height="42" alt="User" />
+                  <div>
+                    <div class="fw-semibold" style="font-size: 0.85rem">
+                      Sara Malik
+                    </div>
+                    <div class="text-muted-glass" style="font-size: 0.72rem">
+                      sara@aurora.com
+                    </div>
+                  </div>
+                </div>
+                <span class="custom-badge bg-success-glass">Active</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="glass custom-card p-0 overflow-hidden">
+                <img src="https://picsum.photos/seed/aurora1/400/180" class="w-100"
+                  style="height: 120px; object-fit: cover" alt="Cover" />
+                <div class="p-3">
+                  <div class="fw-semibold" style="font-size: 0.85rem">
+                    Image Card
+                  </div>
+                  <div class="text-muted-glass" style="font-size: 0.75rem">
+                    Supports covers &amp; captions
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="glass custom-card">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="text-muted-glass" style="font-size: 0.75rem">Server Uptime</span><i
+                    class="bi bi-hdd-network" style="color: var(--color-secondary)"></i>
+                </div>
+                <div class="stat-value" style="font-size: 1.3rem">99.98%</div>
+                <div class="progress custom-progress mt-2">
+                  <div class="progress-bar custom-progress-bar" style="width: 99%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Alerts -->
+            <div class="col-12">
+              <div class="alert custom-alert alert-success d-flex align-items-center gap-2" role="alert">
+                <i class="bi bi-check-circle"></i> Changes saved successfully.
+              </div>
+              <div class="alert custom-alert alert-danger d-flex align-items-center gap-2" role="alert">
+                <i class="bi bi-x-circle"></i> Unable to process payment.
+              </div>
+              <div class="alert custom-alert alert-warning d-flex align-items-center gap-2" role="alert">
+                <i class="bi bi-exclamation-triangle"></i> Your storage is
+                almost full.
+              </div>
+              <div class="alert custom-alert alert-info d-flex align-items-center gap-2 mb-0" role="alert">
+                <i class="bi bi-info-circle"></i> A new version is available.
+              </div>
+            </div>
+
+            <!-- Badges / pills / progress -->
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>Badges &amp; Progress</h3>
+                </div>
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                  <span class="custom-badge bg-primary-glass">New</span>
+                  <span class="custom-badge bg-success-glass">Success</span>
+                  <span class="custom-badge bg-danger-glass">Failed</span>
+                  <span class="custom-badge bg-warning-glass">Pending</span>
+                  <span class="custom-badge bg-info-glass">Info</span>
+                </div>
+                <div class="progress custom-progress mb-2">
+                  <div class="progress-bar custom-progress-bar" style="width: 72%"></div>
+                </div>
+                <div class="progress custom-progress">
+                  <div class="progress-bar custom-progress-bar" style="
+                        width: 40%;
+                        background: var(--color-secondary);
+                      "></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accordion -->
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>Accordion</h3>
+                </div>
+                <div class="accordion custom-accordion" id="demoAccordion">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#acc1">
+                        What is Template?
+                      </button>
+                    </h2>
+                    <div id="acc1" class="accordion-collapse collapse" data-bs-parent="#demoAccordion">
+                      <div class="accordion-body">
+                        A liquid-glass dashboard template built with Bootstrap
+                        5.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#acc2">
+                        Is it responsive?
+                      </button>
+                    </h2>
+                    <div id="acc2" class="accordion-collapse collapse" data-bs-parent="#demoAccordion">
+                      <div class="accordion-body">
+                        Yes — fully responsive down to mobile with an
+                        offcanvas sidebar.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#acc3">
+                        Can I theme it?
+                      </button>
+                    </h2>
+                    <div id="acc3" class="accordion-collapse collapse" data-bs-parent="#demoAccordion">
+                      <div class="accordion-body">
+                        Every color, radius and blur value lives in CSS
+                        variables.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabs / pills nav -->
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>Tabs &amp; Pills</h3>
+                </div>
+                <ul class="nav nav-tabs custom-tabs mb-2">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tabOne">Overview</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tabTwo">Activity</a>
+                  </li>
+                </ul>
+                <div class="tab-content mb-3">
+                  <div class="tab-pane fade show active" id="tabOne">
+                    <p class="text-muted-glass mb-0" style="font-size: 0.82rem">
+                      Overview content panel with detailed information.
+                    </p>
+                  </div>
+                  <div class="tab-pane fade" id="tabTwo">
+                    <p class="text-muted-glass mb-0" style="font-size: 0.82rem">
+                      Activity content panel with recent updates.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modals / Offcanvas / Popover / Tooltip / Spinner triggers -->
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>Overlays</h3>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn custom-btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#demoModal">
+                    Open Modal
+                  </button>
+                  <button class="btn custom-btn-secondary btn-sm" data-bs-toggle="offcanvas"
+                    data-bs-target="#demoOffcanvas">
+                    Open Offcanvas
+                  </button>
+                  <button class="btn custom-btn-secondary btn-sm" data-bs-toggle="popover"
+                    data-bs-custom-class="custom-popover" title="Insider tip"
+                    data-bs-content="Popovers explain UI in context.">
+                    Popover
+                  </button>
+                  <button class="btn custom-btn-secondary btn-sm" data-bs-toggle="tooltip"
+                    data-bs-custom-class="custom-tooltip" title="I'm a tooltip">
+                    Tooltip
+                  </button>
+                  <span class="spinner-border custom-spinner spinner-border-sm" role="status"></span>
+                  <span class="spinner-grow custom-spinner spinner-grow-sm" role="status"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- List group / Timeline -->
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>List Group</h3>
+                </div>
+                <ul class="list-group custom-list-group">
+                  <li class="list-group-item d-flex justify-content-between">
+                    Design review
+                    <span class="custom-badge bg-primary-glass">Today</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between">
+                    Ship v1.2
+                    <span class="custom-badge bg-success-glass">Done</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between">
+                    Fix billing bug
+                    <span class="custom-badge bg-danger-glass">Urgent</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>Timeline</h3>
+                </div>
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="t-time">09:12 AM</div>
+                    <div class="t-title">Order placed</div>
+                    <div class="t-desc">
+                      Order #4821 created by Sara Malik.
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="t-time">10:40 AM</div>
+                    <div class="t-title">Payment confirmed</div>
+                    <div class="t-desc">Stripe webhook verified.</div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="t-time">01:05 PM</div>
+                    <div class="t-title">Shipped</div>
+                    <div class="t-desc">Package handed to courier.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Activity feed / Avatar group / Status -->
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>Activity Feed</h3>
+                </div>
+                <div class="activity-feed">
+                  <div class="feed-item">
+                    <img src="https://i.pravatar.cc/40?img=5" class="table-avatar" alt="" />
+                    <div>
+                      <div style="font-size: 0.82rem">
+                        <strong>Liam</strong> commented on Report Q3
+                      </div>
+                      <div class="text-muted-glass" style="font-size: 0.7rem">
+                        5 min ago
+                      </div>
+                    </div>
+                  </div>
+                  <div class="feed-item">
+                    <img src="https://i.pravatar.cc/40?img=9" class="table-avatar" alt="" />
+                    <div>
+                      <div style="font-size: 0.82rem">
+                        <strong>Priya</strong> closed ticket #221
+                      </div>
+                      <div class="text-muted-glass" style="font-size: 0.7rem">
+                        40 min ago
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="glass custom-card d-flex flex-column gap-3 justify-content-center">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="text-muted-glass" style="font-size: 0.8rem">Team online</span>
+                  <div class="avatar-group">
+                    <img src="https://i.pravatar.cc/40?img=1" alt="" />
+                    <img src="https://i.pravatar.cc/40?img=2" alt="" />
+                    <img src="https://i.pravatar.cc/40?img=3" alt="" />
+                    <img src="https://i.pravatar.cc/40?img=4" alt="" />
+                  </div>
+                </div>
+                <div class="status-indicator">
+                  <span class="dot" style="background: var(--color-success)"></span>Operational
+                </div>
+                <div class="status-indicator">
+                  <span class="dot" style="background: var(--color-warning)"></span>Degraded — API
+                </div>
+                <div class="status-indicator">
+                  <span class="dot" style="background: var(--color-danger)"></span>Outage — Search
+                </div>
+              </div>
+            </div>
+
+            <!-- Pricing cards -->
+            <div class="col-md-4">
+              <div class="glass custom-card pricing-card">
+                <div class="text-muted-glass mb-1">Starter</div>
+                <div class="price">$12<span>/mo</span></div>
+                <ul>
+                  <li>5 projects</li>
+                  <li>Basic analytics</li>
+                  <li>Email support</li>
+                </ul>
+                <button class="btn custom-btn-secondary w-100">
+                  Choose plan
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="glass custom-card pricing-card featured">
+                <div class="text-muted-glass mb-1">Pro</div>
+                <div class="price">$29<span>/mo</span></div>
+                <ul>
+                  <li>Unlimited projects</li>
+                  <li>Advanced analytics</li>
+                  <li>Priority support</li>
+                </ul>
+                <button class="btn custom-btn-primary w-100">
+                  Choose plan
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="glass custom-card pricing-card">
+                <div class="text-muted-glass mb-1">Enterprise</div>
+                <div class="price">$79<span>/mo</span></div>
+                <ul>
+                  <li>Custom SLAs</li>
+                  <li>Dedicated manager</li>
+                  <li>SSO &amp; audit logs</li>
+                </ul>
+                <button class="btn custom-btn-secondary w-100">
+                  Contact sales
+                </button>
+              </div>
+            </div>
+
+            <!-- skeleton -->
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>Loading Skeleton</h3>
+                </div>
+                <div class="skeleton mb-2" style="height: 14px; width: 70%"></div>
+                <div class="skeleton mb-2" style="height: 14px; width: 90%"></div>
+                <div class="skeleton" style="height: 14px; width: 50%"></div>
+              </div>
+            </div>
+
+
+            <!-- Widgets / quick actions / social / icon buttons / button groups -->
+            <div class="col-md-6">
+              <div class="glass custom-card">
+                <div class="card-header-custom">
+                  <h3>Quick Actions</h3>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <button class="btn custom-btn-primary btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i>New Order
+                  </button>
+                  <button class="btn custom-btn-secondary btn-sm">
+                    <i class="bi bi-upload me-1"></i>Import
+                  </button>
+                  <button class="btn custom-btn-outline btn-sm">
+                    <i class="bi bi-download me-1"></i>Export
+                  </button>
+                </div>
+                <div class="d-flex gap-2 mb-3">
+                  <a href="#" class="social-btn"><i class="bi bi-twitter-x"></i></a>
+                  <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
+                  <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
+                  <a href="#" class="social-btn"><i class="bi bi-linkedin"></i></a>
+                </div>
+                <div class="btn-group icon-btn-group" role="group">
+                  <button class="btn custom-btn-secondary">
+                    <i class="bi bi-list"></i>
+                  </button>
+                  <button class="btn custom-btn-secondary">
+                    <i class="bi bi-grid"></i>
+                  </button>
+                  <button class="btn custom-btn-secondary">
+                    <i class="bi bi-kanban"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Code block card -->
+            <div class="col-md-6">
+              <div class="glass custom-card code-block-card">
+                <div class="card-header-custom">
+                  <h3>Code Block</h3>
+                  <span class="custom-badge bg-primary-glass">JS</span>
+                </div>
+                <pre><code>fetch('/api/orders')
+  .then(res =&gt; res.json())
+  .then(data =&gt; render(data));</code></pre>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </main>
+
+      <!-- ============================== FOOTER ============================== -->
+      <footer class="app-footer glass">
+        <span>&copy; <span id="footerYear"></span> Sadam Qureshi. All rights
+          reserved.</span>
+        <span>Version 1.0.0 &middot; Built by Sadam Qureshi</span>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============================== OFFCANVAS: mobile sidebar ============================== -->
+  <div class="offcanvas offcanvas-start custom-offcanvas offcanvas-sidebar" tabindex="-1" id="offcanvasSidebar">
+    <div class="offcanvas-header">
+      <div class="sidebar-brand" style="border: none; padding: 0">
+        <div class="sidebar-brand-mark">A</div>
+        <div class="sidebar-brand-text">
+          <div class="brand-name">Sadam Qureshi</div>
+        </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <!-- Mobile menu is populated by script.js by cloning the desktop menu -->
+      <nav class="sidebar-nav" id="mobileSidebarMenuHolder" aria-label="Primary mobile"></nav>
+    </div>
+  </div>
+
+  <!-- ============================== OFFCANVAS: To-Do ============================== -->
+  <div class="offcanvas offcanvas-end custom-offcanvas" tabindex="-1" id="todoOffcanvas">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title font-display">To-Do List</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control custom-input" id="todoInput" placeholder="Add a new task…" />
+        <button class="btn custom-btn-primary" id="todoAddBtn">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+      </div>
+      <div id="todoList" class="flex-grow-1 overflow-auto"></div>
+    </div>
+  </div>
+
+  <!-- ============================== MODAL: demo ============================== -->
+  <div class="modal fade" id="demoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custom-modal">
+        <div class="modal-header">
+          <h5 class="modal-title font-display">Confirm action</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-muted-glass">
+          This is a glassmorphic modal styled entirely through custom CSS
+          classes layered on Bootstrap's modal component.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn custom-btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn custom-btn-primary" data-bs-dismiss="modal">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== OFFCANVAS: demo ============================== -->
+  <div class="offcanvas offcanvas-bottom custom-offcanvas" tabindex="-1" id="demoOffcanvas" style="height: 220px">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title font-display">Bottom Offcanvas</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body text-muted-glass">
+      A slide-up glass panel — handy for filters or quick composers on mobile.
+    </div>
+  </div>
+
+  <!-- ============================== Toast container ============================== -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="mainToast" class="toast custom-toast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="mainToastBody">Action completed.</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== Scripts ============================== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script>
+    /* ==========================================================================
+ LIQUID GLASS ADMIN — script.js
+ Modern ES6. No inline JS. Organized by feature.
+ ========================================================================== */
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initSidebarToggle();
+      initNestedMenu();
+      initMobileMenuClone();
+      initClock();
+      // initCharts(); // Uncomment when chart canvas elements are added to HTML
+      initStatCounters();
+      initDataTable();
+      initSelect2();
+      initFormValidation();
+      initFileUploadPreview();
+      initDragDropUpload();
+      initTodoApp();
+      initBootstrapWidgets();
+      initToastDemo();
+      initFooterYear();
+    });
+
+    /* --------------------------------------------------------------------
+ Sidebar collapse / expand (desktop)
+ -------------------------------------------------------------------- */
+    function initSidebarToggle() {
+      const sidebar = document.getElementById("sidebar");
+      const toggleBtn = document.getElementById("sidebarToggleBtn");
+      if (!sidebar || !toggleBtn) return;
+
+      const STORAGE_KEY = "auroraSidebarCollapsed";
+      const collapsed = localStorage.getItem(STORAGE_KEY) === "true";
+      if (collapsed) sidebar.classList.add("collapsed");
+
+      toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+        const isCollapsed = sidebar.classList.contains("collapsed");
+        toggleBtn.setAttribute("aria-expanded", String(!isCollapsed));
+        localStorage.setItem(STORAGE_KEY, String(isCollapsed));
+      });
+    }
+
+    /* --------------------------------------------------------------------
+ Nested sidebar submenus (unlimited depth) + active state
+ -------------------------------------------------------------------- */
+    function initNestedMenu() {
+      document.querySelectorAll("[data-toggle-submenu]").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const parentItem = link.closest(".nav-item-custom");
+          if (!parentItem) return;
+
+          // Close sibling menus at the same level for a clean accordion feel
+          const siblings = Array.from(
+            parentItem.parentElement.children,
+          ).filter(
+            (el) =>
+              el !== parentItem && el.classList.contains("nav-item-custom"),
+          );
+          siblings.forEach((sib) => sib.classList.remove("open"));
+
+          parentItem.classList.toggle("open");
+        });
+      });
+    }
+
+    /* --------------------------------------------------------------------
+ Clone the desktop sidebar menu into the mobile offcanvas
+ FUTURE CUSTOMIZATION: If mobile menu structure differs from desktop, modify clone logic here
+ -------------------------------------------------------------------- */
+    function initMobileMenuClone() {
+      const source = document.getElementById("sidebarMenu");
+      const holder = document.getElementById("mobileSidebarMenuHolder");
+      if (!source || !holder) return;
+
+      const clone = source.cloneNode(true);
+      clone.id = "sidebarMenuMobile";
+      holder.appendChild(clone);
+
+      // Re-bind submenu toggles inside the cloned mobile menu
+      clone.querySelectorAll("[data-toggle-submenu]").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const parentItem = link.closest(".nav-item-custom");
+          if (!parentItem) return;
+          const siblings = Array.from(
+            parentItem.parentElement.children,
+          ).filter(
+            (el) =>
+              el !== parentItem && el.classList.contains("nav-item-custom"),
+          );
+          siblings.forEach((sib) => sib.classList.remove("open"));
+          parentItem.classList.toggle("open");
+        });
+      });
+    }
+
+    /* --------------------------------------------------------------------
+ Live clock (digital + progress ring)
+ FUTURE CUSTOMIZATION: To use specific timezone, replace 'new Date()' with timezone-aware date object
+ -------------------------------------------------------------------- */
+    function initClock() {
+      const timeEl = document.getElementById("clockTime");
+      const secEl = document.getElementById("clockSeconds");
+      const dateEl = document.getElementById("clockDate");
+      const dayEl = document.getElementById("clockDay");
+      const monthEl = document.getElementById("clockMonth");
+      const yearEl = document.getElementById("clockYear");
+      const ring = document.getElementById("clockRing");
+      if (!timeEl || !ring) return;
+
+      const RADIUS = 45;
+      const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+      ring.setAttribute("stroke-dasharray", CIRCUMFERENCE.toFixed(1));
+
+      function tick() {
+        const now = new Date();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const s = now.getSeconds();
+        const h12 = h % 12 || 12;
+
+        timeEl.textContent = `${String(h12).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+        secEl.textContent = `:${String(s).padStart(2, "0")}`;
+        dateEl.textContent = now.toLocaleDateString(undefined, {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        });
+        dayEl.textContent = now.toLocaleDateString(undefined, {
+          weekday: "short",
+        });
+        monthEl.textContent = now.toLocaleDateString(undefined, {
+          month: "short",
+        });
+        yearEl.textContent = now.getFullYear();
+
+        // Ring shows progress through the current day
+        const secondsToday = h * 3600 + m * 60 + s;
+        const fraction = secondsToday / 86400;
+        const offset = CIRCUMFERENCE * (1 - fraction);
+        ring.style.strokeDashoffset = offset.toFixed(1);
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    /* --------------------------------------------------------------------
+ Chart.js — bar / line / pie / area, themed to match the glass palette
+ FUTURE CUSTOMIZATION: Add canvas elements with IDs (barChart, lineChart, pieChart, areaChart) 
+ in the HTML to enable charts. Uncomment and configure chart data below as needed.
+ -------------------------------------------------------------------- */
+    function initCharts() {
+      // Charts disabled - no canvas elements found in HTML
+      // To enable: Add <canvas id="barChart"></canvas> etc. to the HTML
+      // if (typeof Chart === "undefined") return;
+      // Chart.defaults.color = "#A6ADC8";
+      // Chart.defaults.font.family = "Inter, sans-serif";
+      // Chart.defaults.borderColor = "rgba(255,255,255,0.08)";
+    }
+
+    /* --------------------------------------------------------------------
+ Animated stat counters
+ FUTURE CUSTOMIZATION: Modify 'targets' object to change counter values and prefixes/suffixes
+ -------------------------------------------------------------------- */
+    function initStatCounters() {
+      const targets = {
+        statUsers: { end: 8420, prefix: "", suffix: "" },
+        statRevenue: { end: 128400, prefix: "$", suffix: "" },
+        statOrders: { end: 3162, prefix: "", suffix: "" },
+        statProducts: { end: 964, prefix: "", suffix: "" },
+        statVisitors: { end: 51230, prefix: "", suffix: "" },
+        statPending: { end: 47, prefix: "", suffix: "" },
+      };
+
+      Object.entries(targets).forEach(([id, cfg]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const duration = 1200;
+        const start = performance.now();
+
+        function frame(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const value = Math.floor(eased * cfg.end);
+          el.textContent = cfg.prefix + value.toLocaleString() + cfg.suffix;
+          if (progress < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      });
+    }
+
+    /* --------------------------------------------------------------------
+ Data table — build rows, then hand off to DataTables for search/sort/pagination/export
+ FUTURE CUSTOMIZATION: Modify 'names' array and 'statuses' to change table data content
+ -------------------------------------------------------------------- */
+    function initDataTable() {
+      const tbody = document.getElementById("dataTableBody");
+      if (!tbody) return;
+
+      const statuses = [
+        { label: "Active", cls: "bg-success-glass" },
+        { label: "Pending", cls: "bg-warning-glass" },
+        { label: "Suspended", cls: "bg-danger-glass" },
+        { label: "Invited", cls: "bg-info-glass" },
+      ];
+      const names = [
+        "Sara Malik",
+        "Liam Chen",
+        "Noah Ahmed",
+        "Priya Nair",
+        "Ali Raza",
+        "Emma Rossi",
+        "Yusuf Khan",
+        "Grace Kim",
+        "Omar Farooq",
+        "Chloe Martin",
+        "Hassan Iqbal",
+        "Zainab Sheikh",
+      ];
+
+      let rows = "";
+      names.forEach((name, i) => {
+        const status = statuses[i % statuses.length];
+        const email = name.toLowerCase().replace(/\s+/g, ".") + "@aurora.com";
+        const created = new Date(
+          2026,
+          i % 12,
+          ((i * 3) % 27) + 1,
+        ).toLocaleDateString();
+        const avatarSeed = i + 20;
+        rows += `<tr>
+      <td><input type="checkbox" class="form-check-input custom-check row-check"></td>
+      <td>#${1000 + i}</td>
+      <td><img src="https://i.pravatar.cc/60?img=${avatarSeed}" class="table-avatar" alt="">${name}</td>
+      <td>${email}</td>
+      <td>+92 3${String(100000000 + i * 137).slice(0, 8)}</td>
+      <td><span class="custom-badge ${status.cls}">${status.label}</span></td>
+      <td>${created}</td>
+      <td>
+        <div class="dropdown">
+          <button class="btn btn-sm custom-btn-ghost dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+          <ul class="dropdown-menu custom-dropdown">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+          </ul>
+        </div>
+      </td>
+    </tr>`;
+      });
+      tbody.innerHTML = rows;
+
+      if (window.jQuery && jQuery.fn.DataTable) {
+        jQuery("#dataTable").DataTable({
+          pageLength: 6,
+          lengthMenu: [6, 10, 25],
+          columnDefs: [
+            { orderable: false, targets: [0, 7] },
+            { width: "4%", targets: 0 },
+            { width: "6%", targets: 1 },
+            { width: "18%", targets: 2 },
+            { width: "16%", targets: 3 },
+            { width: "14%", targets: 4 },
+            { width: "10%", targets: 5 },
+            { width: "12%", targets: 6 },
+            { width: "20%", targets: 7 },
+            { className: "text-truncate", targets: [2, 3, 4] }
+          ],
+          language: { search: "", searchPlaceholder: "Search records…" },
+          scrollX: false,
+          scrollY: false,
+          autoWidth: false,
+          dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+            '<"row"<"col-sm-12"tr>>' +
+            '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        });
+      }
+
+      // "Select all" checkbox behavior
+      const selectAll = document.getElementById("selectAllRows");
+      if (selectAll) {
+        selectAll.addEventListener("change", () => {
+          document.querySelectorAll(".row-check").forEach((cb) => {
+            cb.checked = selectAll.checked;
+          });
+        });
+      }
+    }
+
+    /* --------------------------------------------------------------------
+ Select2 initialization
+ FUTURE CUSTOMIZATION: Add more Select2 configurations (tags, ajax, etc.) as needed
+ -------------------------------------------------------------------- */
+    function initSelect2() {
+      if (!window.jQuery || !jQuery.fn.select2) return;
+      jQuery(".select2-single").select2({ theme: "default", width: "100%" });
+      jQuery(".select2-multi").select2({
+        theme: "default",
+        width: "100%",
+        placeholder: "Select skills…",
+      });
+    }
+
+    /* --------------------------------------------------------------------
+ Bootstrap-style form validation demo
+ FUTURE CUSTOMIZATION: Add real validation logic instead of just preventing default
+ -------------------------------------------------------------------- */
+    function initFormValidation() {
+      const form = document.getElementById("formsShowcase");
+      if (!form) return;
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        showToast("Form submitted successfully.");
+      });
+    }
+
+    /* --------------------------------------------------------------------
+ Image preview for the single file input
+ FUTURE CUSTOMIZATION: Add actual image preview display instead of just toast notification
+ -------------------------------------------------------------------- */
+    function initFileUploadPreview() {
+      const input = document.getElementById("fileUploadSingle");
+      if (!input) return;
+      input.addEventListener("change", () => {
+        if (input.files && input.files[0]) {
+          showToast(`Selected file: ${input.files[0].name}`);
+        }
+      });
+    }
+
+    /* --------------------------------------------------------------------
+ Drag & drop upload area
+ FUTURE CUSTOMIZATION: Add actual file upload logic (API calls, progress bars, etc.)
+ -------------------------------------------------------------------- */
+    function initDragDropUpload() {
+      const zone = document.getElementById("dropzone");
+      const input = document.getElementById("dropzoneInput");
+      if (!zone || !input) return;
+
+      zone.addEventListener("click", () => input.click());
+
+      ["dragenter", "dragover"].forEach((evt) => {
+        zone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          zone.classList.add("dragover");
+        });
+      });
+      ["dragleave", "drop"].forEach((evt) => {
+        zone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          zone.classList.remove("dragover");
+        });
+      });
+      zone.addEventListener("drop", (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length)
+          showToast(`${files.length} file(s) ready to upload.`);
+      });
+      input.addEventListener("change", () => {
+        if (input.files.length)
+          showToast(`${input.files.length} file(s) ready to upload.`);
+      });
+    }
+
+    /* --------------------------------------------------------------------
+ To-Do CRUD with LocalStorage
+ FUTURE CUSTOMIZATION: Replace LocalStorage with backend API for persistent storage
+ -------------------------------------------------------------------- */
+    function initTodoApp() {
+      const STORAGE_KEY = "auroraTodos";
+      const listEl = document.getElementById("todoList");
+      const input = document.getElementById("todoInput");
+      const addBtn = document.getElementById("todoAddBtn");
+      if (!listEl || !input || !addBtn) return;
+
+      const load = () => {
+        try {
+          return (
+            JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultTodos()
+          );
+        } catch {
+          return defaultTodos();
+        }
+      };
+      const save = (todos) =>
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+
+      function defaultTodos() {
+        return [
+          {
+            id: crypto.randomUUID(),
+            text: "Review Q3 revenue report",
+            done: false,
+          },
+          {
+            id: crypto.randomUUID(),
+            text: "Approve new user roles",
+            done: true,
+          },
+          {
+            id: crypto.randomUUID(),
+            text: "Reply to support tickets",
+            done: false,
+          },
+        ];
+      }
+
+      let todos = load();
+
+      function render() {
+        listEl.innerHTML = todos.length
+          ? todos.map((t) => todoRowHTML(t)).join("")
+          : `<div class="empty-state py-4"><i class="bi bi-check2-circle"></i><div class="mt-2" style="font-size:0.82rem;">No tasks yet.</div></div>`;
+      }
+
+      function todoRowHTML(t) {
+        return `<div class="todo-item ${t.done ? "completed" : ""}" data-id="${t.id}">
+      <input type="checkbox" class="form-check-input custom-check todo-check" ${t.done ? "checked" : ""}>
+      <span class="todo-text">${escapeHTML(t.text)}</span>
+      <button class="btn btn-sm custom-btn-ghost todo-edit" title="Edit"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-sm custom-btn-ghost text-danger todo-delete" title="Delete"><i class="bi bi-trash"></i></button>
+    </div>`;
+      }
+
+      function escapeHTML(str) {
+        const div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      function addTodo() {
+        const text = input.value.trim();
+        if (!text) return;
+        todos.unshift({ id: crypto.randomUUID(), text, done: false });
+        save(todos);
+        input.value = "";
+        render();
+      }
+
+      addBtn.addEventListener("click", addTodo);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addTodo();
+      });
+
+      listEl.addEventListener("click", (e) => {
+        const row = e.target.closest(".todo-item");
+        if (!row) return;
+        const id = row.dataset.id;
+
+        if (e.target.closest(".todo-delete")) {
+          todos = todos.filter((t) => t.id !== id);
+          save(todos);
+          render();
+        }
+
+        if (e.target.closest(".todo-edit")) {
+          const todo = todos.find((t) => t.id === id);
+          if (!todo) return;
+          const updated = prompt("Edit task", todo.text);
+          if (updated !== null && updated.trim()) {
+            todo.text = updated.trim();
+            save(todos);
+            render();
+          }
+        }
+      });
+
+      listEl.addEventListener("change", (e) => {
+        if (!e.target.classList.contains("todo-check")) return;
+        const row = e.target.closest(".todo-item");
+        const id = row.dataset.id;
+        const todo = todos.find((t) => t.id === id);
+        if (todo) {
+          todo.done = e.target.checked;
+          save(todos);
+          render();
+        }
+      });
+
+      // Initial render
+      render();
+
+      // Re-render when offcanvas opens
+      const todoOffcanvas = document.getElementById('todoOffcanvas');
+      if (todoOffcanvas) {
+        todoOffcanvas.addEventListener('shown.bs.offcanvas', () => {
+          render();
+        });
+      }
+    }
+
+    /* --------------------------------------------------------------------
+ Bootstrap widgets: tooltips, popovers (with custom classes)
+ FUTURE CUSTOMIZATION: Add more Bootstrap widget initializations as needed
+ -------------------------------------------------------------------- */
+    function initBootstrapWidgets() {
+      document
+        .querySelectorAll('[data-bs-toggle="tooltip"]')
+        .forEach((el) => {
+          new bootstrap.Tooltip(el);
+        });
+      document
+        .querySelectorAll('[data-bs-toggle="popover"]')
+        .forEach((el) => {
+          new bootstrap.Popover(el, { trigger: "focus" });
+        });
+    }
+
+    /* --------------------------------------------------------------------
+ Toast notifications
+ FUTURE CUSTOMIZATION: Add toast types (success, error, warning) with different colors/icons
+ -------------------------------------------------------------------- */
+    function showToast(message) {
+      const toastEl = document.getElementById("mainToast");
+      const bodyEl = document.getElementById("mainToastBody");
+      if (!toastEl || !bodyEl || !window.bootstrap) return;
+      bodyEl.textContent = message;
+      const toast = bootstrap.Toast.getOrCreateInstance(toastEl, {
+        delay: 2600,
+      });
+      toast.show();
+    }
+
+    function initToastDemo() {
+      const markAllBtn = document.getElementById("markAllReadBtn");
+      const notifCount = document.getElementById("notifCount");
+      if (markAllBtn && notifCount) {
+        markAllBtn.addEventListener("click", () => {
+          notifCount.textContent = "0";
+          notifCount.style.display = "none";
+          showToast("All notifications marked as read.");
+        });
+      }
+
+      const searchBtn = document.getElementById("searchBtn");
+      if (searchBtn) {
+        searchBtn.addEventListener("click", () =>
+          showToast("Global search coming soon."),
+        );
+      }
+    }
+
+    /* --------------------------------------------------------------------
+ Footer year
+ FUTURE CUSTOMIZATION: Add more dynamic footer content (version, links, etc.)
+ -------------------------------------------------------------------- */
+    function initFooterYear() {
+      const el = document.getElementById("footerYear");
+      if (el) el.textContent = new Date().getFullYear();
+    }
+  </script>
+</body>
+
+</html>
